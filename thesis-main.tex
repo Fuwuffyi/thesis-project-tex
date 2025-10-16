@@ -17,7 +17,8 @@
 \academicyear{2024-2025}
 
 % TODO: Definition of acronyms
-\acrodef{PBR}{Physically Based ReGdering}
+\acrodef{API}{Application Programming Interface}
+\acrodef{PBR}{Physically Based Rendering}
 
 \mainlinespacing{1.241}
 
@@ -44,16 +45,16 @@ Optional. Max a few lines.
 \mainmatter
 
 %----------------------------------------------------------------------------------------
-\chapter{Introduction}
-\label{chap:introduction}
+\chapter{Introduzione}
+\label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
 \section{Contesto e Motivazioni}
-Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics API} verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.  
-OpenGL, storicamente una delle API più diffuse, offre un modello di programmazione di tipo \emph{high-level}, che semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti, come la sincronizzazione e la gestione della memoria.  
+Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics \ac{API}} verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.  
+OpenGL, storicamente una delle \ac{API} più diffuse, offre un modello di programmazione di tipo \emph{high-level}, che semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti, come la sincronizzazione e la gestione della memoria.  
 Vulkan, introdotta dal \emph{Khronos Group} nel 2016, adotta invece un approccio \emph{low-level}, demandando al programmatore un controllo esplicito sulle risorse e sull’esecuzione dei comandi, con l’obiettivo di ridurre l’overhead del driver e di consentire una migliore parallelizzazione del carico di lavoro.
 
-Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due API, attraverso la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
+Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due \ac{API}, attraverso la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
 Il confronto si concentra in particolare sull’impatto del multithreading in Vulkan rispetto al modello single-thread tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
 
 \section{Objectives}
