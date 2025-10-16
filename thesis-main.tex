@@ -16,30 +16,31 @@
 \session{I}
 \academicyear{2024-2025}
 
-% Definition of acronyms
-\acrodef{IoT}{Internet of Thing}
-\acrodef{vm}[VM]{Virtual Machine}
+% TODO: Definition of acronyms
+\acrodef{PBR}{Physically Based Rendering}
 
-\mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
+\mainlinespacing{1.241}
 
 \begin{document}
 
 \frontmatter\frontispiece
 
+% TODO: Write abstract
 \begin{abstract}	
 Max 2000 characters, strict.
 \end{abstract}
 
-\begin{dedication} % this is optional
+% TODO: Write dedication (optional)
+\begin{dedication}
 Optional. Max a few lines.
 \end{dedication}
 
-%----------------------------------------------------------------------------------------
+% Table of contents
 \tableofcontents   
-\listoffigures     % (optional) comment if empty
-\lstlistoflistings % (optional) comment if empty
-%----------------------------------------------------------------------------------------
+% TODO: Uncomment when image added \listoffigures
+% TODO: Uncomment when listing added \lstlistoflistings
 
+% Main content
 \mainmatter
 
 %----------------------------------------------------------------------------------------
@@ -47,59 +48,106 @@ Optional. Max a few lines.
 \label{chap:introduction}
 %----------------------------------------------------------------------------------------
 
-Write your intro here.
-\sidenote{Add sidenotes in this way. They are named after the author of the thesis}
+\section{Context and Motivation}
 
-You can use acronyms that your defined previously,
-such as \ac{IoT}.
-%
-If you use acronyms twice,
-they will be written in full only once
-(indeed, you can mention the \ac{IoT} now without it being fully explained).
-%
-In some cases, you may need a plural form of the acronym.
-%
-For instance,
-that you are discussing \acp{vm},
-you may need both \ac{vm} and \acp{vm}.
+\section{Objectives}
+
+\section{Methodology}
 
 \paragraph{Structure of the Thesis}
 
-\note{At the end, describe the structure of the paper}
-
-\chapter{State of the art}
-
-I suggest referencing stuff as follows: \cref{fig:random-image} or \Cref{fig:random-image}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
-    \caption{Some random image}
-    \label{fig:random-image}
-\end{figure}
-
-\section{Some cool topic}
-
-\chapter{Contribution}
-
-You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
-
-\lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
-
-\section{Fancy formulas here}
-
 %----------------------------------------------------------------------------------------
-% BIBLIOGRAPHY
+\chapter{Background}
+\label{chap:background}
 %----------------------------------------------------------------------------------------
 
+\section{Rendering Pipelines}
+
+\section{Physically Based Rendering (PBR)}
+
+\section{Graphics APIs: OpenGL and Vulkan}
+
+\section{Libraries and Tools}
+
+\section{Related Work}
+
+%----------------------------------------------------------------------------------------
+\chapter{Requirements and Analysis}
+\label{chap:analysis}
+%----------------------------------------------------------------------------------------
+
+\section{Functional Requirements}
+
+\section{Non-functional Requirements}
+
+\section{Constraints}
+
+\section{Evaluation Strategy}
+
+%----------------------------------------------------------------------------------------
+\chapter{Design and Architecture}
+\label{chap:design}
+%----------------------------------------------------------------------------------------
+
+\section{System Overview}
+
+\section{Object-Oriented Design}
+
+\section{Renderer Architecture}
+
+\section{Deferred Rendering Pipeline}
+
+\section{Resource Management}
+
+%----------------------------------------------------------------------------------------
+\chapter{Implementation}
+\label{chap:implementation}
+%----------------------------------------------------------------------------------------
+
+\section{Codebase Structure}
+
+\section{Key Components}
+
+\section{PBR Material System}
+
+\section{Particle Simulation}
+
+\section{Performance GUI}
+
+%----------------------------------------------------------------------------------------
+\chapter{Performance Evaluation}
+\label{chap:evaluation}
+%----------------------------------------------------------------------------------------
+
+\section{Experimental Setup}
+
+\section{Results}
+
+\section{Discussion}
+
+%----------------------------------------------------------------------------------------
+\chapter{Conclusions and Future Work}
+\label{chap:conclusions}
+%----------------------------------------------------------------------------------------
+
+\section{Summary}
+
+\section{Findings}
+
+\section{Limitations}
+
+\section{Future Work}
+
+% End of thesis
 \backmatter
 
-\nocite{*} % Remove this as soon as you have the first citation
+% TODO: Uncomment when cited book \nocite{*}
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}
 
-\begin{acknowledgements} % this is optional
+% TODO: Write acknowledgements (optional)
+\begin{acknowledgements}
 Optional. Max 1 page.
 \end{acknowledgements}
 
