@@ -102,29 +102,48 @@ Il documento è organizzato come segue:
 %----------------------------------------------------------------------------------------
 
 \section{Pipeline di Rendering}
-Il rendering grafico può essere realizzato seguendo approcci diversi. I principali sono il \emph{forward rendering}
-e il \emph{deferred rendering}.
-Nel forward rendering, le luci vengono calcolate direttamente durante il rendering di ciascun oggetto, con conseguente
-aumento dei costi per scene complesse con molte luci.
-Il deferred rendering separa la fase di geometria da quella di illuminazione, memorizzando informazioni come posizione,
-normale e materiali in buffer intermedi (\emph{G-buffer}) per poi eseguire il calcolo della luce in un passaggio successivo.
+Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
+ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
+\emph{deferred rendering}, che differiscono per il modo in cui gestiscono il calcolo dell’illuminazione e la
+composizione finale dell’immagine.
+Nel \emph{forward rendering}, ogni oggetto della scena viene renderizzato direttamente con tutte le luci che lo influenzano.
+Durante il passaggio di rendering, per ogni frammento vengono calcolati il colore finale e il contributo luminoso
+di ciascuna sorgente, con il risultato che il numero di calcoli cresce proporzionalmente al numero di luci.
+Questo metodo è relativamente semplice da implementare, ma può diventare inefficiente in scene complesse, dove molte
+luci influenzano simultaneamente la stessa area. Tuttavia, rimane ancora oggi una soluzione adatta a contesti con un
+numero limitato di luci dinamiche o in applicazioni dove la compatibilità e la semplicità di implementazione sono prioritarie.
+Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più passaggi. Nel primo, chiamato
+\emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
+come la posizione dei punti, le normali delle superfici e le proprietà dei materiali. Nel secondo passaggio,
+denominato \emph{lighting pass}, l’illuminazione viene calcolata utilizzando i dati salvati nei buffer,
+evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. Questo approccio permette di gestire
+un numero elevato di luci in modo più efficiente, rendendolo particolarmente indicato per applicazioni moderne e motori
+di gioco con scenari complessi.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
     \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
     \label{fig:deferred-pipeline}
 \end{figure}
+Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}, in quanto offre una base più
+flessibile per l’analisi delle prestazioni e per l’integrazione di tecniche di illuminazione avanzate.
 
 \section{Physically Based Rendering (PBR)}
-Il \emph{Physically Based Rendering} permette una resa più realistica dei materiali basandosi su modelli fisici
-di illuminazione.
-I materiali sono descritti da parametri quali:
+Il \emph{Physically Based Rendering} (PBR) mira a simulare il comportamento reale della luce e dei materiali,
+basandosi su modelli fisici dell’interazione tra superfici e radiazione luminosa. A differenza dei modelli
+tradizionali, che si affidano spesso a formule empiriche per ottenere un effetto visivamente piacevole, il PBR
+definisce le proprietà dei materiali in modo coerente e indipendente dalle condizioni di illuminazione,
+garantendo risultati più realistici e prevedibili.
+Ogni materiale in un sistema PBR è descritto da un insieme di parametri fisici che ne determinano l’aspetto visivo.
+I principali sono:
 \begin{itemize}
-    \item \textbf{Albedo}: colore base del materiale;
-    \item \textbf{Roughness}: misura della microfacettatura superficiale;
-    \item \textbf{Metallic}: indica la natura metallica del materiale;
-    \item \textbf{Normal map}: dettaglio delle normali della superficie.
+    \item \textbf{Albedo}: rappresenta il colore base del materiale;
+    \item \textbf{Roughness}: controlla la rugosità microscopica della superficie, influenzando la dispersione della luce;
+    \item \textbf{Metallic}: indica se il materiale si comporta come un metallo;
+    \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini.
 \end{itemize}
+Combinando questi parametri, il PBR consente di rappresentare in modo accurato una vasta gamma di materiali,
+dai metalli lucidi ai tessuti ruvidi.
 
 \section{Graphics API: OpenGL and Vulkan}
 OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche.
@@ -148,13 +167,13 @@ dello sviluppo rispetto a OpenGL.
 \section{Related Work}
 
 %----------------------------------------------------------------------------------------
-\chapter{Requirements and Analysis}
+\chapter{Requisiti ed Analisi}
 \label{chap:analysis}
 %----------------------------------------------------------------------------------------
 
-\section{Functional Requirements}
+\section{Requisiti funzionali}
 
-\section{Non-functional Requirements}
+\section{Requisiti non-funzionali}
 
 \section{Constraints}
 
