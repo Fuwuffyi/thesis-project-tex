@@ -67,6 +67,8 @@ tipico di OpenGL, analizzando come la differente gestione della pipeline grafica
 \paragraph{Obiettivi}
 L’obiettivo principale del lavoro è progettare e sviluppare un motore di rendering scritto in \emph{C++23},
 in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4.
+Il motore implementa un approccio di tipo \emph{deferred rendering}, supporta materiali \ac{PBR}, luci direzionali,
+puntuali e spot, e include ulteriori passaggi di rendering per particelle e oggetti di debug.
 L’architettura segue un paradigma orientato agli oggetti, integrando librerie e framework comuni.
 L’obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l’efficienza delle due API 
 in termini di:
