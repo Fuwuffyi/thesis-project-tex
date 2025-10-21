@@ -40,7 +40,7 @@ Optional. Max a few lines.
 
 % Table of contents
 \tableofcontents   
-% TODO: Uncomment when image added \listoffigures
+\listoffigures
 % TODO: Uncomment when listing added \lstlistoflistings
 
 % Main content
@@ -108,6 +108,12 @@ Nel forward rendering, le luci vengono calcolate direttamente durante il renderi
 aumento dei costi per scene complesse con molte luci.  
 Il deferred rendering separa la fase di geometria da quella di illuminazione, memorizzando informazioni come posizione,
 normale e materiali in buffer intermedi (\emph{G-buffer}) per poi eseguire il calcolo della luce in un passaggio successivo.  
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
+    \caption{Esempio di pipeline di deferred rendering from \cite{learnopengl}.}
+    \label{fig:deferred-pipeline}
+\end{figure}
 
 \section{Physically Based Rendering (\ac{PBR})}
 Il \emph{\acl{PBR}} permette una resa più realistica dei materiali basandosi su modelli fisici di illuminazione.  
@@ -194,8 +200,6 @@ I materiali sono descritti da parametri quali:
 
 % End of thesis
 \backmatter
-
-\nocite{*} % TODO: Comment when cited book
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}
