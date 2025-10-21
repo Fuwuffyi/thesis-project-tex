@@ -17,12 +17,10 @@
 \academicyear{2024-2025}
 
 % Definition of acronyms
-\begin{acronym}[API]
-  \acro{API}{Application Programming Interface}
-  \acro{PBR}{Physically Based Rendering}
-  \acro{CPU}{Central Processing Unit}
-  \acro{GPU}{Graphical Processing Unit}
-\end{acronym}
+\acrodef{API}{Application Programming Interface}
+\acrodef{PBR}{Physically Based Rendering}
+\acrodef{CPU}{Central Processing Unit}
+\acrodef{GPU}{Graphical Processing Unit}
 
 \mainlinespacing{1.241}
 
@@ -62,7 +60,6 @@ gestione della memoria.
 Vulkan, introdotta dal \emph{Khronos Group} nel 2016, adotta invece un approccio \emph{low-level}, demandand
 programmatore un controllo esplicito sulle risorse e sull’esecuzione dei comandi, con l’obiettivo di ridurre l’overhead
 del driver e di consentire una migliore parallelizzazione del carico di lavoro.
-
 Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due \ac{API}, attraverso
 la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
 Il confronto si concentra in particolare sull’impatto del multithreading in Vulkan rispetto al modello single-thread
@@ -104,9 +101,23 @@ Il documento è organizzato come segue:
 \label{chap:background}
 %----------------------------------------------------------------------------------------
 
-\section{Rendering Pipelines}
+\section{Pipeline di Rendering}
+Il rendering grafico può essere realizzato seguendo approcci diversi. I principali sono il \emph{forward rendering}
+e il \emph{deferred rendering}.  
+Nel forward rendering, le luci vengono calcolate direttamente durante il rendering di ciascun oggetto, con conseguente
+aumento dei costi per scene complesse con molte luci.  
+Il deferred rendering separa la fase di geometria da quella di illuminazione, memorizzando informazioni come posizione,
+normale e materiali in buffer intermedi (\emph{G-buffer}) per poi eseguire il calcolo della luce in un passaggio successivo.  
 
-\section{Physically Based Rendering (PBR)}
+\section{Physically Based Rendering (\ac{PBR})}
+Il \emph{\acl{PBR}} permette una resa più realistica dei materiali basandosi su modelli fisici di illuminazione.  
+I materiali sono descritti da parametri quali:
+\begin{itemize}
+    \item \textbf{Albedo}: colore base del materiale;
+    \item \textbf{Roughness}: misura della microfacettatura superficiale;
+    \item \textbf{Metallic}: indica la natura metallica del materiale;
+    \item \textbf{Normal map}: dettaglio delle normali della superficie.
+\end{itemize}
 
 \section{Graphics APIs: OpenGL and Vulkan}
 
