@@ -49,19 +49,50 @@ Optional. Max a few lines.
 \label{chap:introduction}
 %----------------------------------------------------------------------------------------
 
-\section{Contesto e Motivazioni}
-Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics \ac{API}} verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.  
-OpenGL, storicamente una delle \ac{API} più diffuse, offre un modello di programmazione di tipo \emph{high-level}, che semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti, come la sincronizzazione e la gestione della memoria.  
-Vulkan, introdotta dal \emph{Khronos Group} nel 2016, adotta invece un approccio \emph{low-level}, demandando al programmatore un controllo esplicito sulle risorse e sull’esecuzione dei comandi, con l’obiettivo di ridurre l’overhead del driver e di consentire una migliore parallelizzazione del carico di lavoro.
+\paragraph{Contesto e Motivazioni}
+Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics \ac{API}} 
+verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.  
+OpenGL, storicamente una delle \ac{API} più diffuse, offre un modello di programmazione di tipo \emph{high-level}, che 
+semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti, come la sincronizzazione e la 
+gestione della memoria.  
+Vulkan, introdotta dal \emph{Khronos Group} nel 2016, adotta invece un approccio \emph{low-level}, demandando al 
+programmatore un controllo esplicito sulle risorse e sull’esecuzione dei comandi, con l’obiettivo di ridurre l’overhead 
+del driver e di consentire una migliore parallelizzazione del carico di lavoro.
 
-Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due \ac{API}, attraverso la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
-Il confronto si concentra in particolare sull’impatto del multithreading in Vulkan rispetto al modello single-thread tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
+Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due \ac{API}, attraverso 
+la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
+Il confronto si concentra in particolare sull’impatto del multithreading in Vulkan rispetto al modello single-thread 
+tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
 
-\section{Objectives}
+\paragraph{Obiettivi}
+L’obiettivo principale del lavoro è progettare e sviluppare un motore di rendering scritto in \emph{C++23},
+in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4.
+L’architettura segue un paradigma orientato agli oggetti, integrando librerie e framework comuni.
+L’obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l’efficienza delle due API 
+in termini di:
+\begin{itemize}
+    \item tempo medio per frame e frame rate;
+    \item utilizzo della CPU e della GPU;
+\end{itemize}
 
-\section{Methodology}
+\paragraph{Metodo di lavoro}
+Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.  
+Dopo la fase di progettazione architetturale, il motore è stato realizzato con un sistema modulare che separa la logica 
+di rendering dal resto della gestione della scena, consentendo di confrontare in modo diretto i due backend grafici.  
+% TODO: mention Sponza scene %
+I test prestazionali sono stati condotti su una scena principale, utilizzando diversi hardware, variando numero di luci 
+e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati dal parallelismo offerto da Vulkan.
 
-\paragraph{Structure of the Thesis}
+\paragraph{Struttura del documento}
+Il documento è organizzato come segue:
+\begin{itemize}
+   \item Il \textbf{Capitolo 1} introduce i concetti fondamentali relativi al rendering, alle \ac{API} grafiche moderne e alle tecniche \ac{PBR} e deferred rendering;
+   \item Il \textbf{Capitolo 2} analizza i requisiti del progetto e le scelte progettuali alla base del motore sviluppato;
+   \item Il \textbf{Capitolo 3} descrive l’architettura del sistema e i principali componenti software;
+   \item Il \textbf{Capitolo 4} illustra l’implementazione e mostra esempi di codice e schermate del motore in funzione;
+   \item Il \textbf{Capitolo 5} presenta la valutazione sperimentale, i risultati delle misure e la loro analisi critica;
+   \item Il \textbf{Capitolo 6} riporta le conclusioni del lavoro e propone possibili sviluppi futuri.
+\end{itemize}
 
 %----------------------------------------------------------------------------------------
 \chapter{Background}
