@@ -4,7 +4,7 @@
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
-\usepackage{acronym}
+% \usepackage{acronym}
 
 \school{\unibo}
 \programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
@@ -16,17 +16,15 @@
 \session{I}
 \academicyear{2024-2025}
 
+% Definition of acronyms
+% \acrodef{API}{Application Programming Interface}
+% \acrodef{PBR}{Physically Based Rendering}
+% \acrodef{CPU}{Central Processing Unit}
+% \acrodef{GPU}{Graphical Processing Unit}
+
 \mainlinespacing{1.241}
 
 \begin{document}
-
-% Definition of acronyms
-\begin{acronym}[API]
-  \acro{API}{Application Programming Interface}
-  \acro{PBR}{Physically Based Rendering}
-  \acro{CPU}{Central Processing Unit}
-  \acro{GPU}{Graphical Processing Unit}
-\end{acronym}
 
 \frontmatter\frontispiece
 
@@ -54,36 +52,36 @@ Optional. Max a few lines.
 %----------------------------------------------------------------------------------------
 
 \paragraph{Contesto e Motivazioni}
-Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics \acs{API}}
-verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.  
-OpenGL, storicamente una delle \ac{API} più diffuse, offre un modello di programmazione di tipo \emph{high-level}, che
-semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti, come la sincronizzazione e la
-gestione della memoria.  
+Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics APIs}
+verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.
+OpenGL, storicamente una delle Application Programming Interface (API) più diffuse, offre un modello di programmazione
+di tipo \emph{high-level}, che semplifica lo sviluppo ma lascia al driver una gestione implicita di numerosi aspetti,
+come la sincronizzazione e la gestione della memoria.
 Vulkan, introdotta dal \emph{Khronos Group} nel 2016, adotta invece un approccio \emph{low-level}, demandand
 programmatore un controllo esplicito sulle risorse e sull’esecuzione dei comandi, con l’obiettivo di ridurre l’overhead
 del driver e di consentire una migliore parallelizzazione del carico di lavoro.
-Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due \ac{API}, attraverso
-la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.  
+Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra le due API, attraverso
+la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.
 Il confronto si concentra in particolare sull’impatto del multithreading in Vulkan rispetto al modello single-thread
 tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
 
 \paragraph{Obiettivi}
 L’obiettivo principale del lavoro è progettare e sviluppare un motore di rendering scritto in \emph{C++23},
 in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4.
-Il motore implementa un approccio di tipo \emph{deferred rendering}, supporta materiali \ac{PBR}, luci direzionali,
-puntuali e spot, e include ulteriori passaggi di rendering per particelle e oggetti di debug.
+Il motore implementa un approccio di tipo \emph{deferred rendering}, supporta materiali Physically Based Rendering (PBR),
+luci direzionali, puntuali e spot, e include ulteriori passaggi di rendering per particelle e oggetti di debug.
 L’architettura segue un paradigma orientato agli oggetti, integrando librerie e framework comuni.
-L’obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l’efficienza delle due API 
+L’obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l’efficienza delle due API
 in termini di:
 \begin{itemize}
     \item tempo medio per frame e frame rate;
-    \item utilizzo della \acs{CPU} e della \acs{GPU};
+    \item utilizzo della CPU e della GPU;
 \end{itemize}
 
-\paragraph{Metodo di lavoro}
-Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.  
+\paragraph{Metodologia di lavoro}
+Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.
 Dopo la fase di progettazione architetturale, il motore è stato realizzato con un sistema modulare che separa la logica
-di rendering dal resto della gestione della scena, consentendo di confrontare in modo diretto i due backend grafici.  
+di rendering dal resto della gestione della scena, consentendo di confrontare in modo diretto i due backend grafici.
 % TODO: mention Sponza scene %
 I test prestazionali sono stati condotti su una scena principale, utilizzando diversi hardware, variando numero di luci
 e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati dal parallelismo offerto da Vulkan.
@@ -91,7 +89,7 @@ e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati da
 \paragraph{Struttura del documento}
 Il documento è organizzato come segue:
 \begin{itemize}
-   \item Il \textbf{Capitolo 1} introduce i concetti fondamentali relativi al rendering, alle \ac{API} grafiche moderne e alle tecniche \ac{PBR} e deferred rendering;
+   \item Il \textbf{Capitolo 1} introduce i concetti fondamentali relativi al rendering, alle API grafiche moderne e alle tecniche PBR e deferred rendering;
    \item Il \textbf{Capitolo 2} analizza i requisiti del progetto e le scelte progettuali alla base del motore sviluppato;
    \item Il \textbf{Capitolo 3} descrive l’architettura del sistema e i principali componenti software;
    \item Il \textbf{Capitolo 4} illustra l’implementazione e mostra esempi di codice e schermate del motore in funzione;
@@ -105,20 +103,21 @@ Il documento è organizzato come segue:
 
 \section{Pipeline di Rendering}
 Il rendering grafico può essere realizzato seguendo approcci diversi. I principali sono il \emph{forward rendering}
-e il \emph{deferred rendering}.  
+e il \emph{deferred rendering}.
 Nel forward rendering, le luci vengono calcolate direttamente durante il rendering di ciascun oggetto, con conseguente
-aumento dei costi per scene complesse con molte luci.  
+aumento dei costi per scene complesse con molte luci.
 Il deferred rendering separa la fase di geometria da quella di illuminazione, memorizzando informazioni come posizione,
-normale e materiali in buffer intermedi (\emph{G-buffer}) per poi eseguire il calcolo della luce in un passaggio successivo.  
+normale e materiali in buffer intermedi (\emph{G-buffer}) per poi eseguire il calcolo della luce in un passaggio successivo.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
-    \caption{Esempio di pipeline di deferred rendering from \cite{learnopengl}.}
+    \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
     \label{fig:deferred-pipeline}
 \end{figure}
 
-\section{Physically Based Rendering (\ac{PBR})}
-Il \emph{\acl{PBR}} permette una resa più realistica dei materiali basandosi su modelli fisici di illuminazione.  
+\section{Physically Based Rendering (PBR)}
+Il \emph{Physically Based Rendering} permette una resa più realistica dei materiali basandosi su modelli fisici
+di illuminazione.
 I materiali sono descritti da parametri quali:
 \begin{itemize}
     \item \textbf{Albedo}: colore base del materiale;
@@ -127,7 +126,22 @@ I materiali sono descritti da parametri quali:
     \item \textbf{Normal map}: dettaglio delle normali della superficie.
 \end{itemize}
 
-\section{Graphics APIs: OpenGL and Vulkan}
+\section{Graphics API: OpenGL and Vulkan}
+OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche.
+OpenGL è un'API di livello alto che semplifica notevolmente la gestione della pipeline grafica: gran parte del lavoro
+legato alla sincronizzazione delle risorse, alla gestione della memoria e alla compilazione dei comandi GPU è affidato
+al driver. Questo approccio riduce la complessità dello sviluppo, consentendo di ottenere rapidamente risultati visivi,
+ma limita il controllo del programmatore sulle prestazioni, soprattutto in scenari con molte luci e geometrie complesse.
+OpenGL opera principalmente in modalità single-thread, affidando al driver l’organizzazione dei comandi su GPU, il che può
+generare overhead significativi in applicazioni moderne e multithreaded.
+Vulkan, al contrario, offre un modello di programmazione a basso livello, dove il programmatore ha il controllo diretto
+sulla memoria, sui comandi e sulla sincronizzazione. La pipeline Vulkan richiede la definizione esplicita di tutti i
+passaggi di rendering attraverso strutture come \texttt{Render Pass} e \texttt{Command Buffers}, e la gestione della 
+sincronizzazione è completamente esplicita mediante \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce
+l’overhead del driver e permette di sfruttare pienamente il multithreading della CPU, rendendo più efficienti
+le applicazioni che devono gestire grandi quantità di oggetti e luci in scena. Allo stesso tempo, Vulkan richiede
+una conoscenza approfondita dell’architettura hardware e della gestione delle risorse, aumentando la complessità
+dello sviluppo rispetto a OpenGL.
 
 \section{Libraries and Tools}
 
