@@ -30,12 +30,12 @@
 
 % TODO: Write abstract
 \begin{abstract}	
-Max 2000 characters, strict.
+   Max 2000 characters, strict.
 \end{abstract}
 
 % TODO: Write dedication (optional)
 \begin{dedication}
-Optional. Max a few lines.
+   Optional. Max a few lines.
 \end{dedication}
 
 % Table of contents
@@ -74,8 +74,8 @@ L’architettura segue un paradigma orientato agli oggetti, integrando librerie 
 L’obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l’efficienza delle due API
 in termini di:
 \begin{itemize}
-    \item tempo medio per frame e frame rate;
-    \item utilizzo della CPU e della GPU;
+   \item tempo medio per frame e frame rate;
+   \item utilizzo della CPU e della GPU;
 \end{itemize}
 
 \paragraph{Metodologia di lavoro}
@@ -120,10 +120,10 @@ evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luc
 un numero elevato di luci in modo più efficiente, rendendolo particolarmente indicato per applicazioni moderne e motori
 di gioco con scenari complessi.
 \begin{figure}[h!]
-    \centering
-    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
-    \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
-    \label{fig:deferred-pipeline}
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
+   \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
+   \label{fig:deferred-pipeline}
 \end{figure}
 Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}, in quanto offre una base più
 flessibile per l’analisi delle prestazioni e per l’integrazione di tecniche di illuminazione avanzate.
@@ -137,10 +137,10 @@ garantendo risultati più realistici e prevedibili.
 Ogni materiale in un sistema PBR è descritto da un insieme di parametri fisici che ne determinano l’aspetto visivo.
 I principali sono:
 \begin{itemize}
-    \item \textbf{Albedo}: rappresenta il colore base del materiale;
-    \item \textbf{Roughness}: controlla la rugosità microscopica della superficie, influenzando la dispersione della luce;
-    \item \textbf{Metallic}: indica se il materiale si comporta come un metallo;
-    \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini.
+   \item \textbf{Albedo}: rappresenta il colore base del materiale;
+   \item \textbf{Roughness}: controlla la rugosità microscopica della superficie, influenzando la dispersione della luce;
+   \item \textbf{Metallic}: indica se il materiale si comporta come un metallo;
+   \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini.
 \end{itemize}
 Combinando questi parametri, il PBR consente di rappresentare in modo accurato una vasta gamma di materiali,
 dai metalli lucidi ai tessuti ruvidi.
@@ -162,9 +162,31 @@ le applicazioni che devono gestire grandi quantità di oggetti e luci in scena. 
 una conoscenza approfondita dell’architettura hardware e della gestione delle risorse, aumentando la complessità
 dello sviluppo rispetto a OpenGL.
 
-\section{Libraries and Tools}
+\section{Librerie e Strumenti}
+Il motore sviluppato utilizza un insieme di librerie open source per la gestione dell’infrastruttura di rendering
+e delle funzionalità.
+La combinazione di queste librerie ha permesso di ridurre il tempo di sviluppo e concentrarsi sulle differenze
+architetturali tra OpenGL e Vulkan.
+\begin{itemize}
+   \item \textbf{GLFW}: fornisce un’interfaccia multipiattaforma per la creazione di finestre e la gestione dell’input.
+      È utilizzata sia per il backend OpenGL che Vulkan;
+   \item \textbf{GLAD}: gestisce il caricamento dinamico delle estensioni OpenGL;
+   \item \textbf{Vulkan Memory Allocator (VMA)} e \textbf{vk-bootstrap}: semplificano la configurazione e la gestione della memoria
+      Vulkan, riducendo la complessità di codice di inizializzazione;
+   \item \textbf{glm}: libreria matematica per operazioni su vettori, matrici e trasformazioni 3D;
+   \item \textbf{ImGui}: libreria per la costruzione di interfacce grafiche di debug e monitoraggio delle prestazioni in tempo reale;
+   \item \textbf{stb\_image}: caricamento di texture in vari formati;
+   \item \textbf{ASSIMP}: parsing dei modelli 3D in formato \texttt{.obj} e \texttt{.fbx}.
+\end{itemize}
 
-\section{Related Work}
+\section{Lavori Correlati}
+Diversi studi e progetti hanno analizzato il confronto tra OpenGL e Vulkan, evidenziando vantaggi significativi di
+Vulkan in termini di efficienza e parallelismo.
+Il \emph{Khronos Group}, nelle specifiche di rilascio e nei documenti ufficiali, evidenzia come Vulkan sia progettata per
+minimizzare l’overhead del driver e fornire prestazioni più prevedibili grazie a un controllo esplicito delle risorse e
+dell’esecuzione dei comandi \cite{khronos_vulkan_spec,vulkan_overview,google_vulkan_lowoverhead}.
+Sul fronte applicativo, motori come \emph{Unreal Engine 5} e \emph{Unity} hanno introdotto backend Vulkan per
+ottimizzare la scalabilità su dispositivi moderni, mantenendo al contempo compatibilità con OpenGL su piattaforme legacy.
 
 %----------------------------------------------------------------------------------------
 \chapter{Requisiti ed Analisi}
@@ -243,7 +265,7 @@ dello sviluppo rispetto a OpenGL.
 
 % TODO: Write acknowledgements (optional)
 \begin{acknowledgements}
-Optional. Max 1 page.
+   Optional. Max 1 page.
 \end{acknowledgements}
 
 \end{document}
