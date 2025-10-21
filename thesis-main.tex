@@ -16,15 +16,17 @@
 \session{I}
 \academicyear{2024-2025}
 
-% Definition of acronyms
-\acrodef{API}{Application Programming Interface}
-\acrodef{PBR}{Physically Based Rendering}
-\acrodef{CPU}{Central Processing Unit}
-\acrodef{GPU}{Graphical Processing Unit}
-
 \mainlinespacing{1.241}
 
 \begin{document}
+
+% Definition of acronyms
+\begin{acronym}[API]
+  \acro{API}{Application Programming Interface}
+  \acro{PBR}{Physically Based Rendering}
+  \acro{CPU}{Central Processing Unit}
+  \acro{GPU}{Graphical Processing Unit}
+\end{acronym}
 
 \frontmatter\frontispiece
 
@@ -200,6 +202,8 @@ I materiali sono descritti da parametri quali:
 
 % End of thesis
 \backmatter
+
+\nocite{*}
 
 \bibliographystyle{alpha}
 \bibliography{bibliography}
