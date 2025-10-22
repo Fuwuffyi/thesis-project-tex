@@ -69,7 +69,7 @@ L'obiettivo sperimentale è valutare, a parità di contenuto e condizioni di ren
 in termini di:
 \begin{itemize}
    \item tempo medio per frame e frame rate;
-   \item utilizzo della CPU e della GPU;
+   \item utilizzo della CPU e della GPU.
 \end{itemize}
 
 \paragraph{Metodologia di lavoro}
@@ -109,7 +109,7 @@ numero limitato di luci dinamiche o in applicazioni dove la compatibilità e la 
 Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più passaggi. Nel primo, chiamato
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
 come la posizione dei punti, le normali delle superfici e le proprietà dei materiali.
-\begin{figure}[h!]
+\begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
    \caption{Esempio di g-buffer di deferred rendering da \cite{learnopengl}.}
@@ -119,7 +119,7 @@ Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene ca
 evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. Questo approccio permette di gestire
 un numero elevato di luci in modo più efficiente, rendendolo particolarmente indicato per applicazioni moderne e motori
 di gioco con scenari complessi.
-\begin{figure}[h!]
+\begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
    \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
@@ -143,7 +143,7 @@ I principali sono:
    \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini;
    \item \textbf{Ambient Occlusion (AO)}: quantifica quanto una superficie è esposta alla luce ambientale.
 \end{itemize}
-\begin{figure}[h!]
+\begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
@@ -220,11 +220,11 @@ e di ottimizzare la condivisione della memoria tra CPU e GPU. Il rendering della
 pipeline di tipo \emph{deferred}, scelta per la sua maggiore efficienza nella gestione di un elevato numero di luci
 dinamiche.
 
-Un ulteriore requisito fondamentale riguarda il supporto al \emph{Physically Based Rendering} (PBR), che permette
+Un ulteriore requisito fondamentale riguarda il supporto al \emph{Physically Based Rendering (PBR)}, che permette
 di ottenere una resa realistica dei materiali basandosi su parametri fisici. Il sistema deve inoltre consentire
 l'utilizzo di differenti tipologie di luci con parametri configurabili dall'interfaccia di debug.
 
-Nel backend Vulkan, il motore deve supportare la generazione multithread dei \emph{command buffer}, così da sfruttare
+Nel backend Vulkan, il motore deve supportare la generazione multithread dei \texttt{command buffer}, così da sfruttare
 in modo più efficiente i core della CPU. Questa caratteristica è essenziale per valutare i benefici del parallelismo
 offerto da Vulkan rispetto al modello single-thread di OpenGL. Infine, il motore deve includere una telecamera
 controllabile in tempo reale e un'interfaccia grafica basata su ImGui per la visualizzazione delle statistiche di
