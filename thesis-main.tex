@@ -108,16 +108,22 @@ luci influenzano simultaneamente la stessa area. Tuttavia, rimane ancora oggi un
 numero limitato di luci dinamiche o in applicazioni dove la compatibilità e la semplicità di implementazione sono prioritarie.
 Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più passaggi. Nel primo, chiamato
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
-come la posizione dei punti, le normali delle superfici e le proprietà dei materiali. Nel secondo passaggio,
-denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
+come la posizione dei punti, le normali delle superfici e le proprietà dei materiali.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
+   \caption{Esempio di g-buffer di deferred rendering da \cite{learnopengl}.}
+   \label{fig:g-buffer-example}
+\end{figure}
+Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
 evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. Questo approccio permette di gestire
 un numero elevato di luci in modo più efficiente, rendendolo particolarmente indicato per applicazioni moderne e motori
 di gioco con scenari complessi.
 \begin{figure}[h!]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
+   \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
    \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
-   \label{fig:deferred-pipeline}
+   \label{fig:deferred-pipeline-example}
 \end{figure}
 Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}, in quanto offre una base più
 flessibile per l'analisi delle prestazioni e per l'integrazione di tecniche di illuminazione avanzate.
@@ -134,8 +140,15 @@ I principali sono:
    \item \textbf{Albedo}: rappresenta il colore base del materiale;
    \item \textbf{Roughness}: controlla la rugosità microscopica della superficie, influenzando la dispersione della luce;
    \item \textbf{Metallic}: indica se il materiale si comporta come un metallo;
-   \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini.
+   \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini;
+   \item \textbf{Ambient Occlusion (AO)}: quantifica quanto una superficie è esposta alla luce ambientale.
 \end{itemize}
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
+   \caption{Esempio di materiale PBR da \cite{learnopengl}.}
+   \label{fig:pbr-material-example}
+\end{figure}
 Combinando questi parametri, il PBR consente di rappresentare in modo accurato una vasta gamma di materiali,
 dai metalli lucidi ai tessuti ruvidi.
 
