@@ -167,19 +167,34 @@ I principali sono:
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
    \label{fig:pbr-material-example}
 \end{figure}
-Per il calcolo della riflessione speculare viene utilizzato il modello microfacet, che esprime la BRDF come:
+L'illuminazione di un punto \(p\) sul materiale è calcolata tramite la BRDF (Bidirectional Reflectance Distribution Function),
+che descrive la quantità di luce riflessa in direzione \(\omega_o\) per la luce incidente \(\omega_i\). La BRDF completa per il PBR
+è spesso modellata tramite il \emph{Cook-Torrance microfacet model}, che combina riflessione diffusa e speculare:
 \[
-f_r(\mathbf{L}, \mathbf{V}, \mathbf{N}) = \frac{D(\mathbf{N}, \mathbf{H}) \, F(\mathbf{V}, \mathbf{H}) \, G(\mathbf{V}, \mathbf{L}, \mathbf{N})}{4 \, (\mathbf{N} \cdot \mathbf{V}) \, (\mathbf{N} \cdot \mathbf{L})}
+f_r(\omega_i, \omega_o) = k_d \frac{A}{\pi} + k_s \frac{D(\mathbf{N}, \mathbf{H}) F(\omega_o, \mathbf{H}) G(\omega_i, \omega_o, \mathbf{N})}{4 (\mathbf{N}\cdot \omega_i)(\mathbf{N}\cdot \omega_o)}
 \]
 dove:
 \begin{itemize}
-    \item \(D\) = distribuzione dei microfacets (determina la densità di microfacets orientati verso la luce);
-    \item \(F\) = termine di Fresnel (modula la riflessione speculare in base all'angolo di incidenza);
-    \item \(G\) = geometria / shadowing (riduce l'illuminazione speculare dovuta a auto-occlusione);
-    \item \(\mathbf{H} = \frac{\mathbf{V}+\mathbf{L}}{\|\mathbf{V}+\mathbf{L}\|}\) è il vettore a metà strada tra view e light.
+    \item \(k_d = 1 - k_s\) è il fattore di riflessione diffusa;
+    \item \(k_s\) è il fattore di riflessione speculare;
+    \item \(\mathbf{H} = \frac{\omega_i + \omega_o}{\|\omega_i + \omega_o\|}\) è il vettore a metà tra luce e vista;
+    \item \(D\) è la \emph{Normal Distribution Function (NDF)}, che descrive la distribuzione dei microfacets orientati verso la luce;
+    \item \(F\) è il termine di Fresnel, che modula la riflessione speculare in funzione dell'angolo di incidenza;
+    \item \(G\) è il termine di geometria o \emph{shadowing-masking}, che considera l'auto-occlusione dei microfacets.
 \end{itemize}
-Combinando questi parametri, il PBR consente di rappresentare in modo accurato una vasta gamma di materiali,
-dai metalli lucidi ai tessuti ruvidi.
+Per il termine NDF, uno dei più usati è il modello GGX, che descrive la probabilità di orientamento dei microfacets in funzione della roughness \(r\):
+\[
+D_{\text{GGX}}(\mathbf{N}, \mathbf{H}, r) = \frac{r^2}{\pi ((\mathbf{N}\cdot \mathbf{H})^2 (r^2 - 1) + 1)^2}
+\]
+La BRDF completa viene poi integrata sull'emisfera delle direzioni di luce incidente per ottenere il radiance uscente \(L_o(p, \omega_o)\):
+\[
+L_o(p, \omega_o) = \int_{\Omega} \left( k_d \frac{A}{\pi} + \frac{D F G}{4 (\mathbf{N} \cdot \omega_i)(\mathbf{N} \cdot \omega_o)} \right)
+L_i(p, \omega_i) (\mathbf{N} \cdot \omega_i) d\omega_i
+\]
+dove \(L_i(p, \omega_i)\) è la radiance incidente dalla direzione \(\omega_i\). Questa equazione combina l'illuminazione diffusa
+e speculare per ottenere un risultato realistico, tenendo conto delle proprietà fisiche del materiale e della geometria microfacet.
+Combinando questi parametri e modelli, il PBR permette di rappresentare in modo accurato materiali diversi,
+dai metalli lucidi ai tessuti ruvidi, garantendo coerenza visiva indipendentemente dalla scena o dalle condizioni di illuminazione.
 
 \section{Graphics API: OpenGL and Vulkan}
 OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche.
