@@ -48,7 +48,7 @@
 
 %----------------------------------------------------------------------------------------
 \chapterWithoutNumber{Introduzione}
-\label{chap:introduction}
+\label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
 \paragraph{Contesto e Motivazioni}
@@ -92,7 +92,7 @@ Il documento è organizzato come segue:
 
 %----------------------------------------------------------------------------------------
 \chapter{Fondamenti Teorici}
-\label{chap:background}
+\label{chap:fondamenti-teorici}
 %----------------------------------------------------------------------------------------
 \noindent
 Questo capitolo fornisce il quadro teorico necessario alla comprensione del lavoro svolto.
@@ -110,7 +110,8 @@ su cui si basa l’intero lavoro sperimentale.
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
 ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
 \emph{deferred rendering}, che differiscono per il modo in cui gestiscono il calcolo dell'illuminazione e la
-composizione finale dell'immagine.
+composizione finale dell'immagin.
+Il rendering di una scena tridimensionale consiste nel trasformare modelli matematici di oggetti e luci in un'immagine bidimensionale. Questo processo può essere realizzato mediante diverse pipeline, ciascuna con vantaggi e svantaggi specifici.
 Nel \emph{forward rendering}, ogni oggetto della scena viene renderizzato direttamente con tutte le luci che lo influenzano.
 Durante il passaggio di rendering, per ogni frammento vengono calcolati il colore finale e il contributo luminoso
 di ciascuna sorgente, con il risultato che il numero di calcoli cresce proporzionalmente al numero di luci.
@@ -123,7 +124,7 @@ come la posizione dei punti, le normali delle superfici e le proprietà dei mate
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
-   \caption{Esempio di g-buffer di deferred rendering da \cite{learnopengl}.}
+   \caption{Esempio di G-buffer in una pipeline di deferred rendering da \cite{learnopengl}.}
    \label{fig:g-buffer-example}
 \end{figure}
 Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
@@ -133,7 +134,7 @@ di gioco con scenari complessi.
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
-   \caption{Esempio di pipeline di deferred rendering da \cite{learnopengl}.}
+   \caption{Schema generale della pipeline di deferred rendering da \cite{learnopengl}.}
    \label{fig:deferred-pipeline-example}
 \end{figure}
 Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}, in quanto offre una base più
@@ -148,11 +149,11 @@ garantendo risultati più realistici e prevedibili.
 Ogni materiale in un sistema PBR è descritto da un insieme di parametri fisici che ne determinano l'aspetto visivo.
 I principali sono:
 \begin{itemize}
-   \item \textbf{Albedo}: rappresenta il colore base del materiale;
-   \item \textbf{Roughness}: controlla la rugosità microscopica della superficie, influenzando la dispersione della luce;
-   \item \textbf{Metallic}: indica se il materiale si comporta come un metallo;
-   \item \textbf{Normal map}: modifica le normali della superficie per simulare dettagli geometrici fini;
-   \item \textbf{Ambient Occlusion (AO)}: quantifica quanto una superficie è esposta alla luce ambientale.
+   \item \textbf{Albedo} $A$: colore di base del materiale, senza effetti di illuminazione;
+   \item \textbf{Roughness} $r$: rugosità microscopica della superficie, che determina la diffusione della luce speculare;
+   \item \textbf{Metallic} $m$: indica se la superficie si comporta come un metallo (1) o un dielettrico (0);
+   \item \textbf{Normal map} $\mathbf{N}$: mappa delle normali per simulare dettagli geometrici a livello micro;
+   \item \textbf{Ambient Occlusion (AO)}: fattore che riduce l'intensità della luce ambientale in zone occluse.
 \end{itemize}
 \begin{figure}
    \centering
@@ -208,7 +209,7 @@ ottimizzare la scalabilità su dispositivi moderni, mantenendo al contempo compa
 
 %----------------------------------------------------------------------------------------
 \chapter{Requisiti ed Analisi}
-\label{chap:analysis}
+\label{chap:analisi}
 %----------------------------------------------------------------------------------------
 \noindent
 In questo capitolo vengono definiti i requisiti funzionali e non funzionali del motore di rendering 
@@ -303,7 +304,7 @@ registrazione automatica dei risultati per l'analisi successiva.
 
 Ciascun test viene ripetuto più volte per ridurre l'impatto di fattori esterni, come i processi di sistema o
 l'oscillazione della frequenza della GPU. I risultati vengono poi confrontati e discussi nel
-Capitolo~\ref{chap:evaluation}, dove vengono analizzate le differenze di comportamento tra OpenGL e Vulkan in termini
+Capitolo~\ref{chap:valutazione}, dove vengono analizzate le differenze di comportamento tra OpenGL e Vulkan in termini
 di efficienza, scalabilità e prevedibilità delle prestazioni.
 
 %----------------------------------------------------------------------------------------
@@ -323,7 +324,7 @@ di efficienza, scalabilità e prevedibilità delle prestazioni.
 
 %----------------------------------------------------------------------------------------
 \chapter{Implementazione}
-\label{chap:implementation}
+\label{chap:implementazione}
 %----------------------------------------------------------------------------------------
 
 \section{Struttura del Codice}
@@ -338,7 +339,7 @@ di efficienza, scalabilità e prevedibilità delle prestazioni.
 
 %----------------------------------------------------------------------------------------
 \chapter{Valutazione delle Prestazioni}
-\label{chap:evaluation}
+\label{chap:valutazione}
 %----------------------------------------------------------------------------------------
 
 \section{Configurazione Sperimentale}
@@ -349,7 +350,7 @@ di efficienza, scalabilità e prevedibilità delle prestazioni.
 
 %----------------------------------------------------------------------------------------
 \chapterWithoutNumber{Conclusioni e Sviluppi Futuri}
-\label{chap:conclusions}
+\label{chap:conclusioni}
 %----------------------------------------------------------------------------------------
 
 \paragraph{Sintesi del Lavoro}
