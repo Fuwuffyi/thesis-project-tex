@@ -110,8 +110,9 @@ su cui si basa l’intero lavoro sperimentale.
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
 ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
 \emph{deferred rendering}, che differiscono per il modo in cui gestiscono il calcolo dell'illuminazione e la
-composizione finale dell'immagin.
-Il rendering di una scena tridimensionale consiste nel trasformare modelli matematici di oggetti e luci in un'immagine bidimensionale. Questo processo può essere realizzato mediante diverse pipeline, ciascuna con vantaggi e svantaggi specifici.
+composizione finale dell'immagine.
+Il rendering di una scena tridimensionale consiste nel trasformare modelli matematici di oggetti e luci in un'immagine bidimensionale.
+Questo processo può essere realizzato mediante diverse pipeline, ciascuna con vantaggi e svantaggi specifici.
 Nel \emph{forward rendering}, ogni oggetto della scena viene renderizzato direttamente con tutte le luci che lo influenzano.
 Durante il passaggio di rendering, per ogni frammento vengono calcolati il colore finale e il contributo luminoso
 di ciascuna sorgente, con il risultato che il numero di calcoli cresce proporzionalmente al numero di luci.
@@ -120,7 +121,8 @@ luci influenzano simultaneamente la stessa area. Tuttavia, rimane ancora oggi un
 numero limitato di luci dinamiche o in applicazioni dove la compatibilità e la semplicità di implementazione sono prioritarie.
 Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più passaggi. Nel primo, chiamato
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
-come la posizione dei punti, le normali delle superfici e le proprietà dei materiali.
+come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf{N}\) e le proprietà dei materiali
+(albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO).
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
@@ -128,9 +130,14 @@ come la posizione dei punti, le normali delle superfici e le proprietà dei mate
    \label{fig:g-buffer-example}
 \end{figure}
 Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
-evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. Questo approccio permette di gestire
-un numero elevato di luci in modo più efficiente, rendendolo particolarmente indicato per applicazioni moderne e motori
-di gioco con scenari complessi.
+evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. L'equazione generale per il colore finale
+di un frammento è:
+\[
+C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
+\]
+dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
+Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
+indicato per applicazioni moderne e motori di gioco con scenari complessi.
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
@@ -143,9 +150,8 @@ flessibile per l'analisi delle prestazioni e per l'integrazione di tecniche di i
 \section{Physically Based Rendering (PBR)}
 Il \emph{Physically Based Rendering} (PBR) mira a simulare il comportamento reale della luce e dei materiali,
 basandosi su modelli fisici dell'interazione tra superfici e radiazione luminosa. A differenza dei modelli
-tradizionali, che si affidano spesso a formule empiriche per ottenere un effetto visivamente piacevole, il PBR
-definisce le proprietà dei materiali in modo coerente e indipendente dalle condizioni di illuminazione,
-garantendo risultati più realistici e prevedibili.
+tradizionali, che si affidano spesso a formule empiriche, il PBR definisce le proprietà dei materiali in modo coerente
+e indipendente dalle condizioni di illuminazione, garantendo risultati più realistici e prevedibili.
 Ogni materiale in un sistema PBR è descritto da un insieme di parametri fisici che ne determinano l'aspetto visivo.
 I principali sono:
 \begin{itemize}
@@ -161,6 +167,17 @@ I principali sono:
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
    \label{fig:pbr-material-example}
 \end{figure}
+Per il calcolo della riflessione speculare viene utilizzato il modello microfacet, che esprime la BRDF come:
+\[
+f_r(\mathbf{L}, \mathbf{V}, \mathbf{N}) = \frac{D(\mathbf{N}, \mathbf{H}) \, F(\mathbf{V}, \mathbf{H}) \, G(\mathbf{V}, \mathbf{L}, \mathbf{N})}{4 \, (\mathbf{N} \cdot \mathbf{V}) \, (\mathbf{N} \cdot \mathbf{L})}
+\]
+dove:
+\begin{itemize}
+    \item \(D\) = distribuzione dei microfacets (determina la densità di microfacets orientati verso la luce);
+    \item \(F\) = termine di Fresnel (modula la riflessione speculare in base all'angolo di incidenza);
+    \item \(G\) = geometria / shadowing (riduce l'illuminazione speculare dovuta a auto-occlusione);
+    \item \(\mathbf{H} = \frac{\mathbf{V}+\mathbf{L}}{\|\mathbf{V}+\mathbf{L}\|}\) è il vettore a metà strada tra view e light.
+\end{itemize}
 Combinando questi parametri, il PBR consente di rappresentare in modo accurato una vasta gamma di materiali,
 dai metalli lucidi ai tessuti ruvidi.
 
