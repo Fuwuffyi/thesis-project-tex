@@ -148,53 +148,104 @@ Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}
 flessibile per l'analisi delle prestazioni e per l'integrazione di tecniche di illuminazione avanzate.
 
 \section{Physically Based Rendering (PBR)}
-Il \emph{Physically Based Rendering} (PBR) mira a simulare il comportamento reale della luce e dei materiali,
-basandosi su modelli fisici dell'interazione tra superfici e radiazione luminosa. A differenza dei modelli
-tradizionali, che si affidano spesso a formule empiriche, il PBR definisce le proprietà dei materiali in modo coerente
-e indipendente dalle condizioni di illuminazione, garantendo risultati più realistici e prevedibili.
-Ogni materiale in un sistema PBR è descritto da un insieme di parametri fisici che ne determinano l'aspetto visivo.
-I principali sono:
+Il \emph{Physically Based Rendering} (PBR) fornisce un modello matematico per simulare il comportamento reale
+della luce quando interagisce con una superficie. Si basa sulla \emph{Legge della Conservazione dell’Energia}
+e sull’ipotesi che la luce riflessa o assorbita da un materiale dipenda dalle proprietà fisiche microscopiche
+della sua superficie.
+
+\subsection*{Equazione di Rendering}
+L’illuminazione totale uscente da un punto $p$ in direzione di vista $\omega_o$ è data da:
+\[
+L_o(p,\omega_o) = \int_{\Omega} f_r(p,\omega_i,\omega_o) \, L_i(p,\omega_i)\, (\mathbf{n}\cdot\omega_i)\,d\omega_i
+\]
+dove:
 \begin{itemize}
-   \item \textbf{Albedo} $A$: colore di base del materiale, senza effetti di illuminazione;
-   \item \textbf{Roughness} $r$: rugosità microscopica della superficie, che determina la diffusione della luce speculare;
-   \item \textbf{Metallic} $m$: indica se la superficie si comporta come un metallo (1) o un dielettrico (0);
-   \item \textbf{Normal map} $\mathbf{N}$: mappa delle normali per simulare dettagli geometrici a livello micro;
-   \item \textbf{Ambient Occlusion (AO)}: fattore che riduce l'intensità della luce ambientale in zone occluse.
+    \item $L_o$ = radiance uscente;
+    \item $L_i$ = radiance incidente;
+    \item $f_r$ = funzione di riflettanza bidirezionale (BRDF);
+    \item $\mathbf{n}$ = normale alla superficie;
+    \item $\omega_i$ = direzione della luce incidente;
+    \item $\omega_o$ = direzione dell’osservatore;
+    \item $(\mathbf{n}\cdot\omega_i)$ = termine di Lambert per la proiezione dell’angolo.
 \end{itemize}
+
+\subsection*{Modello Cook–Torrance}
+Il modello più diffuso nel PBR è il \emph{Cook–Torrance microfacet model}, che rappresenta la superficie come un insieme
+di microfacets inclinati. Ogni microfacet riflette la luce secondo la legge di Fresnel e la sua orientazione è descritta da una
+funzione di distribuzione.
+La BRDF si scrive come:
+\[
+f_r(\omega_i,\omega_o) = k_d \frac{A}{\pi} +
+k_s \frac{D(\mathbf{n},\mathbf{h})\,F(\omega_o,\mathbf{h})\,G(\omega_i,\omega_o,\mathbf{n})}
+{4(\mathbf{n}\cdot\omega_i)(\mathbf{n}\cdot\omega_o)}
+\]
+dove $\mathbf{h}$ è il vettore metà, $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$.
+Il primo termine è la riflessione diffusa (Lambertiana), il secondo la riflessione speculare microfacet.
+
+\subsection*{Normal Distribution Function (NDF)}
+$D(\mathbf{n},\mathbf{h})$ descrive la densità dei microfacets orientati verso la direzione $\mathbf{h}$.
+Un modello comune è il GGX (Trowbridge–Reitz):
+\[
+D_{\text{GGX}}(\mathbf{n},\mathbf{h},r) =
+\frac{r^2}
+{\pi \big[(\mathbf{n}\cdot\mathbf{h})^2(r^2-1)+1\big]^2}
+\]
+dove $r$ è la roughness.  
+Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce), mentre valori alti li allargano
+(superfici ruvide).
+
+\subsection*{Fresnel Term}
+$F(\omega_o,\mathbf{h})$ rappresenta la variazione dell’intensità della riflessione in base all’angolo di incidenza.
+Il modello di Schlick fornisce una buona approssimazione:
+\[
+F(\omega_o,\mathbf{h}) = F_0 + (1 - F_0)(1 - \omega_o\cdot\mathbf{h})^5
+\]
+dove $F_0$ è la riflettanza a incidenza normale (tipicamente circa 0.04 per dielettrici,
+uguale al colore del metallo per metallici).
+
+\subsection*{Geometric Term}
+$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell’auto-occlusione dei microfacets.  
+Un modello comunemente usato è il \emph{Smith Geometry Function}, approssimata come:
+\[
+G(\omega_i,\omega_o,\mathbf{n}) = G_1(\omega_i,\mathbf{n}) \, G_1(\omega_o,\mathbf{n})
+\]
+con
+\[
+G_1(\omega,\mathbf{n}) =
+\frac{2(\mathbf{n}\cdot\omega)}
+{(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
+\]
+Questo termine riduce la luce riflessa quando l’angolo tra la luce e la superficie è ampio
+(poiché parte dell’energia viene “nascosta” da altri microfacets).
+
+\subsection*{Equazione completa di illuminazione}
+Combinando i termini precedenti, l’illuminazione riflessa è:
+\[
+L_o(p,\omega_o) =
+\int_{\Omega}
+\left(
+k_d\frac{A}{\pi} +
+\frac{D\,F\,G}
+{4(\omega_o\cdot\mathbf{n})(\omega_i\cdot\mathbf{n})}
+\right)
+L_i(p,\omega_i)\,
+(\mathbf{n}\cdot\omega_i)\,d\omega_i
+\]
+Questo integrale viene valutato in modo approssimato nel rendering in tempo reale
+tramite \emph{environment maps}, \emph{prefiltered radiance}, e \emph{BRDF lookup tables}.
+
+\noindent
+L’aumento di roughness disperde la luce, generando highlight più ampi e opachi;
+l’aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
+Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
+di materiali in ambienti virtuali.
+
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
    \label{fig:pbr-material-example}
 \end{figure}
-L'illuminazione di un punto \(p\) sul materiale è calcolata tramite la BRDF (Bidirectional Reflectance Distribution Function),
-che descrive la quantità di luce riflessa in direzione \(\omega_o\) per la luce incidente \(\omega_i\). La BRDF completa per il PBR
-è spesso modellata tramite il \emph{Cook-Torrance microfacet model}, che combina riflessione diffusa e speculare:
-\[
-f_r(\omega_i, \omega_o) = k_d \frac{A}{\pi} + k_s \frac{D(\mathbf{N}, \mathbf{H}) F(\omega_o, \mathbf{H}) G(\omega_i, \omega_o, \mathbf{N})}{4 (\mathbf{N}\cdot \omega_i)(\mathbf{N}\cdot \omega_o)}
-\]
-dove:
-\begin{itemize}
-    \item \(k_d = 1 - k_s\) è il fattore di riflessione diffusa;
-    \item \(k_s\) è il fattore di riflessione speculare;
-    \item \(\mathbf{H} = \frac{\omega_i + \omega_o}{\|\omega_i + \omega_o\|}\) è il vettore a metà tra luce e vista;
-    \item \(D\) è la \emph{Normal Distribution Function (NDF)}, che descrive la distribuzione dei microfacets orientati verso la luce;
-    \item \(F\) è il termine di Fresnel, che modula la riflessione speculare in funzione dell'angolo di incidenza;
-    \item \(G\) è il termine di geometria o \emph{shadowing-masking}, che considera l'auto-occlusione dei microfacets.
-\end{itemize}
-Per il termine NDF, uno dei più usati è il modello GGX, che descrive la probabilità di orientamento dei microfacets in funzione della roughness \(r\):
-\[
-D_{\text{GGX}}(\mathbf{N}, \mathbf{H}, r) = \frac{r^2}{\pi ((\mathbf{N}\cdot \mathbf{H})^2 (r^2 - 1) + 1)^2}
-\]
-La BRDF completa viene poi integrata sull'emisfera delle direzioni di luce incidente per ottenere il radiance uscente \(L_o(p, \omega_o)\):
-\[
-L_o(p, \omega_o) = \int_{\Omega} \left( k_d \frac{A}{\pi} + \frac{D F G}{4 (\mathbf{N} \cdot \omega_i)(\mathbf{N} \cdot \omega_o)} \right)
-L_i(p, \omega_i) (\mathbf{N} \cdot \omega_i) d\omega_i
-\]
-dove \(L_i(p, \omega_i)\) è la radiance incidente dalla direzione \(\omega_i\). Questa equazione combina l'illuminazione diffusa
-e speculare per ottenere un risultato realistico, tenendo conto delle proprietà fisiche del materiale e della geometria microfacet.
-Combinando questi parametri e modelli, il PBR permette di rappresentare in modo accurato materiali diversi,
-dai metalli lucidi ai tessuti ruvidi, garantendo coerenza visiva indipendentemente dalla scena o dalle condizioni di illuminazione.
 
 \section{Graphics API: OpenGL and Vulkan}
 OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche.
