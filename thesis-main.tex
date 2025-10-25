@@ -94,6 +94,17 @@ Il documento è organizzato come segue:
 \chapter{Fondamenti Teorici}
 \label{chap:background}
 %----------------------------------------------------------------------------------------
+\noindent
+Questo capitolo fornisce il quadro teorico necessario alla comprensione del lavoro svolto.
+Vengono introdotti i concetti fondamentali relativi alla pipeline di rendering,
+analizzando le differenze tra i principali approcci utilizzati nei motori grafici moderni,
+in particolare il \emph{forward rendering} e il \emph{deferred rendering}.
+Segue un approfondimento sui principi del \emph{Physically Based Rendering} (PBR),
+che costituisce la base fisica dei modelli di illuminazione implementati nel motore sviluppato.
+Infine, vengono presentate le due API grafiche oggetto dello studio, OpenGL e Vulkan,
+e le principali librerie di supporto utilizzate nel progetto.
+L’obiettivo del capitolo è fornire al lettore una visione d’insieme dei fondamenti teorici e tecnologici
+su cui si basa l’intero lavoro sperimentale.
 
 \section{Pipeline di Rendering}
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
@@ -199,12 +210,19 @@ ottimizzare la scalabilità su dispositivi moderni, mantenendo al contempo compa
 \chapter{Requisiti ed Analisi}
 \label{chap:analysis}
 %----------------------------------------------------------------------------------------
-
+\noindent
+In questo capitolo vengono definiti i requisiti funzionali e non funzionali del motore di rendering 
+e analizzate le motivazioni alla base delle scelte progettuali.
+L’obiettivo è stabilire un quadro metodologico chiaro che guidi la progettazione e l’implementazione del sistema,
+tenendo conto dei vincoli tecnici imposti dalle API e dall’hardware.
 Lo sviluppo del motore di rendering oggetto di questo elaborato nasce con l'obiettivo di creare una piattaforma
 sperimentale che permetta di confrontare in modo diretto le prestazioni e le differenze architetturali tra
-OpenGL e Vulkan. Prima di procedere alla progettazione e all'implementazione del sistema, è stato necessario
-definire con chiarezza i requisiti funzionali e non funzionali, i vincoli di progetto e la strategia di valutazione
-dei risultati. Questa fase di analisi ha costituito la base metodologica per orientare le scelte architetturali
+OpenGL e Vulkan.
+Dopo aver descritto le funzionalità attese e le caratteristiche qualitative del software,
+si discutono i principali vincoli di progetto e le librerie adottate.
+Il capitolo si conclude illustrando la strategia di valutazione delle prestazioni,
+che costituisce la base per l’analisi comparativa tra OpenGL e Vulkan presentata nei capitoli successivi.
+Questa fase di analisi ha costituito la base metodologica per orientare le scelte architetturali
 presentate nei capitoli successivi.
 
 \section{Requisiti funzionali}
