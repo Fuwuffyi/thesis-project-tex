@@ -132,9 +132,11 @@ come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf
 Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
 evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. L'equazione generale per il colore finale
 di un frammento è:
+\begin{align*}
 \[
 C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
 \]
+\end{align*}
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
 indicato per applicazioni moderne e motori di gioco con scenari complessi.
@@ -157,9 +159,11 @@ della sua superficie.
 
 \subsection*{Equazione di Rendering}
 L'illuminazione totale uscente da un punto $p$ in direzione di vista $\omega_o$ è data da:
+\begin{align*}
 \[
 L_o(p,\omega_o) = \int_{\Omega} f_r(p,\omega_i,\omega_o) \, L_i(p,\omega_i)\, (\mathbf{n}\cdot\omega_i)\,d\omega_i
 \]
+\end{align*}
 dove:
 \begin{itemize}
     \item $L_o$ = radiance uscente;
@@ -176,22 +180,26 @@ Il modello più diffuso nel PBR è il \emph{Cook–Torrance microfacet model}, c
 di microfacets inclinati. Ogni microfacet riflette la luce secondo la legge di Fresnel e la sua orientazione è descritta da una
 funzione di distribuzione.
 La BRDF si scrive come:
+\begin{align*}
 \[
 f_r(\omega_i,\omega_o) = k_d \frac{A}{\pi} +
 k_s \frac{D(\mathbf{n},\mathbf{h})\,F(\omega_o,\mathbf{h})\,G(\omega_i,\omega_o,\mathbf{n})}
 {4(\mathbf{n}\cdot\omega_i)(\mathbf{n}\cdot\omega_o)}
 \]
+\end{align*}
 dove $\mathbf{h}$ è il vettore metà, $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$.
 Il primo termine è la riflessione diffusa (Lambertiana), il secondo la riflessione speculare microfacet.
 
 \subsection*{Normal Distribution Function (NDF)}
 $D(\mathbf{n},\mathbf{h})$ descrive la densità dei microfacets orientati verso la direzione $\mathbf{h}$.
 Un modello comune è il GGX (Trowbridge–Reitz):
+\begin{align*}
 \[
 D_{\text{GGX}}(\mathbf{n},\mathbf{h},r) =
 \frac{r^2}
 {\pi \big[(\mathbf{n}\cdot\mathbf{h})^2(r^2-1)+1\big]^2}
 \]
+\end{align*}
 dove $r$ è la roughness.  
 Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce), mentre valori alti li allargano
 (superfici ruvide).
@@ -199,29 +207,36 @@ Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce)
 \subsection*{Fresnel Term}
 $F(\omega_o,\mathbf{h})$ rappresenta la variazione dell'intensità della riflessione in base all'angolo di incidenza.
 Il modello di Schlick fornisce una buona approssimazione:
+\begin{align*}
 \[
 F(\omega_o,\mathbf{h}) = F_0 + (1 - F_0)(1 - \omega_o\cdot\mathbf{h})^5
 \]
+\end{align*}
 dove $F_0$ è la riflettanza a incidenza normale (tipicamente circa 0.04 per dielettrici,
 uguale al colore del metallo per metallici).
 
 \subsection*{Geometric Term}
 $G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets.  
 Un modello comunemente usato è il \emph{Smith Geometry Function}, approssimata come:
+\begin{align*}
 \[
 G(\omega_i,\omega_o,\mathbf{n}) = G_1(\omega_i,\mathbf{n}) \, G_1(\omega_o,\mathbf{n})
 \]
+\end{align*}
 con
+\begin{align*}
 \[
 G_1(\omega,\mathbf{n}) =
 \frac{2(\mathbf{n}\cdot\omega)}
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \]
+\end{align*}
 Questo termine riduce la luce riflessa quando l'angolo tra la luce e la superficie è ampio
 (poiché parte dell'energia viene “nascosta” da altri microfacets).
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa è:
+\begin{align*}
 \[
 L_o(p,\omega_o) =
 \int_{\Omega}
@@ -233,6 +248,7 @@ k_d\frac{A}{\pi} +
 L_i(p,\omega_i)\,
 (\mathbf{n}\cdot\omega_i)\,d\omega_i
 \]
+\end{align*}
 Questo integrale viene valutato in modo approssimato nel rendering in tempo reale
 tramite \emph{environment maps}, \emph{prefiltered radiance}, e \emph{BRDF lookup tables}.
 
