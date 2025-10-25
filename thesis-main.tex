@@ -54,8 +54,8 @@
 \paragraph{Contesto e Motivazioni}
 Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics APIs}
 verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.
-Lo scopo di questo elaborato è indagare le differenze prestazionali e architetturali tra due API principali,
-OpenGL e Vulkan, attraverso la realizzazione di un motore di rendering capace di utilizzare entrambe le tecnologie.
+Il contributo principale di questo lavoro consiste nello sviluppo di un motore di rendering modulare che consente
+un confronto controllato tra backend OpenGL e Vulkan, con l'obiettivo di analizzarne le differenze prestazionali e architetturali.
 Il confronto si concentra in particolare sull'impatto del multithreading in Vulkan rispetto al modello single-thread
 tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
 
@@ -74,8 +74,8 @@ in termini di:
 
 \paragraph{Metodologia di lavoro}
 Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.
-Dopo la fase di progettazione architetturale, il motore è stato realizzato con un sistema modulare che separa la logica
-di rendering dal resto della gestione della scena, consentendo di confrontare in modo diretto i due backend grafici.
+Il motore adotta una struttura modulare che separa la logica di rendering dalla gestione della scena, così da consentire
+il confronto diretto tra i due backend.
 I test prestazionali sono stati condotti su una scena principale: la cattedrale di Sponza~\cite{sponza_original,sponza_intel2022},
 utilizzando diversi hardware, variando numero di luci e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati
 dal parallelismo offerto da Vulkan.
@@ -103,16 +103,16 @@ Segue un approfondimento sui principi del \emph{Physically Based Rendering} (PBR
 che costituisce la base fisica dei modelli di illuminazione implementati nel motore sviluppato.
 Infine, vengono presentate le due API grafiche oggetto dello studio, OpenGL e Vulkan,
 e le principali librerie di supporto utilizzate nel progetto.
-L’obiettivo del capitolo è fornire al lettore una visione d’insieme dei fondamenti teorici e tecnologici
-su cui si basa l’intero lavoro sperimentale.
+L'obiettivo del capitolo è fornire al lettore una visione d'insieme dei fondamenti teorici e tecnologici
+su cui si basa l'intero lavoro sperimentale.
 
 \section{Pipeline di Rendering}
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
 ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
 \emph{deferred rendering}, che differiscono per il modo in cui gestiscono il calcolo dell'illuminazione e la
 composizione finale dell'immagine.
-Il rendering di una scena tridimensionale consiste nel trasformare modelli matematici di oggetti e luci in un'immagine bidimensionale.
-Questo processo può essere realizzato mediante diverse pipeline, ciascuna con vantaggi e svantaggi specifici.
+Il rendering di una scena tridimensionale trasforma modelli matematici di oggetti e luci in un'immagine bidimensionale,
+seguendo diverse pipeline, ciascuna con specifici vantaggi e limiti.
 Nel \emph{forward rendering}, ogni oggetto della scena viene renderizzato direttamente con tutte le luci che lo influenzano.
 Durante il passaggio di rendering, per ogni frammento vengono calcolati il colore finale e il contributo luminoso
 di ciascuna sorgente, con il risultato che il numero di calcoli cresce proporzionalmente al numero di luci.
@@ -146,15 +146,17 @@ indicato per applicazioni moderne e motori di gioco con scenari complessi.
 \end{figure}
 Il motore sviluppato per questa tesi adotta una pipeline di tipo \emph{deferred}, in quanto offre una base più
 flessibile per l'analisi delle prestazioni e per l'integrazione di tecniche di illuminazione avanzate.
+Le tecniche di illuminazione descritte nelle sezioni successive, in particolare il Physically Based Rendering,
+si integrano con tale pipeline per ottenere una resa fisicamente plausibile dei materiali.
 
 \section{Physically Based Rendering (PBR)}
 Il \emph{Physically Based Rendering} (PBR) fornisce un modello matematico per simulare il comportamento reale
-della luce quando interagisce con una superficie. Si basa sulla \emph{Legge della Conservazione dell’Energia}
-e sull’ipotesi che la luce riflessa o assorbita da un materiale dipenda dalle proprietà fisiche microscopiche
+della luce quando interagisce con una superficie. Si basa sulla \emph{Legge della Conservazione dell'Energia}
+e sull'ipotesi che la luce riflessa o assorbita da un materiale dipenda dalle proprietà fisiche microscopiche
 della sua superficie.
 
 \subsection*{Equazione di Rendering}
-L’illuminazione totale uscente da un punto $p$ in direzione di vista $\omega_o$ è data da:
+L'illuminazione totale uscente da un punto $p$ in direzione di vista $\omega_o$ è data da:
 \[
 L_o(p,\omega_o) = \int_{\Omega} f_r(p,\omega_i,\omega_o) \, L_i(p,\omega_i)\, (\mathbf{n}\cdot\omega_i)\,d\omega_i
 \]
@@ -165,8 +167,8 @@ dove:
     \item $f_r$ = funzione di riflettanza bidirezionale (BRDF);
     \item $\mathbf{n}$ = normale alla superficie;
     \item $\omega_i$ = direzione della luce incidente;
-    \item $\omega_o$ = direzione dell’osservatore;
-    \item $(\mathbf{n}\cdot\omega_i)$ = termine di Lambert per la proiezione dell’angolo.
+    \item $\omega_o$ = direzione dell'osservatore;
+    \item $(\mathbf{n}\cdot\omega_i)$ = termine di Lambert per la proiezione dell'angolo.
 \end{itemize}
 
 \subsection*{Modello Cook–Torrance}
@@ -195,7 +197,7 @@ Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce)
 (superfici ruvide).
 
 \subsection*{Fresnel Term}
-$F(\omega_o,\mathbf{h})$ rappresenta la variazione dell’intensità della riflessione in base all’angolo di incidenza.
+$F(\omega_o,\mathbf{h})$ rappresenta la variazione dell'intensità della riflessione in base all'angolo di incidenza.
 Il modello di Schlick fornisce una buona approssimazione:
 \[
 F(\omega_o,\mathbf{h}) = F_0 + (1 - F_0)(1 - \omega_o\cdot\mathbf{h})^5
@@ -204,7 +206,7 @@ dove $F_0$ è la riflettanza a incidenza normale (tipicamente circa 0.04 per die
 uguale al colore del metallo per metallici).
 
 \subsection*{Geometric Term}
-$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell’auto-occlusione dei microfacets.  
+$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets.  
 Un modello comunemente usato è il \emph{Smith Geometry Function}, approssimata come:
 \[
 G(\omega_i,\omega_o,\mathbf{n}) = G_1(\omega_i,\mathbf{n}) \, G_1(\omega_o,\mathbf{n})
@@ -215,11 +217,11 @@ G_1(\omega,\mathbf{n}) =
 \frac{2(\mathbf{n}\cdot\omega)}
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \]
-Questo termine riduce la luce riflessa quando l’angolo tra la luce e la superficie è ampio
-(poiché parte dell’energia viene “nascosta” da altri microfacets).
+Questo termine riduce la luce riflessa quando l'angolo tra la luce e la superficie è ampio
+(poiché parte dell'energia viene “nascosta” da altri microfacets).
 
 \subsection*{Equazione completa di illuminazione}
-Combinando i termini precedenti, l’illuminazione riflessa è:
+Combinando i termini precedenti, l'illuminazione riflessa è:
 \[
 L_o(p,\omega_o) =
 \int_{\Omega}
@@ -235,8 +237,8 @@ Questo integrale viene valutato in modo approssimato nel rendering in tempo real
 tramite \emph{environment maps}, \emph{prefiltered radiance}, e \emph{BRDF lookup tables}.
 
 \noindent
-L’aumento di roughness disperde la luce, generando highlight più ampi e opachi;
-l’aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
+L'aumento di roughness disperde la luce, generando highlight più ampi e opachi;
+l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
 Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
 di materiali in ambienti virtuali.
 
@@ -297,17 +299,16 @@ ottimizzare la scalabilità su dispositivi moderni, mantenendo al contempo compa
 \noindent
 In questo capitolo vengono definiti i requisiti funzionali e non funzionali del motore di rendering 
 e analizzate le motivazioni alla base delle scelte progettuali.
-L’obiettivo è stabilire un quadro metodologico chiaro che guidi la progettazione e l’implementazione del sistema,
-tenendo conto dei vincoli tecnici imposti dalle API e dall’hardware.
+L'obiettivo è stabilire un quadro metodologico chiaro che guidi la progettazione e l'implementazione del sistema,
+tenendo conto dei vincoli tecnici imposti dalle API e dall'hardware.
 Lo sviluppo del motore di rendering oggetto di questo elaborato nasce con l'obiettivo di creare una piattaforma
 sperimentale che permetta di confrontare in modo diretto le prestazioni e le differenze architetturali tra
 OpenGL e Vulkan.
 Dopo aver descritto le funzionalità attese e le caratteristiche qualitative del software,
 si discutono i principali vincoli di progetto e le librerie adottate.
 Il capitolo si conclude illustrando la strategia di valutazione delle prestazioni,
-che costituisce la base per l’analisi comparativa tra OpenGL e Vulkan presentata nei capitoli successivi.
-Questa fase di analisi ha costituito la base metodologica per orientare le scelte architetturali
-presentate nei capitoli successivi.
+che costituisce la base per l'analisi comparativa tra OpenGL e Vulkan presentata nei capitoli successivi.
+Le analisi svolte guidano le scelte architetturali descritte nei capitoli successivi.
 
 \section{Requisiti funzionali}
 Dal punto di vista funzionale, il motore deve essere in grado di gestire l'intero processo di rendering di una
@@ -358,16 +359,17 @@ astrazione e modernità, consentendo l'utilizzo di costrutti avanzati come le \e
 \emph{range-based loops}. Le API grafiche target sono OpenGL 4.6 e Vulkan 1.4, in modo da garantire compatibilità
 con la maggior parte delle GPU moderne.
 
+% TODO: Introdurre hardware diversi (testato su piu hardware)
 Dal punto di vista hardware, i test sono stati condotti su una configurazione dotata di processore multi-core e GPU
-di fascia medio-alta compatibile con le specifiche Vulkan. È importante sottolineare che le prestazioni osservate
-dipendono fortemente dal sistema su cui vengono eseguiti i test, motivo per cui i risultati discussi nei capitoli
-successivi si riferiscono a un ambiente controllato e costante.
+di fascia medio-alta compatibile con le specifiche Vulkan. Le prestazioni sono state misurate in un ambiente hardware
+costante per garantire ripetibilità e confrontabilità dei risultati.
 
 Il motore si appoggia a un insieme di librerie open source per ridurre il tempo di sviluppo e migliorare la stabilità
 del codice. Tra queste rientrano GLFW per la creazione delle finestre, GLAD per il caricamento dinamico delle estensioni
 OpenGL, Vulkan Memory Allocator e vk-bootstrap per la gestione semplificata delle risorse Vulkan, ImGui per
 l'interfaccia di debug, glm per le operazioni matematiche e ASSIMP per il caricamento dei modelli tridimensionali.
-Il sistema di build adottato è CMake, che garantisce la compatibilità con ambienti di sviluppo diversi.
+Il sistema di build è basato su CMake, scelto per la sua compatibilità multipiattaforma e l’integrazione con ambienti
+di sviluppo moderni.
 
 Per delimitare il campo di studio, sono stati esclusi elementi non essenziali all'obiettivo sperimentale, come il
 ray tracing, le ombre dinamiche avanzate o il supporto a dispositivi mobili. La ricerca si concentra esclusivamente
