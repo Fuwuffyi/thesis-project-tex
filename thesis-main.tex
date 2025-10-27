@@ -107,6 +107,19 @@ L'obiettivo del capitolo è fornire al lettore una visione d'insieme dei fondame
 su cui si basa l'intero lavoro sperimentale.
 
 \section{Pipeline di Rendering}
+Una pipeline di rendering è una sequenza di fasi che trasforma la rappresentazione tridimensionale di una scena in
+un'immagine bidimensionale visualizzabile sullo schermo. Ogni fase elabora i dati provenienti dalla precedente,
+passando progressivamente da una descrizione geometrica ad una descrizione visiva.
+Nelle API moderne come OpenGL e Vulkan, la pipeline grafica è composta da una serie di stadi programmabili:
+elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel \emph{framebuffer}.
+Nello stadio dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione, mentre nello stadio
+dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle proprietà del materiale.
+\begin{figure}
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.webp}
+   \caption{Stadi di una pipeline di rendering.}
+   \label{fig:g-buffer-example}
+\end{figure}
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
 ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
 \emph{deferred rendering}, che differiscono per il modo in cui gestiscono il calcolo dell'illuminazione e la
