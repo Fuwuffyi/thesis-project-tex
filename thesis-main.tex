@@ -116,9 +116,9 @@ Nello stadio dei vertici, ogni punto della geometria viene trasformato nello spa
 dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle proprietà del materiale.
 \begin{figure}
    \centering
-   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.webp}
+   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
    \caption{Stadi di una pipeline di rendering.}
-   \label{fig:g-buffer-example}
+   \label{fig:rendering-pipeline-overview}
 \end{figure}
 Il processo di rendering di una scena tridimensionale può essere realizzato attraverso approcci differenti,
 ognuno con vantaggi e limiti specifici. I due modelli principali sono il \emph{forward rendering} e il
@@ -248,6 +248,13 @@ L_i(p,\omega_i)\,
 \end{align*}
 Questo integrale viene valutato in modo approssimato nel rendering in tempo reale
 tramite \emph{environment maps}, \emph{prefiltered radiance}, e \emph{BRDF lookup tables}.
+\begin{figure}
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
+   \caption{Rendered 10$\times$10 cube array illustrating the effect of varying roughness (rows) and metalness
+      (columns) on PBR materials.}
+   \label{fig:pbr-material-render}
+\end{figure}
 
 \noindent
 L'aumento di roughness disperde la luce, generando highlight più ampi e opachi;
