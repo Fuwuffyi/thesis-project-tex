@@ -205,7 +205,7 @@ D_{\text{GGX}}(\mathbf{n},\mathbf{h},r) =
 \frac{r^2}
 {\pi \big[(\mathbf{n}\cdot\mathbf{h})^2(r^2-1)+1\big]^2}
 \end{align*}
-dove $r$ è la roughness.  
+dove $r$ è la roughness.
 Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce), mentre valori alti li allargano
 (superfici ruvide).
 
@@ -219,7 +219,7 @@ dove $F_0$ è la riflettanza a incidenza normale (tipicamente circa 0.04 per die
 uguale al colore del metallo per metallici).
 
 \subsection*{Geometric Term}
-$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets.  
+$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets.
 Un modello comunemente usato è il \emph{Smith Geometry Function}, approssimata come:
 \begin{align*}
 G(\omega_i,\omega_o,\mathbf{n}) = G_1(\omega_i,\mathbf{n}) \, G_1(\omega_o,\mathbf{n})
@@ -231,7 +231,7 @@ G_1(\omega,\mathbf{n}) =
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
 Questo termine riduce la luce riflessa quando l'angolo tra la luce e la superficie è ampio
-(poiché parte dell'energia viene “nascosta” da altri microfacets).
+(poiché parte dell'energia viene "nascosta" da altri microfacets).
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa è:
