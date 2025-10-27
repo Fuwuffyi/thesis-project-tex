@@ -173,41 +173,50 @@ L'illuminazione totale uscente da un punto $p$ in direzione di vista $\omega_o$ 
 \begin{align*}
 L_o(p,\omega_o) = \int_{\Omega} f_r(p,\omega_i,\omega_o) \, L_i(p,\omega_i)\, (\mathbf{n}\cdot\omega_i)\,d\omega_i
 \end{align*}
-dove:
+\noindent
+Qui:
 \begin{itemize}
-    \item $L_o$ = radiance uscente;
-    \item $L_i$ = radiance incidente;
-    \item $f_r$ = funzione di riflettanza bidirezionale (BRDF);
-    \item $\mathbf{n}$ = normale alla superficie;
-    \item $\omega_i$ = direzione della luce incidente;
-    \item $\omega_o$ = direzione dell'osservatore;
-    \item $(\mathbf{n}\cdot\omega_i)$ = termine di Lambert per la proiezione dell'angolo.
+    \item $L_o$ è la radiance uscente, cioè la luce che lascia la superficie verso l'osservatore;
+    \item $L_i$ è la radiance incidente, cioè la luce che arriva sulla superficie da una direzione $\omega_i$;
+    \item $f_r$ è la funzione di riflettanza bidirezionale (BRDF), che definisce come la luce viene riflessa in base alla direzione incidente e a quella di uscita;
+    \item $(\mathbf{n}\cdot\omega_i)$ rappresenta il fattore geometrico di Lambert, cioè quanto la luce è "efficace" in base all'angolo di incidenza.
 \end{itemize}
+In parole semplici, questa equazione somma tutta la luce incidente sulla superficie pesata da come il materiale
+la riflette verso l'occhio dell'osservatore.
 
 \subsection*{Modello Cook–Torrance}
 Il modello più diffuso nel PBR è il \emph{Cook–Torrance microfacet model}, che rappresenta la superficie come un insieme
-di microfacets inclinati. Ogni microfacet riflette la luce secondo la legge di Fresnel e la sua orientazione è descritta da una
-funzione di distribuzione.
+di microfacets inclinati. Ogni microfacet riflette la luce secondo la legge di Fresnel, e la distribuzione delle
+loro inclinazioni determina l'aspetto speculare della superficie.
 La BRDF si scrive come:
 \begin{align*}
 f_r(\omega_i,\omega_o) = k_d \frac{A}{\pi} +
 k_s \frac{D(\mathbf{n},\mathbf{h})\,F(\omega_o,\mathbf{h})\,G(\omega_i,\omega_o,\mathbf{n})}
 {4(\mathbf{n}\cdot\omega_i)(\mathbf{n}\cdot\omega_o)}
 \end{align*}
-dove $\mathbf{h}$ è il vettore metà, $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$.
-Il primo termine è la riflessione diffusa (Lambertiana), il secondo la riflessione speculare microfacet.
+\noindent
+Qui:
+\begin{itemize}
+    \item Il primo termine $k_d \frac{A}{\pi}$ è la riflessione diffusa (Lambertiana), responsabile del colore generale del materiale.
+    \item Il secondo termine rappresenta la riflessione speculare dovuta ai microfacets.
+      - $D$ descrive la distribuzione dei microfacets orientati verso la direzione della riflessione.
+      - $F$ calcola quanta luce viene riflessa in base all'angolo di incidenza (effetto Fresnel).
+      - $G$ tiene conto dell'auto-occlusione tra microfacets (alcuni nascondono la luce ad altri).
+\end{itemize}
+Il vettore metà $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$ rappresenta la direzione intermedia
+tra luce e osservatore, usata per calcolare la riflessione speculare.
 
 \subsection*{Normal Distribution Function (NDF)}
-$D(\mathbf{n},\mathbf{h})$ descrive la densità dei microfacets orientati verso la direzione $\mathbf{h}$.
+$D(\mathbf{n},\mathbf{h})$ descrive la densità dei microfacets orientati verso la direzione $\mathbf{h}$.  
 Un modello comune è il GGX (Trowbridge–Reitz):
 \begin{align*}
 D_{\text{GGX}}(\mathbf{n},\mathbf{h},r) =
 \frac{r^2}
 {\pi \big[(\mathbf{n}\cdot\mathbf{h})^2(r^2-1)+1\big]^2}
 \end{align*}
-dove $r$ è la roughness.
-Un valore di $r$ basso produce highlight speculari concentrati (superfici lisce), mentre valori alti li allargano
-(superfici ruvide).
+\noindent
+In pratica, $r$ (roughness) controlla quanto "liscia" o "ruvida" appare la superficie: valori bassi concentrano gli
+highlight speculari, valori alti li diffondono e ammorbidiscono.
 
 \subsection*{Fresnel Term}
 $F(\omega_o,\mathbf{h})$ rappresenta la variazione dell'intensità della riflessione in base all'angolo di incidenza.
@@ -215,26 +224,27 @@ Il modello di Schlick fornisce una buona approssimazione:
 \begin{align*}
 F(\omega_o,\mathbf{h}) = F_0 + (1 - F_0)(1 - \omega_o\cdot\mathbf{h})^5
 \end{align*}
-dove $F_0$ è la riflettanza a incidenza normale (tipicamente circa 0.04 per dielettrici,
-uguale al colore del metallo per metallici).
+\noindent
+Qui, $F_0$ è la riflettanza a incidenza normale (tipicamente 0.04 per dielettrici, uguale al colore del
+metallo per metallici).
+Questo termine genera l'effetto noto in grafica come "specular highlight più intenso ai bordi".
 
 \subsection*{Geometric Term}
-$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets.
-Un modello comunemente usato è il \emph{Smith Geometry Function}, approssimata come:
+$G(\omega_i,\omega_o,\mathbf{n})$ tiene conto dell'auto-occlusione dei microfacets, cioè che alcuni microfacets
+possono bloccare la luce di altri:
 \begin{align*}
 G(\omega_i,\omega_o,\mathbf{n}) = G_1(\omega_i,\mathbf{n}) \, G_1(\omega_o,\mathbf{n})
 \end{align*}
-con
 \begin{align*}
 G_1(\omega,\mathbf{n}) =
 \frac{2(\mathbf{n}\cdot\omega)}
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
-Questo termine riduce la luce riflessa quando l'angolo tra la luce e la superficie è ampio
-(poiché parte dell'energia viene "nascosta" da altri microfacets).
+In parole semplici, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale, parte
+della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita.
 
 \subsection*{Equazione completa di illuminazione}
-Combinando i termini precedenti, l'illuminazione riflessa è:
+Combinando i termini precedenti, l'illuminazione riflessa diventa:
 \begin{align*}
 L_o(p,\omega_o) =
 \int_{\Omega}
@@ -246,8 +256,17 @@ k_d\frac{A}{\pi} +
 L_i(p,\omega_i)\,
 (\mathbf{n}\cdot\omega_i)\,d\omega_i
 \end{align*}
-Questo integrale viene valutato in modo approssimato nel rendering in tempo reale
-tramite \emph{environment maps}, \emph{prefiltered radiance}, e \emph{BRDF lookup tables}.
+\noindent
+Questa integrazione viene valutata in modo approssimato nel rendering in tempo reale tramite
+\emph{environment maps}, \emph{prefiltered radiance} e \emph{BRDF lookup tables}.
+In pratica, ogni termine della formula corrisponde a un effetto visivo:
+\begin{itemize}
+    \item $k_d A/\pi$ → colore diffuso del materiale;
+    \item $D$ → forma e ampiezza dello speculare;
+    \item $F$ → intensità speculare in base all'angolo di visuale;
+    \item $G$ → riduzione della luce dovuta all'auto-occlusione dei microfacets.
+\end{itemize}
+
 \begin{figure}
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
@@ -388,7 +407,7 @@ Il motore si appoggia a un insieme di librerie open source per ridurre il tempo 
 del codice. Tra queste rientrano GLFW per la creazione delle finestre, GLAD per il caricamento dinamico delle estensioni
 OpenGL, Vulkan Memory Allocator e vk-bootstrap per la gestione semplificata delle risorse Vulkan, ImGui per
 l'interfaccia di debug, glm per le operazioni matematiche e ASSIMP per il caricamento dei modelli tridimensionali.
-Il sistema di build è basato su CMake, scelto per la sua compatibilità multipiattaforma e l’integrazione con ambienti
+Il sistema di build è basato su CMake, scelto per la sua compatibilità multipiattaforma e l'integrazione con ambienti
 di sviluppo moderni.
 
 Per delimitare il campo di studio, sono stati esclusi elementi non essenziali all'obiettivo sperimentale, come il
