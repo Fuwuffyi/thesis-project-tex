@@ -1,0 +1,13 @@
+classDiagram
+    ResourceManager --> IResourceFactory
+    IResourceFactory <|-- GLResourceFactory
+    IResourceFactory <|-- VulkanResourceFactory
+    ResourceManager --> ITexture
+    ITexture <|-- GLTexture
+    ITexture <|-- VulkanTexture
+    ResourceManager --> IMesh
+    IMesh <|-- GLMesh
+    IMesh <|-- VulkanMesh
+    ResourceManager --> IMaterial
+    IMaterial <|-- GLMaterial
+    IMaterial <|-- VulkanMaterial

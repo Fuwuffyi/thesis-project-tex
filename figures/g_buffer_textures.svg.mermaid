@@ -1,0 +1,24 @@
+graph TD
+    GBuffer[G-buffer] --> gAlbedo["gAlbedo
+        RGB: Albedo
+        A: Ambient Occlusion"]
+    GBuffer --> gNormal["gNormal
+        RG: Normale codificata (Oct-Encoding)
+        B: Roughness
+        A: Metallic"]
+
+    gAlbedo --> AlbedoTex[Albedo Texture]
+    gAlbedo --> AOTex[AO Texture]
+
+    gNormal --> NormalTex[Normal Map]
+    gNormal --> RoughnessTex[Roughness Map]
+    gNormal --> MetallicTex[Metallic Map]
+
+    style GBuffer fill:#f9f,stroke:#333,color:#000,stroke-width:2px
+    style gAlbedo fill:#bbf,stroke:#333,color:#000,stroke-width:1px
+    style gNormal fill:#bbf,stroke:#333,color:#000,stroke-width:1px
+    style AlbedoTex fill:#fff,color:#000,stroke:#333
+    style AOTex fill:#fff,color:#000,stroke:#333
+    style NormalTex fill:#fff,color:#000,stroke:#333
+    style RoughnessTex fill:#fff,color:#000,stroke:#333
+    style MetallicTex fill:#fff,color:#000,stroke:#333

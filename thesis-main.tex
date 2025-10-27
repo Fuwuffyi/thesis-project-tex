@@ -184,8 +184,8 @@ Qui:
 In parole semplici, questa equazione somma tutta la luce incidente sulla superficie pesata da come il materiale
 la riflette verso l'occhio dell'osservatore.
 
-\subsection*{Modello Cook–Torrance}
-Il modello più diffuso nel PBR è il \emph{Cook–Torrance microfacet model}, che rappresenta la superficie come un insieme
+\subsection*{Modello Cook-Torrance}
+Il modello più diffuso nel PBR è il \emph{Cook-Torrance microfacet model}, che rappresenta la superficie come un insieme
 di microfacets inclinati. Ogni microfacet riflette la luce secondo la legge di Fresnel, e la distribuzione delle
 loro inclinazioni determina l'aspetto speculare della superficie.
 La BRDF si scrive come:
@@ -208,7 +208,7 @@ tra luce e osservatore, usata per calcolare la riflessione speculare.
 
 \subsection*{Normal Distribution Function (NDF)}
 $D(\mathbf{n},\mathbf{h})$ descrive la densità dei microfacets orientati verso la direzione $\mathbf{h}$.  
-Un modello comune è il GGX (Trowbridge–Reitz):
+Un modello comune è il GGX (Trowbridge-Reitz):
 \begin{align*}
 D_{\text{GGX}}(\mathbf{n},\mathbf{h},r) =
 \frac{r^2}
@@ -435,16 +435,87 @@ di efficienza, scalabilità e prevedibilità delle prestazioni.
 \chapter{Progettazione e Architettura del Sistema}
 \label{chap:design}
 %----------------------------------------------------------------------------------------
+\noindent
+In questo capitolo viene presentata l'architettura del motore di rendering sviluppato. Dopo aver definito i requisiti
+e analizzato i fondamenti teorici nei capitoli precedenti, il focus qui è sulle scelte progettuali concrete,
+l'organizzazione dei moduli e l'interazione tra le componenti principali. Il capitolo descrive sia la struttura
+orientata agli oggetti adottata, sia la pipeline di rendering e la gestione delle risorse, con particolare attenzione
+alle differenze tra i backend OpenGL e Vulkan.
 
 \section{Panoramica del Sistema}
+Il motore si articola in diversi moduli principali che cooperano per fornire un sistema flessibile e modulare.
+La scena è gestita da un \emph{Scene Manager}, che contiene nodi (`Node`) e componenti (`TransformComponent`, `Camera`,
+`LightComponent`, `ParticleSystemComponent`). Il modulo di rendering si occupa di orchestrare la pipeline grafica,
+interagendo con i backend OpenGL o Vulkan attraverso interfacce unificate. La gestione delle risorse, incluse texture e
+mesh, è centralizzata in un \emph{Resource Manager}, che utilizza factory specifiche per il backend selezionato.
+Infine, il sistema di debug e monitoraggio delle prestazioni integra un'interfaccia grafica realizzata con ImGui,
+che consente di visualizzare metriche in tempo reale.
 
 \section{Progettazione Orientata agli Oggetti}
+L'architettura è basata su principi di programmazione orientata agli oggetti, con classi e interfacce che rappresentano
+entità astratte della scena e della pipeline grafica. L'interfaccia `IRenderer` definisce le operazioni comuni di
+inizializzazione, rendering e cleanup, mentre le classi concrete `GLRenderer` e `VulkanRenderer` implementano le
+specifiche dei rispettivi backend.
+Le classi legate alla scena comprendono `Scene`, che contiene `Node` e componenti associati come `TransformComponent`,
+`Camera` e `LightComponent`. Le entità grafiche sono rappresentate tramite classi astratte `IMesh` e `IMaterial`, estese
+dalle implementazioni specifiche del backend (`GLMesh`, `GLMaterial`, `VulkanMesh`, `VulkanMaterial`). La gestione dei
+materiali PBR viene effettuata tramite `MaterialTemplate` e `MaterialInstance`, consentendo parametri personalizzati
+per ogni oggetto.
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.svg}
+    \caption{Diagramma UML delle principali classi e relazioni della scena e del renderer.}
+    \label{fig:uml-scene-renderer}
+\end{figure}
 
 \section{Architettura del Motore di Rendering}
+Il motore utilizza una struttura modulare che separa chiaramente la logica di rendering dalla gestione della scena e
+delle risorse. Il backend OpenGL sfrutta il driver per la sincronizzazione e la gestione delle risorse, mentre Vulkan
+richiede un controllo esplicito di buffer, command pool e sincronizzazione tramite `Semaphore` e `Fence`. Questa
+separazione consente di eseguire test comparativi tra i due backend senza alterare la logica della scena.
+La pipeline Vulkan è costruita con la classe `VulkanGraphicsPipelineBuilder`, che aggrega gli stati principali della
+pipeline: input assembly, vertex input, viewport, rasterizzazione, depth-stencil, multisample e color blend. Nel backend
+OpenGL, la pipeline è meno esplicita, ma il motore mantiene un'interfaccia unificata per facilitare l'intercambiabilità.
 
 \section{Pipeline di Deferred Rendering}
+Il motore utilizza un approccio di tipo \emph{deferred rendering}, separando la gestione della geometria dalla fase
+di illuminazione. Nel primo passaggio, chiamato \emph{geometry pass}, le informazioni sui vertici e sulle proprietà dei
+materiali vengono salvate nei G-buffer, mentre nel \emph{lighting pass} l'illuminazione viene calcolata utilizzando
+questi dati.
+Per il geometry pass, viene utilizzato uno shader GLSL dedicato che calcola le informazioni necessarie per ciascun
+frammento della scena. Lo shader scrive nei G-buffer due texture principali:
+\begin{itemize}
+    \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO.
+    \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic.
+\end{itemize}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/g_buffer_textures.svg}
+    \caption{Struttura del G-buffer con le texture e i canali utilizzati.}
+    \label{fig:g-buffer-textures}
+\end{figure}
+L'utilizzo dell'\emph{oct-encoding} per le normali permette di comprimere le tre componenti spaziali in due canali,
+riducendo lo spazio di memoria richiesto senza perdita significativa di precisione. Inoltre, l'integrazione dei parametri
+PBR nei canali non utilizzati della texture (roughness e metallic) ottimizza ulteriormente l'uso della memoria GPU.
+Nel passaggio di lighting, il motore legge queste texture e calcola l'illuminazione utilizzando le informazioni PBR
+memorizzate, evitando di ricalcolare la geometria e ottimizzando il numero di operazioni per frammento.
+La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
+con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda.
 
 \section{Gestione delle Risorse}
+La gestione delle risorse è centralizzata nel modulo `ResourceManager`, che si occupa di creare, caricare e memorizzare
+texture e mesh. La creazione delle risorse avviene tramite interfacce astratte (`IResourceFactory`), con implementazioni
+specifiche per OpenGL (`GLResourceFactory`) e Vulkan (`VulkanResourceFactory`). Questa strategia garantisce la portabilità
+del codice e semplifica la manutenzione. Le texture, i buffer e gli shader vengono gestiti in modo da minimizzare
+overhead e ridondanze. Nel backend Vulkan, l'uso multithread per la generazione dei `CommandBuffers` permette di
+sfruttare efficacemente i core della CPU, mentre OpenGL mantiene un modello single-thread semplificato. I materiali PBR
+sono gestiti tramite template parametrizzati, consentendo personalizzazioni per ogni oggetto della scena.
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/uml_resources.svg}
+    \caption{Diagramma UML semplificato della gestione delle risorse.}
+    \label{fig:uml-resources}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
 \chapter{Implementazione}

@@ -1,0 +1,12 @@
+classDiagram
+    Scene --> Node
+    Node --> TransformComponent
+    Node --> Camera
+    Node --> LightComponent
+    Node --> RendererComponent
+    Node --> ParticleSystemComponent
+    IRenderer <|-- GLRenderer
+    IRenderer <|-- VulkanRenderer
+    RendererComponent --> IMesh
+    RendererComponent --> IMaterial
+    IRenderer --> Scene
