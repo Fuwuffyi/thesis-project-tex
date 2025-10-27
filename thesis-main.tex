@@ -114,7 +114,7 @@ Nelle API moderne come OpenGL e Vulkan, la pipeline grafica è composta da una s
 elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel \emph{framebuffer}.
 Nello stadio dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione, mentre nello stadio
 dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle proprietà del materiale.
-\begin{figure}
+\begin{figure}[htb!]
    \centering
    \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
    \caption{Stadi di una pipeline di rendering.}
@@ -136,7 +136,7 @@ Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
 come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf{N}\) e le proprietà dei materiali
 (albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO).
-\begin{figure}
+\begin{figure}[htb!]
    \centering
    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
    \caption{Esempio di G-buffer in una pipeline di deferred rendering da \cite{learnopengl}.}
@@ -151,7 +151,7 @@ C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot 
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
 indicato per applicazioni moderne e motori di gioco con scenari complessi.
-\begin{figure}
+\begin{figure}[htb!]
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
    \caption{Schema generale della pipeline di deferred rendering da \cite{learnopengl}.}
@@ -267,7 +267,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
     \item $G$ → riduzione della luce dovuta all'auto-occlusione dei microfacets.
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[htb!]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
    \caption{Rendered 10$\times$10 cube array illustrating the effect of varying roughness (rows) and metalness
@@ -281,7 +281,7 @@ l'aumento del valore metallic incrementa la riflessione speculare e riduce la co
 Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
 di materiali in ambienti virtuali.
 
-\begin{figure}
+\begin{figure}[htb!]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
