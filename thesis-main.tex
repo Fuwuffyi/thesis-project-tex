@@ -441,13 +441,16 @@ orientata agli oggetti adottata, sia la pipeline di rendering e la gestione dell
 alle differenze tra i backend OpenGL e Vulkan.
 
 \section{Panoramica del Sistema}
-Il motore si articola in diversi moduli principali che cooperano per fornire un sistema flessibile e modulare.
-La scena è gestita da un \emph{Scene Manager}, che contiene nodi (`Node`) e componenti (`TransformComponent`, `Camera`,
-`LightComponent`, `ParticleSystemComponent`). Il modulo di rendering si occupa di orchestrare la pipeline grafica,
-interagendo con i backend OpenGL o Vulkan attraverso interfacce unificate. La gestione delle risorse, incluse texture e
-mesh, è centralizzata in un \emph{Resource Manager}, che utilizza factory specifiche per il backend selezionato.
-Infine, il sistema di debug e monitoraggio delle prestazioni integra un'interfaccia grafica realizzata con ImGui,
-che consente di visualizzare metriche in tempo reale.
+Il motore è organizzato in moduli principali che cooperano per fornire un sistema modulare e facilmente estendibile.
+La scena è gestita da un \emph{Scene Manager} che contiene nodi e componenti, tra cui \texttt{TransformComponent},
+\texttt{Camera}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}. Il modulo di rendering si occupa di
+orchestrare la pipeline grafica, interfacciandosi con i backend OpenGL e Vulkan attraverso l'interfaccia unificata
+\texttt{IRenderer}. La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel \texttt{ResourceManager},
+che utilizza factory specifiche per ciascun backend.
+Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
+della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
+pipeline di rendering. Le metriche di performance sono raccolte dal modulo \texttt{PerformanceLogger} e rese disponibili
+tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
@@ -456,15 +459,14 @@ che consente di visualizzare metriche in tempo reale.
 \end{figure}
 
 \section{Progettazione Orientata agli Oggetti}
-L'architettura è basata su principi di programmazione orientata agli oggetti, con classi e interfacce che rappresentano
-entità astratte della scena e della pipeline grafica. L'interfaccia `IRenderer` definisce le operazioni comuni di
-inizializzazione, rendering e cleanup, mentre le classi concrete `GLRenderer` e `VulkanRenderer` implementano le
-specifiche dei rispettivi backend.
-Le classi legate alla scena comprendono `Scene`, che contiene `Node` e componenti associati come `TransformComponent`,
-`Camera` e `LightComponent`. Le entità grafiche sono rappresentate tramite classi astratte `IMesh` e `IMaterial`, estese
-dalle implementazioni specifiche del backend (`GLMesh`, `GLMaterial`, `VulkanMesh`, `VulkanMaterial`). La gestione dei
-materiali PBR viene effettuata tramite `MaterialTemplate` e `MaterialInstance`, consentendo parametri personalizzati
-per ogni oggetto.
+L'architettura si basa su interfacce astratte e classi concrete per separare logica generale e specifiche del backend.
+L'interfaccia \texttt{IRenderer} definisce le operazioni principali di inizializzazione, rendering e pulizia delle risorse.
+Le implementazioni concrete \texttt{GLRenderer} e \texttt{VulkanRenderer} gestiscono rispettivamente OpenGL e Vulkan,
+incapsulando la complessità di ciascun backend e garantendo un'interfaccia unificata al livello superiore.
+Le classi legate alla scena, come \texttt{Scene}, \texttt{Node}, \texttt{TransformComponent} e \texttt{LightComponent},
+permettono di organizzare gli oggetti in una gerarchia e di propagare trasformazioni e proprietà di illuminazione. La
+gestione dei materiali PBR è realizzata tramite le classi \texttt{MaterialTemplate} e \texttt{MaterialInstance},
+consentendo la definizione di parametri fisicamente plausibili per ogni oggetto.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_dynamic_backend.png}
@@ -473,13 +475,16 @@ per ogni oggetto.
 \end{figure}
 
 \section{Architettura del Motore di Rendering}
-Il motore utilizza una struttura modulare che separa chiaramente la logica di rendering dalla gestione della scena e
-delle risorse. Il backend OpenGL sfrutta il driver per la sincronizzazione e la gestione delle risorse, mentre Vulkan
-richiede un controllo esplicito di buffer, command pool e sincronizzazione tramite `Semaphore` e `Fence`. Questa
-separazione consente di eseguire test comparativi tra i due backend senza alterare la logica della scena.
-La pipeline Vulkan è costruita con la classe `VulkanGraphicsPipelineBuilder`, che aggrega gli stati principali della
-pipeline: input assembly, vertex input, viewport, rasterizzazione, depth-stencil, multisample e color blend. Nel backend
-OpenGL, la pipeline è meno esplicita, ma il motore mantiene un'interfaccia unificata per facilitare l'intercambiabilità.
+Il motore separa nettamente la logica di rendering dalla gestione della scena e delle risorse. Nel backend OpenGL,
+la sincronizzazione e la gestione delle risorse sono affidate al driver, mentre in Vulkan ogni passaggio richiede controllo
+esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} e \texttt{Fence}. Questa separazione facilita
+il confronto diretto tra i due backend senza alterare la logica della scena.
+
+La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
+vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
+ricalcoli geometrici e ottimizzando le operazioni per frammento. L'oct-encoding delle normali riduce lo spazio occupato
+senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali texture ottimizza l’uso
+della memoria GPU.
 
 \section{Pipeline di Deferred Rendering}
 Il motore utilizza un approccio di tipo \emph{deferred rendering}, separando la gestione della geometria dalla fase
@@ -505,8 +510,19 @@ Nel passaggio di lighting, il motore legge queste texture e calcola l'illuminazi
 memorizzate, evitando di ricalcolare la geometria e ottimizzando il numero di operazioni per frammento.
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
 con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
+    \caption{Flusso di rendering della scena attraverso il motore e i backend.}
+    \label{fig:uml-activity-rendering}
+\end{figure}
 
 \section{Gestione delle Risorse}
+La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che crea, carica e memorizza mesh e
+texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
+Questa progettazione garantisce portabilità e facilita la manutenzione. L’uso di template per materiali PBR e
+parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
+
 La gestione delle risorse è centralizzata nel modulo `ResourceManager`, che si occupa di creare, caricare e memorizzare
 texture e mesh. La creazione delle risorse avviene tramite interfacce astratte (`IResourceFactory`), con implementazioni
 specifiche per OpenGL (`GLResourceFactory`) e Vulkan (`VulkanResourceFactory`). Questa strategia garantisce la portabilità

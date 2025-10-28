@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant Scene
+    participant ResourceManager
+    participant IRenderer
+    participant Backend
+    Scene->>ResourceManager: LoadResource()
+    ResourceManager-->>Scene: Risorse caricate
+    Scene->>IRenderer: SetActiveScene(Scene)
+    IRenderer->>Backend: Comandi specifici per rendering
+    Backend-->>IRenderer: Frame renderizzato
+    IRenderer-->>Scene: Output visivo

@@ -1,0 +1,15 @@
+classDiagram
+    class ResourceManager{
+        +LoadMesh()
+        +LoadTexture()
+        +GetResource()
+    }
+    class IResourceFactory{
+        +CreateMesh()
+        +CreateTexture()
+    }
+    class GLResourceFactory
+    class VulkanResourceFactory
+    ResourceManager --> IResourceFactory
+    IResourceFactory <|-- GLResourceFactory
+    IResourceFactory <|-- VulkanResourceFactory
