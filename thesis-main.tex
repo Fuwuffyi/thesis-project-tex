@@ -448,6 +448,12 @@ interagendo con i backend OpenGL o Vulkan attraverso interfacce unificate. La ge
 mesh, è centralizzata in un \emph{Resource Manager}, che utilizza factory specifiche per il backend selezionato.
 Infine, il sistema di debug e monitoraggio delle prestazioni integra un'interfaccia grafica realizzata con ImGui,
 che consente di visualizzare metriche in tempo reale.
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
+   \caption{Stadi di una pipeline di rendering.}
+   \label{fig:rendering-pipeline-overview}
+\end{figure}
 
 \section{Progettazione Orientata agli Oggetti}
 L'architettura è basata su principi di programmazione orientata agli oggetti, con classi e interfacce che rappresentano
@@ -461,8 +467,8 @@ materiali PBR viene effettuata tramite `MaterialTemplate` e `MaterialInstance`, 
 per ogni oggetto.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
-    \caption{Diagramma UML delle principali classi e relazioni della scena e del renderer.}
+    \includegraphics[width=.8\linewidth]{figures/uml_activity_dynamic_backend.png}
+    \caption{Selezione dinamica del backend grafico all'avvio.}
     \label{fig:uml-scene-renderer}
 \end{figure}
 
