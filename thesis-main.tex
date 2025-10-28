@@ -42,7 +42,7 @@
 % Table of contents
 \tableofcontents   
 \listoffigures
-% TODO: Uncomment when listing added \lstlistoflistings
+\lstlistoflistings
 
 % Main content
 \mainmatter
@@ -445,8 +445,10 @@ Il motore è organizzato in moduli principali che cooperano per fornire un siste
 La scena è gestita da un \emph{Scene Manager} che contiene nodi e componenti, tra cui \texttt{TransformComponent},
 \texttt{Camera}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}. Il modulo di rendering si occupa di
 orchestrare la pipeline grafica, interfacciandosi con i backend OpenGL e Vulkan attraverso l'interfaccia unificata
-\texttt{IRenderer}. La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel \texttt{ResourceManager},
-che utilizza factory specifiche per ciascun backend.
+\texttt{IRenderer}.
+\lstinputlisting[float,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
+La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel \texttt{ResourceManager}, che utilizza
+factory specifiche per ciascun backend.
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
 pipeline di rendering. Le metriche di performance sono raccolte dal modulo \texttt{PerformanceLogger} e rese disponibili
