@@ -456,7 +456,7 @@ tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
-   \caption{Panoramica delle interazioni fra renderer e risorse.}
+   \caption{Panoramica delle interazioni fra renderer e la scena.}
    \label{fig:uml-scene-renderer}
 \end{figure}
 
@@ -524,17 +524,9 @@ La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, 
 texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
 Questa progettazione garantisce portabilità e facilita la manutenzione. L’uso di template per materiali PBR e
 parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
-
-La gestione delle risorse è centralizzata nel modulo `ResourceManager`, che si occupa di creare, caricare e memorizzare
-texture e mesh. La creazione delle risorse avviene tramite interfacce astratte (`IResourceFactory`), con implementazioni
-specifiche per OpenGL (`GLResourceFactory`) e Vulkan (`VulkanResourceFactory`). Questa strategia garantisce la portabilità
-del codice e semplifica la manutenzione. Le texture, i buffer e gli shader vengono gestiti in modo da minimizzare
-overhead e ridondanze. Nel backend Vulkan, l'uso multithread per la generazione dei `CommandBuffers` permette di
-sfruttare efficacemente i core della CPU, mentre OpenGL mantiene un modello single-thread semplificato. I materiali PBR
-sono gestiti tramite template parametrizzati, consentendo personalizzazioni per ogni oggetto della scena.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.8\linewidth]{figures/uml_resources.png}
+    \includegraphics[width=.6\linewidth]{figures/uml_resources.png}
     \caption{Diagramma UML semplificato della gestione delle risorse.}
     \label{fig:uml-resources}
 \end{figure}
