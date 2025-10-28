@@ -269,7 +269,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
 \end{itemize}
 \begin{figure}[H]
    \centering
-   \includegraphics[width=.6\linewidth]{figures/pbr_material_render.png}
+   \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
    \caption{Array di 10$\times$10 cubi che mostra l'effetto della variazione di roughness (righe) e metalness
       (colonne) sui materiali PBR.}
    \label{fig:pbr-material-render}
@@ -455,9 +455,9 @@ pipeline di rendering. Le metriche di performance sono raccolte dal modulo \text
 tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
-   \caption{Stadi di una pipeline di rendering.}
-   \label{fig:rendering-pipeline-overview}
+   \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
+   \caption{Panoramica delle interazioni fra renderer e risorse.}
+   \label{fig:uml-scene-renderer}
 \end{figure}
 
 \section{Progettazione Orientata agli Oggetti}
@@ -471,7 +471,7 @@ gestione dei materiali PBR è realizzata tramite le classi \texttt{MaterialTempl
 consentendo la definizione di parametri fisicamente plausibili per ogni oggetto.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.8\linewidth]{figures/uml_activity_dynamic_backend.png}
+    \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
     \caption{Selezione dinamica del backend grafico all'avvio.}
     \label{fig:uml-activity-dynamic-backend}
 \end{figure}
