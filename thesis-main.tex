@@ -535,16 +535,65 @@ parametri per ogni oggetto permette di adattare facilmente le risorse alle neces
 \chapter{Implementazione}
 \label{chap:implementazione}
 %----------------------------------------------------------------------------------------
+\noindent
+In questo capitolo viene descritto come le scelte progettuali presentate nel Capitolo~\ref{chap:design} sono state
+effettivamente realizzate nel codice. L'obiettivo è illustrare la struttura del motore, le principali componenti
+software, l'implementazione del sistema di materiali PBR, la simulazione di particelle e l'interfaccia grafica per
+il monitoraggio delle prestazioni. Vengono inclusi frammenti di codice rappresentativi e diagrammi a supporto
+della spiegazione.
 
 \section{Struttura del Codice}
+Il motore è organizzato in moduli distinti, separando il codice cross-API dalle implementazioni specifiche di OpenGL e
+Vulkan. La struttura principale del progetto è la seguente:
+\begin{itemize}
+    \item \texttt{src/core}: codice indipendente dall'API, inclusi gestione della scena, materiali e componenti;
+    \item \texttt{src/gl} e \texttt{src/vk}: implementazioni specifiche dei renderer e costrutti API specific;
+    \item \texttt{resources/shaders/gl} e \texttt{resources/shaders/vk}: shader GLSL per ciascun backend;
+    \item \texttt{resources/meshes} e \texttt{resources/textures}: asset 3D e texture utilizzate dal motore.
+\end{itemize}
+La compilazione è gestita tramite CMake, con opzioni per selezionare il backend grafico al momento del runtime:
+\texttt{-g} per OpenGL e \texttt{-v} per Vulkan. Il motore può essere eseguito su Linux o Windows senza modifiche
+al codice sorgente grazie all'uso di librerie multipiattaforma come GLFW e glm.
 
 \section{Componenti Principali}
+Il cuore del motore è costituito dai seguenti moduli:
+\begin{itemize}
+    \item \texttt{IRenderer}: interfaccia astratta che definisce le operazioni principali di inizializzazione,
+          rendering e pulizia delle risorse.
+    \item \texttt{GLRenderer} e \texttt{VulkanRenderer}: implementazioni specifiche per ciascun backend,
+          incapsulando le complessità della gestione di buffer, pipeline e sincronizzazione.
+    \item \texttt{Scene} e \texttt{Node}: organizzano gli oggetti in una gerarchia e gestiscono le trasformazioni.
+    \item \texttt{ResourceManager}: carica, memorizza e gestisce mesh, texture e shader, utilizzando factory
+          specifiche per OpenGL e Vulkan.
+\end{itemize}
+
+\section{Management della scena}
+% TODO: Scene-Node relationship
+% TODO: Parenting dei transform
+% TODO: Components e component updates
+
+\section{Management delle risorse}
+% TODO: uid delle risorse
+% TODO: Factory e metodi del manager?
+% TODO: Material instance/material template
 
 \section{Sistema di Materiali PBR}
+Il motore implementa un sistema di materiali PBR basato sul modello Cook-Torrance. Ogni materiale è descritto
+tramite \texttt{MaterialTemplate} e \texttt{MaterialInstance}, con parametri fisicamente plausibili come
+roughness, metalness e albedo. Le informazioni vengono passate agli shader tramite uniform buffer (OpenGL) o
+descriptor set (Vulkan).
+La gestione dei materiali consente di applicare facilmente diversi set di texture PBR e modificare i parametri in
+tempo reale tramite l'interfaccia grafica del motore.
+% TODO: Oct-encoding
+% TODO: Passaggio depth texture -> position lighting pass
+% TODO: Snippet di parti del calcolo lighting PBR
 
 \section{Simulazione di Particelle}
-
-\section{Interfaccia Grafica per le Prestazioni}
+Il motore supporta sistemi di particelle configurabili tramite \texttt{ParticleSystemComponent}, con impostazioni
+di emissione, fisica e rendering. Le particelle sono gestite come array di \texttt{ParticleInstanceData}, aggiornati
+ogni frame. Il calcolo avviene su CPU in modo multithreaded, mantenendo compatibilità tra i due backend.
+% TODO: Simple physics simulation (velocity/accel)
+% TODO: Instanced rendering per le particelle
 
 %----------------------------------------------------------------------------------------
 \chapter{Valutazione delle Prestazioni}
