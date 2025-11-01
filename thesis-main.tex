@@ -40,7 +40,7 @@
 \end{dedication}
 
 % Table of contents
-\tableofcontents   
+\tableofcontents
 \listoffigures
 \lstlistoflistings
 
@@ -52,18 +52,14 @@
 \label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
-% TODO: Change paragraphs?
-\paragraph{Contesto e Motivazioni}
 Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics APIs}
 verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.
 Il contributo principale di questo lavoro consiste nello sviluppo di un motore di rendering modulare che consente
 un confronto controllato tra backend OpenGL e Vulkan, con l'obiettivo di analizzarne le differenze prestazionali e architetturali.
 Il confronto si concentra in particolare sull'impatto del multithreading in Vulkan rispetto al modello single-thread
 tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
-
-\paragraph{Obiettivi}
 L'obiettivo principale del lavoro è progettare e sviluppare un motore di rendering scritto in \emph{C++23},
-in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4.
+in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4. \\
 Il motore implementa un approccio di tipo \emph{deferred rendering}, supporta materiali Physically Based Rendering (PBR),
 luci direzionali, puntuali e spot, e include ulteriori passaggi di rendering per particelle e oggetti di debug.
 L'architettura segue un paradigma orientato agli oggetti, integrando librerie e framework comuni.
@@ -73,8 +69,6 @@ in termini di:
    \item tempo medio per frame e frame rate;
    \item utilizzo della CPU e della GPU.
 \end{itemize}
-
-\paragraph{Metodologia di lavoro}
 Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.
 Il motore adotta una struttura modulare che separa la logica di rendering dalla gestione della scena, così da consentire
 il confronto diretto tra i due backend.
@@ -82,8 +76,8 @@ I test prestazionali sono stati condotti su una scena principale: la cattedrale 
 utilizzando diversi hardware, variando numero di luci e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati
 dal parallelismo offerto da Vulkan.
 
-\paragraph{Struttura del documento}
-La struttura del documento è la seguente:
+\paragraph{Struttura della tesi}
+La struttura della tesi è la seguente:
 \begin{itemize}
    \item Il \textbf{Capitolo 1} introduce i concetti fondamentali relativi al rendering, alle API grafiche moderne e alle tecniche PBR e deferred rendering;
    \item Il \textbf{Capitolo 2} analizza i requisiti del progetto e le scelte progettuali alla base del motore sviluppato;
