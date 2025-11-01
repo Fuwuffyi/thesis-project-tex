@@ -198,14 +198,16 @@ k_s \frac{D(\mathbf{n},\mathbf{h})\,F(\omega_o,\mathbf{h})\,G(\omega_i,\omega_o,
 {4(\mathbf{n}\cdot\omega_i)(\mathbf{n}\cdot\omega_o)}
 \end{align*}
 \noindent
-Qui:
+Qui il primo termine $k_d \frac{A}{\pi}$ rappresenta la riflessione diffusa lambertiana, responsabile della componente di
+colore percepita indipendentemente dall'angolo di vista.
+Il secondo termine descrive la riflessione speculare dovuta alla micro-geometria della superficie. In particolare:
 \begin{itemize}
-    \item Il primo termine $k_d \frac{A}{\pi}$ è la riflessione diffusa (Lambertiana), responsabile del colore generale del materiale.
-    \item Il secondo termine rappresenta la riflessione speculare dovuta ai microfacets.
-       % TODO: Cleanup
-      - $D$ descrive la distribuzione dei microfacets orientati verso la direzione della riflessione.
-      - $F$ calcola quanta luce viene riflessa in base all'angolo di incidenza (effetto Fresnel).
-      - $G$ tiene conto dell'auto-occlusione tra microfacets (alcuni nascondono la luce ad altri).
+    \item $D(\mathbf{n},\mathbf{h})$ è la \emph{Normal Distribution Function} (NDF), che definisce la distribuzione statistica
+    dell'orientazione dei microfacets. Controlla la concentrazione del riflesso speculare.
+    \item $F(\omega_o,\mathbf{h})$ è il termine di \emph{Fresnel}, che determina la quantità di luce riflessa in funzione
+    dell'angolo tra osservatore e microfacet. Governa la crescita del riflesso a incidenti radenti.
+    \item $G(\omega_i,\omega_o,\mathbf{n})$ è il termine di \emph{geometrical attenuation}, che modella l'auto-occlusione:
+    microfacets possono bloccare la luce incidente o riflessa.
 \end{itemize}
 Il vettore metà $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$ rappresenta la direzione intermedia
 tra luce e osservatore, usata per calcolare la riflessione speculare.
