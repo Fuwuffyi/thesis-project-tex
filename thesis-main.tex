@@ -107,7 +107,8 @@ Una pipeline di rendering è una sequenza di fasi che trasforma la rappresentazi
 un'immagine bidimensionale visualizzabile sullo schermo. Ogni fase elabora i dati provenienti dalla precedente,
 passando progressivamente da una descrizione geometrica ad una descrizione visiva.
 Nelle API moderne come OpenGL e Vulkan, la pipeline grafica è composta da una serie di stadi programmabili:
-elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel \emph{framebuffer}.
+elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel
+\emph{framebuffer}~\ref{fig:rendering-pipeline-overview}.
 Nello stadio di elaborazione dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione,
 mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle
 proprietà del materiale.
@@ -139,15 +140,15 @@ come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf
    \caption{Esempio di G-buffer in una pipeline di deferred rendering da \cite{learnopengl}.}
    \label{fig:g-buffer-example}
 \end{figure}
-Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati nei buffer,
-evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni luce. L'equazione generale per il colore finale
-di un frammento è:
+Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati
+nei buffer~\ref{fig:g-buffer-example}, evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni
+luce. L'equazione generale per il colore finale di un frammento è:
 \begin{align*}
 C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
 \end{align*}
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
-indicato per applicazioni moderne e motori di gioco con scenari complessi.
+indicato per applicazioni moderne e motori di gioco con scenari complessi~\ref{fig:deferred-pipeline-example}.
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
@@ -241,7 +242,7 @@ G_1(\omega,\mathbf{n}) =
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
 In parole semplici, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale, parte
-della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita.
+della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita~\ref{fig:pbr-material-render}.
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa diventa:
@@ -275,7 +276,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
    \label{fig:pbr-material-render}
 \end{figure}
 \noindent
-L'aumento di roughness disperde la luce, generando highlight più ampi e opachi;
+L'aumento di roughness disperde la luce, generando highlight più ampi e opachi~\ref{fig:pbr-material-example};
 l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
 Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
 di materiali in ambienti virtuali.
@@ -441,7 +442,7 @@ La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel 
 factory specifiche per ciascun backend.
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
-pipeline di rendering. Le metriche di performance sono raccolte dal modulo \texttt{PerformanceLogger} e rese disponibili
+pipeline di rendering~\ref{fig:uml-scene-renderer}. Le metriche di performance sono raccolte dal modulo \texttt{PerformanceLogger} e rese disponibili
 tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
@@ -456,9 +457,9 @@ L'interfaccia \texttt{IRenderer} definisce le operazioni principali di inizializ
 Le implementazioni concrete \texttt{GLRenderer} e \texttt{VulkanRenderer} gestiscono rispettivamente OpenGL e Vulkan,
 incapsulando la complessità di ciascun backend e garantendo un'interfaccia unificata al livello superiore.
 Le classi legate alla scena, come \texttt{Scene}, \texttt{Node}, \texttt{TransformComponent} e \texttt{LightComponent},
-permettono di organizzare gli oggetti in una gerarchia e di propagare trasformazioni e proprietà di illuminazione. La
-gestione dei materiali PBR è realizzata tramite le classi \texttt{MaterialTemplate} e \texttt{MaterialInstance},
-consentendo la definizione di parametri fisicamente plausibili per ogni oggetto.
+permettono di organizzare gli oggetti in una gerarchia e di propagare trasformazioni e proprietà
+di illuminazione~\ref{fig:uml-activity-dynamic-backend}. La gestione dei materiali PBR è realizzata tramite le classi
+\texttt{MaterialTemplate} e \texttt{MaterialInstance}, consentendo la definizione di parametri fisicamente plausibili per ogni oggetto.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
@@ -473,9 +474,9 @@ esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} 
 il confronto diretto tra i due backend senza alterare la logica della scena.
 La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
 vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
-ricalcoli geometrici e ottimizzando le operazioni per frammento. L'oct-encoding delle normali riduce lo spazio occupato
-senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali texture ottimizza l’uso
-della memoria GPU.
+ricalcoli geometrici e ottimizzando le operazioni per frammento~\ref{fig:g-buffer-textures}. L'oct-encoding delle normali
+riduce lo spazio occupato senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali
+texture ottimizza l’uso della memoria GPU.
 
 \section{Pipeline di Deferred Rendering}
 Il motore utilizza un approccio di tipo \emph{deferred rendering}, separando la gestione della geometria dalla fase
@@ -500,7 +501,7 @@ PBR nei canali non utilizzati della texture (roughness e metallic) ottimizza ult
 Nel passaggio di lighting, il motore legge queste texture e calcola l'illuminazione utilizzando le informazioni PBR
 memorizzate, evitando di ricalcolare la geometria e ottimizzando il numero di operazioni per frammento.
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
-con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda.
+con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda~\ref{fig:uml-activity-rendering}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
@@ -511,8 +512,8 @@ con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memo
 \section{Gestione delle Risorse}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che crea, carica e memorizza mesh e
 texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
-Questa progettazione garantisce portabilità e facilita la manutenzione. L’uso di template per materiali PBR e
-parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
+Questa progettazione garantisce portabilità e facilita la manutenzione~\ref{fig:uml-resources}. L’uso di template per
+materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.6\linewidth]{figures/uml_resources.png}
