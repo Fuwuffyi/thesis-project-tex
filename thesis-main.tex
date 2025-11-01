@@ -52,6 +52,7 @@
 \label{chap:introduzione}
 %----------------------------------------------------------------------------------------
 
+% TODO: Change paragraphs?
 \paragraph{Contesto e Motivazioni}
 Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics APIs}
 verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.
@@ -113,8 +114,9 @@ un'immagine bidimensionale visualizzabile sullo schermo. Ogni fase elabora i dat
 passando progressivamente da una descrizione geometrica ad una descrizione visiva.
 Nelle API moderne come OpenGL e Vulkan, la pipeline grafica è composta da una serie di stadi programmabili:
 elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel \emph{framebuffer}.
-Nello stadio dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione, mentre nello stadio
-dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle proprietà del materiale.
+Nello stadio di elaborazione dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione,
+mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle
+proprietà del materiale.
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
@@ -200,6 +202,7 @@ Qui:
 \begin{itemize}
     \item Il primo termine $k_d \frac{A}{\pi}$ è la riflessione diffusa (Lambertiana), responsabile del colore generale del materiale.
     \item Il secondo termine rappresenta la riflessione speculare dovuta ai microfacets.
+       % TODO: Cleanup
       - $D$ descrive la distribuzione dei microfacets orientati verso la direzione della riflessione.
       - $F$ calcola quanta luce viene riflessa in base all'angolo di incidenza (effetto Fresnel).
       - $G$ tiene conto dell'auto-occlusione tra microfacets (alcuni nascondono la luce ad altri).
@@ -262,6 +265,7 @@ Questa integrazione viene valutata in modo approssimato nel rendering in tempo r
 \emph{environment maps}, \emph{prefiltered radiance} e \emph{BRDF lookup tables}.
 In pratica, ogni termine della formula corrisponde a un effetto visivo:
 \begin{itemize}
+    % TODO: Interlinea strano
     \item $k_d A/\pi$ → colore diffuso del materiale;
     \item $D$ → forma e ampiezza dello speculare;
     \item $F$ → intensità speculare in base all'angolo di visuale;
@@ -287,13 +291,13 @@ di materiali in ambienti virtuali.
 \end{figure}
 
 \section{Graphics API: OpenGL and Vulkan}
-OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche.
+OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche. \\
 OpenGL è un'API di livello alto che semplifica notevolmente la gestione della pipeline grafica: gran parte del lavoro
 legato alla sincronizzazione delle risorse, alla gestione della memoria e alla compilazione dei comandi GPU è affidato
 al driver. Questo approccio riduce la complessità dello sviluppo, consentendo di ottenere rapidamente risultati visivi,
 ma limita il controllo del programmatore sulle prestazioni, soprattutto in scenari con molte luci e geometrie complesse.
 OpenGL opera principalmente in modalità single-thread, affidando al driver l'organizzazione dei comandi su GPU, il che può
-generare overhead significativi in applicazioni moderne e multithreaded.
+generare overhead significativi in applicazioni moderne e multithreaded. \\
 Vulkan, al contrario, offre un modello di programmazione a basso livello, dove il programmatore ha il controllo diretto
 sulla memoria, sui comandi e sulla sincronizzazione. La pipeline Vulkan richiede la definizione esplicita di tutti i
 passaggi di rendering attraverso strutture come \texttt{Render Pass} e \texttt{Command Buffers}, e la gestione della 
@@ -352,18 +356,15 @@ Dal punto di vista funzionale, il motore deve essere in grado di gestire l'inter
 scena tridimensionale complessa, fornendo un'infrastruttura flessibile per la sperimentazione con entrambe le API.
 Il primo requisito riguarda la possibilità di selezionare, in fase di avvio, quale backend utilizzare tra OpenGL e
 Vulkan. Tale scelta consente di confrontare le due pipeline in modo trasparente, mantenendo invariata la struttura
-logica del motore e la scena visualizzata.
-
+logica del motore e la scena visualizzata. \\
 Il motore deve poi garantire la gestione completa delle risorse grafiche, tra cui modelli tridimensionali, texture e
 shader. A tal fine, è stato previsto un sistema di caricamento e caching che consente di ridurre le operazioni ridondanti
 e di ottimizzare la condivisione della memoria tra CPU e GPU. Il rendering della scena è realizzato attraverso una
 pipeline di tipo \emph{deferred}, scelta per la sua maggiore efficienza nella gestione di un elevato numero di luci
-dinamiche.
-
+dinamiche. \\
 Un ulteriore requisito fondamentale riguarda il supporto al \emph{Physically Based Rendering (PBR)}, che permette
 di ottenere una resa realistica dei materiali basandosi su parametri fisici. Il sistema deve inoltre consentire
-l'utilizzo di differenti tipologie di luci con parametri configurabili dall'interfaccia di debug.
-
+l'utilizzo di differenti tipologie di luci con parametri configurabili dall'interfaccia di debug. \\
 Nel backend Vulkan, il motore deve supportare la generazione multithread dei \texttt{command buffer}, così da sfruttare
 in modo più efficiente i core della CPU. Questa caratteristica è essenziale per valutare i benefici del parallelismo
 offerto da Vulkan rispetto al modello single-thread di OpenGL. Infine, il motore deve includere una telecamera
@@ -374,16 +375,14 @@ esecuzione e dei parametri di scena.
 Oltre alle funzionalità previste, il progetto deve rispettare una serie di requisiti non funzionali che ne
 determinano la qualità complessiva. L'aspetto più rilevante è quello prestazionale: il motore deve essere in grado
 di mantenere un frame rate stabile e prevedibile, anche in presenza di scene complesse. L'efficienza del codice e
-la riduzione dell'overhead di CPU sono obiettivi primari, soprattutto nella versione Vulkan.
-
+la riduzione dell'overhead di CPU sono obiettivi primari, soprattutto nella versione Vulkan. \\
 Un altro requisito riguarda la portabilità. Il sistema deve poter essere compilato ed eseguito sia su Windows che su
 Linux, senza modifiche sostanziali al codice sorgente. Questo ha orientato la scelta di librerie multipiattaforma
 come GLFW per la gestione delle finestre e dell'input, e glm per le operazioni matematiche tridimensionali.
 La manutenibilità è stata garantita attraverso una struttura modulare del codice, che separa nettamente la logica di
 rendering dalle altre componenti, come la gestione delle risorse o la GUI. Tale separazione consente di estendere il
 motore in futuro con nuove tecniche di shading o ulteriori passaggi di rendering, senza introdurre dipendenze
-circolari o modifiche invasive.
-
+circolari o modifiche invasive. \\
 L'affidabilità rappresenta un ulteriore requisito importante. In particolare, è necessario assicurare che le risorse
 allocate sulla GPU vengano correttamente rilasciate al termine dell'esecuzione, prevenendo perdite di memoria o crash.
 La presenza dell'interfaccia di debug consente inoltre di monitorare in tempo reale l'utilizzo delle risorse e il
@@ -394,20 +393,17 @@ Il progetto è stato sviluppato nel rispetto di alcuni vincoli tecnici legati si
 librerie disponibili. Il linguaggio scelto è \textbf{C++23}, che offre un buon compromesso tra efficienza,
 astrazione e modernità, consentendo l'utilizzo di costrutti avanzati come le \emph{smart pointer} e le
 \emph{range-based loops}. Le API grafiche target sono OpenGL 4.6 e Vulkan 1.4, in modo da garantire compatibilità
-con la maggior parte delle GPU moderne.
-
+con la maggior parte delle GPU moderne. \\
 % TODO: Introdurre hardware diversi (testato su piu hardware)
 Dal punto di vista hardware, i test sono stati condotti su una configurazione dotata di processore multi-core e GPU
 di fascia medio-alta compatibile con le specifiche Vulkan. Le prestazioni sono state misurate in un ambiente hardware
-costante per garantire ripetibilità e confrontabilità dei risultati.
-
+costante per garantire ripetibilità e confrontabilità dei risultati. \\
 Il motore si appoggia a un insieme di librerie open source per ridurre il tempo di sviluppo e migliorare la stabilità
 del codice. Tra queste rientrano GLFW per la creazione delle finestre, GLAD per il caricamento dinamico delle estensioni
 OpenGL, Vulkan Memory Allocator e vk-bootstrap per la gestione semplificata delle risorse Vulkan, ImGui per
 l'interfaccia di debug, glm per le operazioni matematiche e ASSIMP per il caricamento dei modelli tridimensionali.
 Il sistema di build è basato su CMake, scelto per la sua compatibilità multipiattaforma e l'integrazione con ambienti
-di sviluppo moderni.
-
+di sviluppo moderni. \\
 Per delimitare il campo di studio, sono stati esclusi elementi non essenziali all'obiettivo sperimentale, come il
 ray tracing, le ombre dinamiche avanzate o il supporto a dispositivi mobili. La ricerca si concentra esclusivamente
 sulle differenze di prestazioni e di gestione delle risorse tra le due API, in un contesto di rendering differito
@@ -419,11 +415,9 @@ una serie di test ripetibili e controllati, condotti su una scena di riferimento
 Sponza~\cite{sponza_original,sponza_intel2022}, ampiamente utilizzata come benchmark nella letteratura di grafica
 computazionale. I test vengono eseguiti con configurazioni identiche per i due backend, variando il numero di luci,
 la complessità della scena e il livello di parallelismo della CPU.
-
 Le metriche considerate includono il tempo medio per frame, il frame rate e l'utilizzo medio della CPU e della GPU.
 I dati vengono raccolti tramite un sistema di monitoraggio integrato nell'interfaccia di debug, che consente la
 registrazione automatica dei risultati per l'analisi successiva.
-
 Ciascun test viene ripetuto più volte per ridurre l'impatto di fattori esterni, come i processi di sistema o
 l'oscillazione della frequenza della GPU. I risultati vengono poi confrontati e discussi nel
 Capitolo~\ref{chap:valutazione}, dove vengono analizzate le differenze di comportamento tra OpenGL e Vulkan in termini
@@ -441,11 +435,11 @@ orientata agli oggetti adottata, sia la pipeline di rendering e la gestione dell
 alle differenze tra i backend OpenGL e Vulkan.
 
 \section{Panoramica del Sistema}
-Il motore è organizzato in moduli principali che cooperano per fornire un sistema modulare e facilmente estendibile.
+Il motore è organizzato in moduli principali che cooperano per fornire un sistema modulare e facilmente estendibile. \\
 La scena è gestita da un \emph{Scene Manager} che contiene nodi e componenti, tra cui \texttt{TransformComponent},
 \texttt{Camera}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}. Il modulo di rendering si occupa di
 orchestrare la pipeline grafica, interfacciandosi con i backend OpenGL e Vulkan attraverso l'interfaccia unificata
-\texttt{IRenderer}.
+\texttt{IRenderer}. \\
 \lstinputlisting[float,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel \texttt{ResourceManager}, che utilizza
 factory specifiche per ciascun backend.
@@ -481,7 +475,6 @@ Il motore separa nettamente la logica di rendering dalla gestione della scena e 
 la sincronizzazione e la gestione delle risorse sono affidate al driver, mentre in Vulkan ogni passaggio richiede controllo
 esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} e \texttt{Fence}. Questa separazione facilita
 il confronto diretto tra i due backend senza alterare la logica della scena.
-
 La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
 vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
 ricalcoli geometrici e ottimizzando le operazioni per frammento. L'oct-encoding delle normali riduce lo spazio occupato
