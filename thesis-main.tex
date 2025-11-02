@@ -482,7 +482,7 @@ esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} 
 il confronto diretto tra i due backend senza alterare la logica della scena.
 La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
 vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
-ricalcoli geometrici e ottimizzando le operazioni per frammento (Fig.\ref{fig:g-buffer-textures}). L'oct-encoding delle normali
+ricalcoli geometrici e ottimizzando le operazioni per frammento. L'oct-encoding delle normali
 riduce lo spazio occupato senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali
 texture ottimizza l’uso della memoria GPU.
 
