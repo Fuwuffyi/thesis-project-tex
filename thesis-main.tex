@@ -4,7 +4,6 @@
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
-\usepackage{float}
 % \usepackage{acronym}
 
 \school{\unibo}
@@ -112,7 +111,7 @@ elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading d
 Nello stadio di elaborazione dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione,
 mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle
 proprietà del materiale.
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
    \caption{Stadi di una pipeline di rendering.}
@@ -134,7 +133,7 @@ Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
 come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf{N}\) e le proprietà dei materiali
 (albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO).
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
    \caption{Esempio di G-buffer in una pipeline di deferred rendering da \cite{learnopengl}.}
@@ -149,7 +148,7 @@ C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot 
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
 indicato per applicazioni moderne e motori di gioco con scenari complessi (Fig.\ref{fig:deferred-pipeline-example}).
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
    \caption{Schema generale della pipeline di deferred rendering da \cite{learnopengl}.}
@@ -268,7 +267,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
     \item $F$ → intensità speculare in base all'angolo di visuale;
     \item $G$ → riduzione della luce dovuta all'auto-occlusione dei microfacets.
 \end{itemize}
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
    \caption{Array di 10$\times$10 cubi che mostra l'effetto della variazione di roughness (righe) e metalness
@@ -280,7 +279,7 @@ L'aumento di roughness disperde la luce, generando highlight più ampi e opachi 
 l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
 Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
 di materiali in ambienti virtuali.
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
@@ -448,7 +447,7 @@ Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti ne
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
 pipeline di rendering (Fig.\ref{fig:uml-scene-renderer}). Le metriche di performance sono raccolte dal modulo
 \texttt{PerformanceLogger} e rese disponibili tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
    \caption{Architettura generale del motore di rendering, con interazioni tra scena, renderer e gestione delle risorse.}
@@ -468,7 +467,7 @@ del materiale dalle istanze specifiche applicate agli oggetti. Tale approccio pe
 parametri come roughness, metalness e albedo, senza dover ricreare le risorse sulla GPU.
 
 % TODO: Reference somewhere?
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
     \caption{Selezione dinamica del backend grafico all'avvio.}
@@ -504,7 +503,7 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig
     \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO.
     \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic.
 \end{itemize}
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.8\linewidth]{figures/g_buffer_textures.png}
     \caption{Struttura del G-buffer con le texture e i canali utilizzati.}
@@ -517,7 +516,7 @@ in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti 
 è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
 scalare le prestazioni con il numero di core disponibili. In OpenGL, invece, la pipeline rimane single-thread,
 affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
     \caption{Flusso di rendering della scena attraverso il motore e i backend.}
@@ -530,7 +529,7 @@ texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implement
 Questa progettazione garantisce portabilità e facilita la manutenzione (Fig.\ref{fig:uml-resources}). L’uso di template per
 materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
 Ogni risorsa ha un \texttt{ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}).
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.6\linewidth]{figures/uml_resources.png}
     \caption{Diagramma UML semplificato della gestione delle risorse.}
