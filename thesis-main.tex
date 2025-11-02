@@ -108,7 +108,7 @@ un'immagine bidimensionale visualizzabile sullo schermo. Ogni fase elabora i dat
 passando progressivamente da una descrizione geometrica ad una descrizione visiva.
 Nelle API moderne come OpenGL e Vulkan, la pipeline grafica è composta da una serie di stadi programmabili:
 elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading dei frammenti e scrittura nel
-\emph{framebuffer}~\ref{fig:rendering-pipeline-overview}.
+\emph{framebuffer} (Fig.\ref{fig:rendering-pipeline-overview}).
 Nello stadio di elaborazione dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione,
 mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle
 proprietà del materiale.
@@ -141,14 +141,14 @@ come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf
    \label{fig:g-buffer-example}
 \end{figure}
 Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati
-nei buffer~\ref{fig:g-buffer-example}, evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni
+nei buffer (Fig.\ref{fig:g-buffer-example}), evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni
 luce. L'equazione generale per il colore finale di un frammento è:
 \begin{align*}
 C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
 \end{align*}
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
-indicato per applicazioni moderne e motori di gioco con scenari complessi~\ref{fig:deferred-pipeline-example}.
+indicato per applicazioni moderne e motori di gioco con scenari complessi (Fig.\ref{fig:deferred-pipeline-example}).
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
@@ -242,7 +242,7 @@ G_1(\omega,\mathbf{n}) =
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
 In parole semplici, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale, parte
-della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita~\ref{fig:pbr-material-render}.
+della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita (Fig.\ref{fig:pbr-material-render}).
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa diventa:
@@ -276,7 +276,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
    \label{fig:pbr-material-render}
 \end{figure}
 \noindent
-L'aumento di roughness disperde la luce, generando highlight più ampi e opachi~\ref{fig:pbr-material-example};
+L'aumento di roughness disperde la luce, generando highlight più ampi e opachi (Fig.\ref{fig:pbr-material-example});
 l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
 Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
 di materiali in ambienti virtuali.
@@ -446,7 +446,7 @@ memorizzare mesh e texture, utilizzando factory specifiche per ciascun backend. 
 duplicazioni e facilita l’estensione del motore con nuovi tipi di risorse senza modificare la logica di rendering.
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
-pipeline di rendering~\ref{fig:uml-scene-renderer}. Le metriche di performance sono raccolte dal modulo
+pipeline di rendering (Fig.\ref{fig:uml-scene-renderer}). Le metriche di performance sono raccolte dal modulo
 \texttt{PerformanceLogger} e rese disponibili tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
@@ -482,7 +482,7 @@ esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} 
 il confronto diretto tra i due backend senza alterare la logica della scena.
 La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
 vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
-ricalcoli geometrici e ottimizzando le operazioni per frammento~\ref{fig:g-buffer-textures}. L'oct-encoding delle normali
+ricalcoli geometrici e ottimizzando le operazioni per frammento (Fig.\ref{fig:g-buffer-textures}). L'oct-encoding delle normali
 riduce lo spazio occupato senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali
 texture ottimizza l’uso della memoria GPU.
 
@@ -499,7 +499,7 @@ l'illuminazione usando i dati memorizzati, ottimizzando il numero di operazioni 
 La gestione dei G-buffer integra tecniche di \emph{oct-encoding} per le normali e memorizza roughness e metalness nei canali
 non utilizzati delle texture, riducendo l'uso della memoria GPU.
 Per il geometry pass, viene utilizzato uno shader GLSL dedicato che calcola le informazioni necessarie per ciascun
-frammento della scena. Lo shader scrive nei G-buffer due texture principali~\ref{fig:g-buffer-textures}:
+frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig.\ref{fig:g-buffer-textures}):
 \begin{itemize}
     \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO.
     \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic.
@@ -511,7 +511,7 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali~\ref
     \label{fig:g-buffer-textures}
 \end{figure}
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
-con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda~\ref{fig:uml-activity-rendering}.
+con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda (Fig.\ref{fig:uml-activity-rendering}).
 In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I \texttt{command buffer} sono generati
 in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
 è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
@@ -527,7 +527,7 @@ affidando la gestione dei comandi al driver, il che evidenzia le differenze pres
 \section{Gestione delle Risorse}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che crea, carica e memorizza mesh e
 texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
-Questa progettazione garantisce portabilità e facilita la manutenzione~\ref{fig:uml-resources}. L’uso di template per
+Questa progettazione garantisce portabilità e facilita la manutenzione (Fig.\ref{fig:uml-resources}). L’uso di template per
 materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
 Ogni risorsa ha un \texttt{ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}).
 \begin{figure}[H]
