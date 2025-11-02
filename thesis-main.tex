@@ -425,41 +425,49 @@ di efficienza, scalabilità e prevedibilità delle prestazioni.
 \label{chap:design}
 %----------------------------------------------------------------------------------------
 \noindent
-In questo capitolo viene presentata l'architettura del motore di rendering sviluppato. Dopo aver definito i requisiti
-e analizzato i fondamenti teorici nei capitoli precedenti, il focus qui è sulle scelte progettuali concrete,
-l'organizzazione dei moduli e l'interazione tra le componenti principali. Il capitolo descrive sia la struttura
-orientata agli oggetti adottata, sia la pipeline di rendering e la gestione delle risorse, con particolare attenzione
-alle differenze tra i backend OpenGL e Vulkan.
+Il presente capitolo descrive l'architettura del motore di rendering sviluppato per la tesi, con particolare attenzione
+all'organizzazione modulare, all'interazione tra componenti e alla gestione dei backend OpenGL e Vulkan. L'obiettivo
+principale della progettazione è stato garantire flessibilità, portabilità e manutenibilità, permettendo al contempo un
+confronto controllato delle prestazioni tra le due API.
 
 \section{Panoramica del Sistema}
-Il motore è organizzato in moduli principali che cooperano per fornire un sistema modulare e facilmente estendibile. \\
-La scena è gestita da un \emph{Scene Manager} che contiene nodi e componenti, tra cui \texttt{TransformComponent},
-\texttt{Camera}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}. Il modulo di rendering si occupa di
-orchestrare la pipeline grafica, interfacciandosi con i backend OpenGL e Vulkan attraverso l'interfaccia unificata
-\texttt{IRenderer}. \\
+Il motore di rendering è strutturato secondo un approccio modulare che separa nettamente la gestione della scena dalla
+logica di rendering e dalla gestione delle risorse. \\
+La scena è organizzata tramite un \texttt{Scene Manager}, che contiene nodi (\texttt{Node}) e componenti specifici come
+\texttt{TransformComponent}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}. Ogni nodo può avere figli,
+permettendo di costruire gerarchie complesse e di propagare trasformazioni e proprietà luminose lungo la scena. \\
+Il modulo di rendering interagisce con i backend grafici attraverso l'interfaccia astratta \texttt{IRenderer}, che
+definisce i metodi fondamentali per inizializzare le pipeline, eseguire il rendering dei frame e liberare le risorse. Le
+implementazioni concrete \texttt{GLRenderer} e \texttt{VulkanRenderer} incapsulano la complessità specifica delle due
+API, permettendo al resto del sistema di interagire in maniera unificata. \\
 \lstinputlisting[float,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
-La gestione delle risorse, inclusi mesh, texture e shader, è centralizzata nel \texttt{ResourceManager}, che utilizza
-factory specifiche per ciascun backend.
+La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di creare, caricare e
+memorizzare mesh e texture, utilizzando factory specifiche per ciascun backend. Questa separazione consente di evitare
+duplicazioni e facilita l’estensione del motore con nuovi tipi di risorse senza modificare la logica di rendering.
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
-pipeline di rendering~\ref{fig:uml-scene-renderer}. Le metriche di performance sono raccolte dal modulo \texttt{PerformanceLogger} e rese disponibili
-tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
+pipeline di rendering~\ref{fig:uml-scene-renderer}. Le metriche di performance sono raccolte dal modulo
+\texttt{PerformanceLogger} e rese disponibili tramite \texttt{PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[H]
    \centering
    \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
-   \caption{Panoramica delle interazioni fra renderer e la scena.}
+   \caption{Architettura generale del motore di rendering, con interazioni tra scena, renderer e gestione delle risorse.}
    \label{fig:uml-scene-renderer}
 \end{figure}
 
 \section{Progettazione Orientata agli Oggetti}
-L'architettura si basa su interfacce astratte e classi concrete per separare logica generale e specifiche del backend.
-L'interfaccia \texttt{IRenderer} definisce le operazioni principali di inizializzazione, rendering e pulizia delle risorse.
-Le implementazioni concrete \texttt{GLRenderer} e \texttt{VulkanRenderer} gestiscono rispettivamente OpenGL e Vulkan,
-incapsulando la complessità di ciascun backend e garantendo un'interfaccia unificata al livello superiore.
-Le classi legate alla scena, come \texttt{Scene}, \texttt{Node}, \texttt{TransformComponent} e \texttt{LightComponent},
-permettono di organizzare gli oggetti in una gerarchia e di propagare trasformazioni e proprietà
-di illuminazione~\ref{fig:uml-activity-dynamic-backend}. La gestione dei materiali PBR è realizzata tramite le classi
-\texttt{MaterialTemplate} e \texttt{MaterialInstance}, consentendo la definizione di parametri fisicamente plausibili per ogni oggetto.
+L'intero motore è stato progettato secondo il paradigma orientato agli oggetti, utilizzando classi astratte e
+implementazioni concrete per separare la logica indipendente dall'API dalle componenti specifiche dei backend.
+L'interfaccia \texttt{IRenderer} definisce il contratto per le operazioni di rendering, mentre \texttt{GLRenderer} e
+\texttt{VulkanRenderer} forniscono le implementazioni dettagliate. Questa architettura consente di cambiare backend
+senza modificare la struttura dei componenti della scena. \\
+Le classi legate alla scena, tra cui \texttt{Node} e \texttt{TransformComponent}, sono progettate per propagare le trasformazioni
+lungo gerarchie complesse, permettendo operazioni come parenting, rotazioni locali e scaling globale. \\
+I materiali PBR sono gestiti tramite \texttt{MaterialTemplate} e \texttt{MaterialInstance}, separando i dati statici
+del materiale dalle istanze specifiche applicate agli oggetti. Tale approccio permette di aggiornare in tempo reale
+parametri come roughness, metalness e albedo, senza dover ricreare le risorse sulla GPU.
+
+% TODO: Reference somewhere?
 \begin{figure}[H]
     \centering
     \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
@@ -478,13 +486,20 @@ ricalcoli geometrici e ottimizzando le operazioni per frammento~\ref{fig:g-buffe
 riduce lo spazio occupato senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali
 texture ottimizza l’uso della memoria GPU.
 
+\section{Componenti e Scene Graph}
+Il motore integra un sistema a componenti, dove ogni nodo della scena può contenere uno o più componenti, tra cui
+trasformazioni, luci e sistemi di particelle. Ogni frame, i componenti vengono aggiornati in sequenza, propagando le
+trasformazioni e aggiornando gli stati di input e fisica. Questo approccio semplifica l’aggiunta di nuovi comportamenti
+agli oggetti senza alterare la gerarchia principale della scena e consente di separare nettamente logica e rendering.
+
 \section{Pipeline di Deferred Rendering}
-Il motore utilizza un approccio di tipo \emph{deferred rendering}, separando la gestione della geometria dalla fase
-di illuminazione. Nel primo passaggio, chiamato \emph{geometry pass}, le informazioni sui vertici e sulle proprietà dei
-materiali vengono salvate nei G-buffer, mentre nel \emph{lighting pass} l'illuminazione viene calcolata utilizzando
-questi dati.
+Il motore utilizza una pipeline di \emph{deferred rendering} a due passaggi principali: il \emph{geometry pass},
+che scrive nei G-buffer informazioni sui vertici e sulle proprietà dei materiali, e il \emph{lighting pass}, che calcola
+l'illuminazione usando i dati memorizzati, ottimizzando il numero di operazioni per frammento.
+La gestione dei G-buffer integra tecniche di \emph{oct-encoding} per le normali e memorizza roughness e metalness nei canali
+non utilizzati delle texture, riducendo l'uso della memoria GPU.
 Per il geometry pass, viene utilizzato uno shader GLSL dedicato che calcola le informazioni necessarie per ciascun
-frammento della scena. Lo shader scrive nei G-buffer due texture principali:
+frammento della scena. Lo shader scrive nei G-buffer due texture principali~\ref{fig:g-buffer-textures}:
 \begin{itemize}
     \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO.
     \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic.
@@ -495,13 +510,13 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali:
     \caption{Struttura del G-buffer con le texture e i canali utilizzati.}
     \label{fig:g-buffer-textures}
 \end{figure}
-L'utilizzo dell'\emph{oct-encoding} per le normali permette di comprimere le tre componenti spaziali in due canali,
-riducendo lo spazio di memoria richiesto senza perdita significativa di precisione. Inoltre, l'integrazione dei parametri
-PBR nei canali non utilizzati della texture (roughness e metallic) ottimizza ulteriormente l'uso della memoria GPU.
-Nel passaggio di lighting, il motore legge queste texture e calcola l'illuminazione utilizzando le informazioni PBR
-memorizzate, evitando di ricalcolare la geometria e ottimizzando il numero di operazioni per frammento.
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
 con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda~\ref{fig:uml-activity-rendering}.
+In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I \texttt{command buffer} sono generati
+in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
+è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
+scalare le prestazioni con il numero di core disponibili. In OpenGL, invece, la pipeline rimane single-thread,
+affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
@@ -514,6 +529,7 @@ La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, 
 texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
 Questa progettazione garantisce portabilità e facilita la manutenzione~\ref{fig:uml-resources}. L’uso di template per
 materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
+Ogni risorsa ha un \texttt{ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}).
 \begin{figure}[H]
     \centering
     \includegraphics[width=.6\linewidth]{figures/uml_resources.png}

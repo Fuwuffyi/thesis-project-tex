@@ -1,12 +1,12 @@
-classDiagram
-    Scene --> Node
+graph LR
+    SceneManager --> Node
     Node --> TransformComponent
-    Node --> Camera
     Node --> LightComponent
-    Node --> RendererComponent
     Node --> ParticleSystemComponent
-    IRenderer <|-- GLRenderer
-    IRenderer <|-- VulkanRenderer
-    RendererComponent --> IMesh
-    RendererComponent --> IMaterial
-    IRenderer --> Scene
+    Node --> Renderer
+    Renderer --> GLRenderer
+    Renderer --> VulkanRenderer
+    GLRenderer --> ResourceManager
+    VulkanRenderer --> ResourceManager
+    ResourceManager --> IMesh
+    ResourceManager --> ITexture
