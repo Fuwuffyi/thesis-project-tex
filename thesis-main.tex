@@ -53,9 +53,21 @@
 
 \frontmatter\frontispiece
 
-% TODO: Write abstract
-\begin{abstract}	
-   Max 2000 characters, strict.
+\begin{abstract}
+Questo lavoro presenta la progettazione e implementazione di un motore di rendering modulare in C++23, capace di operare
+sia con OpenGL 4.6 sia con Vulkan 1.4, finalizzato a uno studio comparativo rigoroso delle prestazioni tra le due
+API in scenari complessi di grafica 3D. Il motore implementa una pipeline di \emph{deferred rendering}, supporta
+materiali PBR basati sul modello Cook-Torrance, luci direzionali, puntuali e spot, sistemi di particelle instanziate
+e strumenti di debug visuale (gizmo per luci e bounding). L’architettura a componenti, con separazione netta tra scena,
+risorse e renderer, consente di cambiare backend senza modificare la logica applicativa, garantendo condizioni di test
+identiche. Lo studio si concentra sull’impatto del multithreading in Vulkan rispetto al modello single-thread di OpenGL,
+misurando tempo medio per frame, frame rate, occupazione di CPU e GPU e overhead del driver. Vulkan evidenzia vantaggi
+significativi in scenari con molti oggetti e luci, grazie alla registrazione parallela dei command buffer, all’utilizzo
+di descriptor set e pipeline layout ottimizzati, e al controllo esplicito della memoria GPU. OpenGL, al contrario,
+rimane vincolato dal single-threading e dalla gestione automatica delle risorse, mostrando saturazione del driver e
+overhead nei draw call massivi. Questo progetto fornisce un caso di studio completo, evidenziando differenze architetturali,
+scaling multi-core, gestione esplicita della pipeline e costi reali delle API moderne, offrendo indicazioni concrete su
+efficienza, prevedibilità delle prestazioni e best practice per lo sviluppo di motori grafici moderni.
 \end{abstract}
 
 % TODO: Write dedication (optional)
