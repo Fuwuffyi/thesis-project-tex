@@ -670,7 +670,6 @@ Ogni materiale PBR fa riferimento a un \texttt{MaterialTemplate} e a una o più
 \texttt{MaterialInstance}, consentendo di parametrizzare roughness, metalness e albedo senza
 duplicare texture o shader. L'invio dei dati ai GPU avviene tramite uniform buffer in OpenGL
 e descriptor set in Vulkan, rispettando le specifiche di ciascun backend.
-% TODO: Code listing material instance - material template
 Durante il \emph{geometry pass}, gli shader scrivono nei G-buffer le informazioni PBR:
 albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare la memoria,
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
@@ -725,6 +724,7 @@ Nel progetto, la compilazione avviene tramite gli strumenti ufficiali di Vulkan,
 di catturare errori a livello di build anziché a runtime e migliorando la stabilità complessiva
 del sistema. Questa pipeline di compilazione permette inoltre un migliore controllo sull'ottimizzazione
 e sull'interfacciamento con descriptor set e layout della pipeline.
+\lstinputlisting[float,floatplacement=htbp,language=[Visual]CMake,label={lst:spv-compilation}]{listings/spv_compilation.cmake}
 
 %----------------------------------------------------------------------------------------
 \chapter{Valutazione delle Prestazioni}

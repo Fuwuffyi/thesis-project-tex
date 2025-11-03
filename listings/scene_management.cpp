@@ -4,9 +4,9 @@ public:
   bool RemoveChild(const Node *child);
   // Tree iteration
   void ForEachChild(const std::function<void(Node *)> &func,
-                    bool recursive = false);
+                    const bool recursive = false);
   void ForEachChild(const std::function<void(const Node *)> &func,
-                    bool recursive = false) const;
+                    const bool recursive = false) const;
 
 private:
   Node *m_parent;
