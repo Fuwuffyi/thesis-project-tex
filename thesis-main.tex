@@ -4,7 +4,38 @@
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
+\usepackage{xcolor}
 % \usepackage{acronym}
+
+% Definition of acronyms
+% \acrodef{API}{Application Programming Interface}
+% \acrodef{PBR}{Physically Based Rendering}
+% \acrodef{CPU}{Central Processing Unit}
+% \acrodef{GPU}{Graphical Processing Unit}
+
+%% Copyright (c) 2020-2021 Benno Bielmeier
+%% SPDX-License-Identifier: MIT
+%%
+%% GLSL definition
+%%
+\lstdefinelanguage{GLSL}
+{
+   morekeywords={
+      false,true,break,case,continue,default,discard,do,else,for,if,return,switch,while,void,bool,int,uint,float,double,
+      vec2,vec3,vec4,dvec2,dvec3,dvec4,bvec2,bvec3,bvec4,ivec2,ivec3,ivec4,uvec2,uvec3,uvec4,mat2,mat3,mat4,mat2x2,mat2x3,
+      mat2x4,mat3x2,mat3x3,mat3x4,mat4x2,mat4x3,mat4x4,dmat2,dmat3,dmat4,dmat2x2,dmat2x3,dmat2x4,dmat3x2,dmat3x3,dmat3x4,
+      dmat4x2,dmat4x3,dmat4x4,sampler1D,sampler2D,sampler3D,struct,abs,acos,all,any,asin,atan,ceil,clamp,cos,cross,
+      degrees,dFdx,dFdy,distance,dot,equal,exp,exp2,faceforward,floor,fract,ftransform,inversesqrt,length,log,log2,
+      matrixCompMult,max,min,mix,mod,normalize,pow,radians,reflect,refract,transpose
+   },
+   sensitive=true,
+   morecomment=[s]{/*}{*/},
+   morecomment=[l]//,
+   morestring=[b]",
+   morestring=[b]',
+   moredelim=*[directive]\#,
+   moredirectives={define,defined,elif,else,if,ifdef,endif,line,error,ifndef,include,pragma,undef,warning,extension,version}
+}
 
 \school{\unibo}
 \programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
@@ -15,12 +46,6 @@
 \supervisor{Prof.ssa Damiana Lazzaro}
 \session{I}
 \academicyear{2024-2025}
-
-% Definition of acronyms
-% \acrodef{API}{Application Programming Interface}
-% \acrodef{PBR}{Physically Based Rendering}
-% \acrodef{CPU}{Central Processing Unit}
-% \acrodef{GPU}{Graphical Processing Unit}
 
 \mainlinespacing{1.241}
 
@@ -639,7 +664,7 @@ albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare 
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
 canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. Queste scelte riducono
 l'occupazione di memoria senza compromettere la qualità visiva.
-\lstinputlisting[float,floatplacement=htbp,language=glsl,label={lst:geometry-pass-snippet}]{listings/gometry_snippet.glsl}
+\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/gometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
 calcolando il contributo speculare e diffuso in base ai parametri PBR. L'approccio deferred
@@ -651,7 +676,7 @@ roughness, metalness e albedo. Le informazioni vengono passate agli shader trami
 descriptor set (Vulkan).
 La gestione dei materiali consente di applicare facilmente diversi set di texture PBR e modificare i parametri in
 tempo reale tramite l'interfaccia grafica del motore.
-\lstinputlisting[float,floatplacement=htbp,language=glsl,label={lst:lighting-pass-snippet}]{listings/lighting_snippet.glsl}
+\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:lighting-pass-snippet}]{listings/lighting_snippet.glsl}
 
 \section{Simulazione di Particelle}
 Il motore integra sistemi di particelle configurabili tramite \texttt{ParticleSystemComponent}.
