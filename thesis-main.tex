@@ -547,6 +547,11 @@ In questo capitolo viene descritto come le scelte progettuali del Capitolo~\ref{
 tradotte in codice. L'obiettivo è fornire una visione chiara dell'architettura interna del motore,
 della gestione della scena, delle risorse, dei materiali PBR e dei sistemi di particelle, evidenziando
 le differenze tra backend OpenGL e Vulkan e le strategie di ottimizzazione adottate.
+Come descritto nei capitoli precedenti, l'engine è stato progettato secondo un'architettura a livelli, dove il core
+definisce logiche astratte e ogni backend grafico fornisce una propria implementazione conforme. In questo capitolo si
+mostrano frammenti di codice reali che evidenziano come tali scelte siano state applicate concretamente, con particolare
+attenzione alla registrazione dei comandi Vulkan, al binding dei materiali PBR e all'uso dell'instancing per il sistema
+di particelle. Tutti gli esempi sono estratti direttamente dall'implementazione finale.
 
 \section{Struttura del Codice}
 Il motore è organizzato in moduli distinti per separare il codice cross-API dalle implementazioni
@@ -577,13 +582,15 @@ Il cuore del motore è costituito dai seguenti moduli:
 \section{Gestione della Scena e dei Componenti}
 La scena è rappresentata come un grafo di nodi (\texttt{Node}) che possono contenere componenti
 come \texttt{TransformComponent}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}.
+\lstinputlisting[float,language=C++,label={lst:scene-management}]{listings/scene_management.cpp}
 Ogni nodo mantiene riferimenti ai figli e ai genitori, permettendo la propagazione automatica delle
 trasformazioni lungo la gerarchia. Questo approccio consente di gestire complesse relazioni
 di parenthood e trasformazioni locali/globali in modo trasparente.
 Il ciclo di aggiornamento della scena prevede una traversata gerarchica in cui ciascun nodo
 aggiorna i componenti registrati. I \texttt{TransformComponent} calcolano le matrici globali a
 partire dalle trasformazioni locali, mentre i componenti di luce aggiornano i dati inviati agli
-shader. I sistemi di particelle calcolano posizione, velocità e altre proprietà fisiche delle
+shader.
+I sistemi di particelle calcolano posizione, velocità e altre proprietà fisiche delle
 particelle, integrando la simulazione in modo multithreaded quando il backend lo permette.
 L'approccio a componenti rende semplice l'estensione della scena con nuovi comportamenti senza
 alterare la gerarchia principale e separa chiaramente la logica di aggiornamento dallo stadio
@@ -593,6 +600,7 @@ di rendering.
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di
 caricare, creare e memorizzare mesh, texture e shader. Ogni risorsa è identificata tramite
 \texttt{ResourceHandle} con UID univoci, garantendo riferimenti consistenti senza duplicazioni.
+\lstinputlisting[float,language=C++,label={lst:resource-management}]{listings/resource_management.cpp}
 Le factory astratte (\texttt{IResourceFactory}) permettono di istanziare risorse specifiche
 per OpenGL o Vulkan. Questo design consente al motore di utilizzare risorse condivise in modo
 trasparente tra i backend, mentre le differenze di binding e gestione della memoria GPU
