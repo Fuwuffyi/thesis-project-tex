@@ -443,7 +443,6 @@ API, permettendo al resto del sistema di interagire in maniera unificata (Fig.\r
     \caption{Selezione dinamica del backend grafico all'avvio.}
     \label{fig:uml-activity-dynamic-backend}
 \end{figure}
-\lstinputlisting[float,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di creare, caricare e
 memorizzare mesh e texture, utilizzando factory specifiche per ciascun backend. Questa separazione consente di evitare
 duplicazioni e facilita l’estensione del motore con nuovi tipi di risorse senza modificare la logica di rendering.
@@ -578,11 +577,12 @@ Il cuore del motore è costituito dai seguenti moduli:
     \item \texttt{ResourceManager}: carica, memorizza e gestisce mesh, texture e shader, utilizzando factory
           specifiche per OpenGL e Vulkan.
 \end{itemize}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 
 \section{Gestione della Scena e dei Componenti}
 La scena è rappresentata come un grafo di nodi (\texttt{Node}) che possono contenere componenti
 come \texttt{TransformComponent}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}.
-\lstinputlisting[float,language=C++,label={lst:scene-management}]{listings/scene_management.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-management}]{listings/scene_management.cpp}
 Ogni nodo mantiene riferimenti ai figli e ai genitori, permettendo la propagazione automatica delle
 trasformazioni lungo la gerarchia. Questo approccio consente di gestire complesse relazioni
 di parenthood e trasformazioni locali/globali in modo trasparente.
@@ -595,12 +595,13 @@ particelle, integrando la simulazione in modo multithreaded quando il backend lo
 L'approccio a componenti rende semplice l'estensione della scena con nuovi comportamenti senza
 alterare la gerarchia principale e separa chiaramente la logica di aggiornamento dallo stadio
 di rendering.
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-update}]{listings/scene_update.cpp}
 
 \section{Gestione delle risorse}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di
 caricare, creare e memorizzare mesh, texture e shader. Ogni risorsa è identificata tramite
 \texttt{ResourceHandle} con UID univoci, garantendo riferimenti consistenti senza duplicazioni.
-\lstinputlisting[float,language=C++,label={lst:resource-management}]{listings/resource_management.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:resource-management}]{listings/resource_management.cpp}
 Le factory astratte (\texttt{IResourceFactory}) permettono di istanziare risorse specifiche
 per OpenGL o Vulkan. Questo design consente al motore di utilizzare risorse condivise in modo
 trasparente tra i backend, mentre le differenze di binding e gestione della memoria GPU
@@ -632,11 +633,13 @@ Ogni materiale PBR fa riferimento a un \texttt{MaterialTemplate} e a una o più
 \texttt{MaterialInstance}, consentendo di parametrizzare roughness, metalness e albedo senza
 duplicare texture o shader. L'invio dei dati ai GPU avviene tramite uniform buffer in OpenGL
 e descriptor set in Vulkan, rispettando le specifiche di ciascun backend.
+% TODO: Code listing material instance - material template
 Durante il \emph{geometry pass}, gli shader scrivono nei G-buffer le informazioni PBR:
 albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare la memoria,
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
 canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. Queste scelte riducono
 l'occupazione di memoria senza compromettere la qualità visiva.
+\lstinputlisting[float,floatplacement=htbp,language=glsl,label={lst:geometry-pass-snippet}]{listings/gometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
 calcolando il contributo speculare e diffuso in base ai parametri PBR. L'approccio deferred
@@ -648,9 +651,7 @@ roughness, metalness e albedo. Le informazioni vengono passate agli shader trami
 descriptor set (Vulkan).
 La gestione dei materiali consente di applicare facilmente diversi set di texture PBR e modificare i parametri in
 tempo reale tramite l'interfaccia grafica del motore.
-% TODO: Oct-encoding
-% TODO: Passaggio depth texture -> position lighting pass
-% TODO: Snippet di parti del calcolo lighting PBR
+\lstinputlisting[float,floatplacement=htbp,language=glsl,label={lst:lighting-pass-snippet}]{listings/lighting_snippet.glsl}
 
 \section{Simulazione di Particelle}
 Il motore integra sistemi di particelle configurabili tramite \texttt{ParticleSystemComponent}.
