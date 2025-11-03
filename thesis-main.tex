@@ -261,7 +261,6 @@ Questa integrazione viene valutata in modo approssimato nel rendering in tempo r
 \emph{environment maps}, \emph{prefiltered radiance} e \emph{BRDF lookup tables}.
 In pratica, ogni termine della formula corrisponde a un effetto visivo:
 \begin{itemize}
-    % TODO: Interlinea strano
     \item $k_d A/\pi$ → colore diffuso del materiale;
     \item $D$ → forma e ampiezza dello speculare;
     \item $F$ → intensità speculare in base all'angolo di visuale;
@@ -390,10 +389,9 @@ librerie disponibili. Il linguaggio scelto è \textbf{C++23}, che offre un buon 
 astrazione e modernità, consentendo l'utilizzo di costrutti avanzati come le \emph{smart pointer} e le
 \emph{range-based loops}. Le API grafiche target sono OpenGL 4.6 e Vulkan 1.4, in modo da garantire compatibilità
 con la maggior parte delle GPU moderne. \\
-% TODO: Introdurre hardware diversi (testato su piu hardware)
-Dal punto di vista hardware, i test sono stati condotti su una configurazione dotata di processore multi-core e GPU
-di fascia medio-alta compatibile con le specifiche Vulkan. Le prestazioni sono state misurate in un ambiente hardware
-costante per garantire ripetibilità e confrontabilità dei risultati. \\
+Dal punto di vista hardware, i test sono stati condotti su molteplici configurazioni dotata di processore multi-core e GPU
+di fascia medio-alta compatibile con le specifiche Vulkan. Le prestazioni sono state misurate su tutti gli hardware
+con entrambi gli API e con scene che variano in quantità di luci e effetti particellari. \\
 Il motore si appoggia a un insieme di librerie open source per ridurre il tempo di sviluppo e migliorare la stabilità
 del codice. Tra queste rientrano GLFW per la creazione delle finestre, GLAD per il caricamento dinamico delle estensioni
 OpenGL, Vulkan Memory Allocator e vk-bootstrap per la gestione semplificata delle risorse Vulkan, ImGui per
@@ -438,7 +436,13 @@ permettendo di costruire gerarchie complesse e di propagare trasformazioni e pro
 Il modulo di rendering interagisce con i backend grafici attraverso l'interfaccia astratta \texttt{IRenderer}, che
 definisce i metodi fondamentali per inizializzare le pipeline, eseguire il rendering dei frame e liberare le risorse. Le
 implementazioni concrete \texttt{GLRenderer} e \texttt{VulkanRenderer} incapsulano la complessità specifica delle due
-API, permettendo al resto del sistema di interagire in maniera unificata. \\
+API, permettendo al resto del sistema di interagire in maniera unificata (Fig.\ref{fig:uml-activity-dynamic-backend}).
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
+    \caption{Selezione dinamica del backend grafico all'avvio.}
+    \label{fig:uml-activity-dynamic-backend}
+\end{figure}
 \lstinputlisting[float,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di creare, caricare e
 memorizzare mesh e texture, utilizzando factory specifiche per ciascun backend. Questa separazione consente di evitare
@@ -465,14 +469,6 @@ lungo gerarchie complesse, permettendo operazioni come parenting, rotazioni loca
 I materiali PBR sono gestiti tramite \texttt{MaterialTemplate} e \texttt{MaterialInstance}, separando i dati statici
 del materiale dalle istanze specifiche applicate agli oggetti. Tale approccio permette di aggiornare in tempo reale
 parametri come roughness, metalness e albedo, senza dover ricreare le risorse sulla GPU.
-
-% TODO: Reference somewhere?
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=.95\linewidth]{figures/uml_activity_dynamic_backend.png}
-    \caption{Selezione dinamica del backend grafico all'avvio.}
-    \label{fig:uml-activity-dynamic-backend}
-\end{figure}
 
 \section{Architettura del Motore di Rendering}
 Il motore separa nettamente la logica di rendering dalla gestione della scena e delle risorse. Nel backend OpenGL,
@@ -596,6 +592,21 @@ per OpenGL o Vulkan. Questo design consente al motore di utilizzare risorse cond
 trasparente tra i backend, mentre le differenze di binding e gestione della memoria GPU
 vengono incapsulate nelle implementazioni concrete.
 
+\section{Gestione della Memoria GPU}
+Un aspetto centrale dell'implementazione riguarda la gestione della memoria sulla GPU, che rappresenta
+una delle differenze più significative tra OpenGL e Vulkan. Nel caso di OpenGL, l'allocazione e la
+gestione della memoria sono astratte dal driver, il quale decide in autonomia dove e come collocare i
+buffer e le texture. Questa filosofia semplifica notevolmente lo sviluppo, ma rende difficile prevedere
+e controllare i costi in termini di prestazioni, specialmente in scenari complessi o multi-threaded.
+Vulkan adotta invece un modello esplicito: è responsabilità del programmatore allocare memoria,
+gestire i pool e organizzare la vita delle risorse. Per evitare una complessità eccessiva e possibili
+errori, è stato utilizzato \emph{Vulkan Memory Allocator (VMA)}, una libreria di allocazione di livello
+alto progettata per semplificare il lavoro senza perdere controllo. VMA consente di mantenere un
+modello mentalmente chiaro dell'occupazione della memoria, ridurre le frammentazioni e gestire in modo
+coerente le operazioni di mapping e copie tra CPU e GPU.
+Questa differenza architetturale si riflette in una maggiore prevedibilità e stabilità delle prestazioni
+in Vulkan, a fronte di una complessità superiore durante lo sviluppo. L'adozione di un wrapper come VMA
+permette comunque di beneficiare del controllo offerto da Vulkan mantenendo una produttività accettabile.
 
 \section{Sistema di Materiali PBR}
 Il motore implementa il modello Cook-Torrance per la simulazione fisicamente plausibile della luce.
@@ -650,7 +661,18 @@ La pipeline di rendering è quindi progettata per essere modulare: il motore gen
 per ciascun backend in modo trasparente, mentre le differenze implementative sono incapsulate
 nelle classi \texttt{GLRenderer} e \texttt{VulkanRenderer}. Questo approccio garantisce la
 portabilità del codice e la possibilità di confrontare prestazioni e comportamenti dei due
-API su scenari identici.
+API su scenari identici. \\
+La gestione degli shader rappresenta un ulteriore punto di divergenza sostanziale tra OpenGL e Vulkan.
+Nel backend OpenGL, gli shader vengono compilati a runtime direttamente dal codice sorgente GLSL,
+affidandosi al driver per la traduzione e ottimizzazione del programma. Anche se questo approccio
+offre rapidità nello sviluppo e facilita le iterazioni, introduce variabilità tra driver e sistemi
+operativi e sposta parte del lavoro di compilazione nel percorso critico di esecuzione.
+Vulkan richiede invece che gli shader siano compilati in anticipo nel formato binario
+\texttt{SPIR-V}, garantendo che il codice eseguito dal driver sia deterministico e portabile.
+Nel progetto, la compilazione avviene tramite gli strumenti ufficiali di Vulkan, consentendo
+di catturare errori a livello di build anziché a runtime e migliorando la stabilità complessiva
+del sistema. Questa pipeline di compilazione permette inoltre un migliore controllo sull'ottimizzazione
+e sull'interfacciamento con descriptor set e layout della pipeline.
 
 %----------------------------------------------------------------------------------------
 \chapter{Valutazione delle Prestazioni}
