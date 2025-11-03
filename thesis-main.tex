@@ -664,7 +664,7 @@ albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare 
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
 canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. Queste scelte riducono
 l'occupazione di memoria senza compromettere la qualità visiva.
-\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/gometry_snippet.glsl}
+\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/geometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
 calcolando il contributo speculare e diffuso in base ai parametri PBR. L'approccio deferred
