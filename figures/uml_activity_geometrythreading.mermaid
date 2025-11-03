@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant MainThread
+    participant ThreadPool
+    participant GPU
+
+    MainThread->>ThreadPool: Dispatch build tasks
+    ThreadPool->>ThreadPool: Record command buffers in parallel
+    ThreadPool->>MainThread: Return command buffers
+    MainThread->>GPU: Submit combined buffers for execution

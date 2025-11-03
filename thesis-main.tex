@@ -507,16 +507,22 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig
 \end{figure}
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
 con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda (Fig.\ref{fig:uml-activity-rendering}).
-In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I \texttt{command buffer} sono generati
-in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
-è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
-scalare le prestazioni con il numero di core disponibili. In OpenGL, invece, la pipeline rimane single-thread,
-affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
     \caption{Flusso di rendering della scena attraverso il motore e i backend.}
     \label{fig:uml-activity-rendering}
+\end{figure}
+In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I \texttt{command buffer} sono generati
+in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
+è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
+scalare le prestazioni con il numero di core disponibili (Fig.\ref{fig:uml-activity-geometrythreading}). In OpenGL, invece, la pipeline rimane single-thread,
+affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/uml_activity_geometrythreading.png}
+    \caption{Generazione di command buffer in parallelo.}
+    \label{fig:uml-activity-geometrythreading}
 \end{figure}
 
 \section{Gestione delle Risorse}
