@@ -1,12 +1,3 @@
-// Funzione per ricavare la posizione mondiale dal depth buffer
-vec3 getWorldPos(vec2 uv, float depth) {
-    vec2 ndc = uv * 2.0 - 1.0;
-    vec4 clipPos = vec4(ndc, depth, 1.0);
-    vec4 viewPos = inverse(camera.proj) * clipPos;
-    viewPos /= viewPos.w;
-    vec4 worldPos = inverse(camera.view) * viewPos;
-    return worldPos.xyz;
-}
 // Funzione Fresnel Schlick
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
@@ -34,7 +25,6 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 // Main lighting pass
 void main() {
     // --- Codice omesso: Recupero dati dai G-buffer ---
-    vec3 finalColor = vec3(0.0);
     // --- Loop sulle luci ---
     for (uint i = 0; i < lights.lightCount; ++i) {
         // Codice omesso: Codice specifico per tipo di luce
