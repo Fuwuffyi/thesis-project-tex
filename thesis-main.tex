@@ -744,8 +744,8 @@ forza, limiti e comportamento al variare del carico di lavoro.
 \section{Configurazione Sperimentale}
 Per la valutazione sono stati considerati scenari multipli, rappresentativi di differenti carichi di lavoro grafico.
 Ognuno di essi è caratterizzato da un numero diverso di luci dinamiche e sistemi di particelle, mantenendo costanti
-la scena, i materiali PBR e le geometrie. Le scene sono caricate dinamicamente secondo la seguente
-configurazione:
+la scena, i materiali PBR e le geometrie. Le scene sono caricate dinamicamente secondo le  configurazioni riportate
+nella Tabella~\ref{tab:table-scenes}.
 \begin{table}[h!]
 \centering
 \begin{tabular}{c|c|c|l}
@@ -753,22 +753,24 @@ configurazione:
 0 & 5  & 1 & Scena con basso carico illuminazione \\
 1 & 9  & 1 & Scena con illuminazione media \\
 2 & 17 & 1 & Scena ad alta complessità luminosa \\
-3 & 22 & 0 & Scene completa, massima intensità luminosa \\
+3 & 22 & 0 & Scene con massima intensità luminosa \\
 4 & 1  & 2 & Scena focalizzata sulle particelle
 \end{tabular}
 \caption{Configurazione delle scene utilizzate nei test}
+\label{tab:table-scenes}
 \end{table}
 Le misurazioni raccolte riguardano tempo medio per frame, varianza del frame time, tempo richiesto per ciascuna
 render pass, overhead e utilizzo della CPU. Sono stati impiegati strumenti integrati nel motore (\texttt{CPUTimer} e
 \texttt{VulkanGPUTimer}) e strumenti esterni di profiling per confermare i risultati. I test sono stati eseguiti su
-più architetture hardware, al fine di valutare scalabilità e stabilità delle prestazioni.
+più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine di valutare scalabilità e stabilità delle prestazioni.
 \begin{table}[h!]
 \centering
 \begin{tabular}{l|l|l|l|l}
    \textbf{ID Test} & \textbf{CPU} & \textbf{GPU} & \textbf{VRAM} & \textbf{RAM} \\ \hline
-   System A & AMD Ryzen 7 9800X3D & NVIDIA RTX 5080 & 16 GB GDDR7 & 32 GB DDR5 \\
+   A & AMD Ryzen 7 9800X3D & NVIDIA RTX 5080 & 16 GB GDDR7 & 32 GB DDR5 \\
 \end{tabular}
 \caption{Configurazioni hardware utilizzate nei test}
+\label{tab:table-hw}
 \end{table}
 
 \section{Risultati}
