@@ -730,8 +730,46 @@ e sull'interfacciamento con descriptor set e layout della pipeline.
 \chapter{Valutazione delle Prestazioni}
 \label{chap:valutazione}
 %----------------------------------------------------------------------------------------
+\noindent
+In questo capitolo vengono presentati i risultati sperimentali ottenuti dal motore di rendering sviluppato.
+L'obiettivo è confrontare direttamente le performance di OpenGL 4.6 e Vulkan 1.4 in scenari reali, mantenendo
+costanti scena, asset e logica applicativa. In questo modo è possibile isolare le differenze imputabili
+esclusivamente alle API grafiche. \\
+Il test è stato progettato per essere riproducibile e adattabile a diverse configurazioni hardware, così da garantire
+una valutazione imparziale. Tutte le misurazioni sono state eseguite utilizzando lo stesso motore, senza modifiche ai
+contenuti o al flusso di rendering: l'unica variabile è l'interfaccia grafica selezionata tramite parametro a riga di
+comando. L'obiettivo finale è fornire una comparazione verificabile tra le due tecnologie, evidenziandone punti di
+forza, limiti e comportamento al variare del carico di lavoro.
 
 \section{Configurazione Sperimentale}
+Per la valutazione sono stati considerati scenari multipli, rappresentativi di differenti carichi di lavoro grafico.
+Ognuno di essi è caratterizzato da un numero diverso di luci dinamiche e sistemi di particelle, mantenendo costanti
+la scena, i materiali PBR e le geometrie. Le scene sono caricate dinamicamente secondo la seguente
+configurazione:
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|c|c|l}
+\textbf{Indice} & \textbf{Luci} & \textbf{Sistemi particellari} & \textbf{Descrizione} \\ \hline
+0 & 5  & 1 & Scena con basso carico illuminazione \\
+1 & 9  & 1 & Scena con illuminazione media \\
+2 & 17 & 1 & Scena ad alta complessità luminosa \\
+3 & 22 & 0 & Scene completa, massima intensità luminosa \\
+4 & 1  & 2 & Scena focalizzata sulle particelle
+\end{tabular}
+\caption{Configurazione delle scene utilizzate nei test}
+\end{table}
+Le misurazioni raccolte riguardano tempo medio per frame, varianza del frame time, tempo richiesto per ciascuna
+render pass, overhead e utilizzo della CPU. Sono stati impiegati strumenti integrati nel motore (\texttt{CPUTimer} e
+\texttt{VulkanGPUTimer}) e strumenti esterni di profiling per confermare i risultati. I test sono stati eseguiti su
+più architetture hardware, al fine di valutare scalabilità e stabilità delle prestazioni.
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|l|l|l|l}
+   \textbf{ID Test} & \textbf{CPU} & \textbf{GPU} & \textbf{VRAM} & \textbf{RAM} \\ \hline
+   System A & AMD Ryzen 7 9800X3D & NVIDIA RTX 5080 & 16 GB GDDR7 & 32 GB DDR5 \\
+\end{tabular}
+\caption{Configurazioni hardware utilizzate nei test}
+\end{table}
 
 \section{Risultati}
 
