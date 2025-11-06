@@ -769,7 +769,7 @@ dinamicamente secondo le configurazioni riportate nella Tabella~\ref{tab:table-s
    \label{fig:window-screenshot}
 \end{figure}
 Le misurazioni raccolte riguardano tempo medio per frame, varianza del frame time, tempo richiesto per ciascuna
-render pass, overhead e utilizzo della CPU. Sono stati impiegati strumenti integrati nel motore (\texttt{CPUTimer} e
+render pass, overhead e utilizzo della CPU. Sono stati impiegati strumenti integrati nel motore (\texttt{GLTimer} e
 \texttt{VulkanGPUTimer}) e strumenti esterni di profiling per confermare i risultati. I test sono stati eseguiti su
 più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine di valutare scalabilità e stabilità delle prestazioni.
 \begin{table}[h!]
@@ -880,9 +880,15 @@ rendendolo una base solida per progetti di ricerca o applicazioni real-time più
 \bibliographystyle{alpha}
 \bibliography{bibliography}
 
-% TODO: Write acknowledgements (optional)
 \begin{acknowledgements}
-   Optional. Max 1 page.
+   Desidero ringraziare la \textbf{Prof.ssa~[Damiana Lazzaro]}, relatore della tesi, per la disponibilità, la guida e
+   i suggerimenti forniti durante le diverse fasi del lavoro. \\
+   Il lavoro si è basato sull’utilizzo di diverse librerie e strumenti open–source, tra cui
+   \lstinline{GLFW}~\cite{glfw}, \lstinline{GLAD}~\cite{glad}, \lstinline{Vulkan}~\cite{vulkan_overview,khronos_vulkan_spec},
+   \lstinline{VkBootstrap}~\cite{vkbootstrap}, \lstinline{Vulkan Memory Allocator}~\cite{vma} e \lstinline{ImGui}~\cite{imgui}
+   che hanno reso possibile la realizzazione del motore di rendering. \\
+   Un ringraziamento particolare è rivolto alla comunità open–source per il continuo contributo allo sviluppo di
+   strumenti e risorse che rendono accessibile la ricerca e la sperimentazione nel campo della computer graphics.
 \end{acknowledgements}
 
 \end{document}
