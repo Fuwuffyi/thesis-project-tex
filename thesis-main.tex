@@ -58,11 +58,11 @@ Questo lavoro presenta la progettazione e implementazione di un motore di render
 sia con OpenGL 4.6 sia con Vulkan 1.4, finalizzato a uno studio comparativo rigoroso delle prestazioni tra le due
 API in scenari complessi di grafica 3D. Il motore implementa una pipeline di \emph{deferred rendering}, supporta
 materiali PBR basati sul modello Cook-Torrance, luci direzionali, puntuali e spot, sistemi di particelle instanziate
-e strumenti di debug visuale (gizmo per luci e bounding). L’architettura a componenti, con separazione netta tra scena,
+e strumenti di debug visuale (gizmo per luci e bounding). L'architettura a componenti, con separazione netta tra scena,
 risorse e renderer, consente di cambiare backend senza modificare la logica applicativa, garantendo condizioni di test
-identiche. Lo studio si concentra sull’impatto del multithreading in Vulkan rispetto al modello single-thread di OpenGL,
+identiche. Lo studio si concentra sull'impatto del multithreading in Vulkan rispetto al modello single-thread di OpenGL,
 misurando tempo medio per frame, frame rate, occupazione di CPU e GPU e overhead del driver. Vulkan evidenzia vantaggi
-significativi in scenari con molti oggetti e luci, grazie alla registrazione parallela dei command buffer, all’utilizzo
+significativi in scenari con molti oggetti e luci, grazie alla registrazione parallela dei command buffer, all'utilizzo
 di descriptor set e pipeline layout ottimizzati, e al controllo esplicito della memoria GPU. OpenGL, al contrario,
 rimane vincolato dal single-threading e dalla gestione automatica delle risorse, mostrando saturazione del driver e
 overhead nei draw call massivi. Questo progetto fornisce un caso di studio completo, evidenziando differenze architetturali,
@@ -485,7 +485,7 @@ API, permettendo al resto del sistema di interagire in maniera unificata (Fig.\r
 \end{figure}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di creare, caricare e
 memorizzare mesh e texture, utilizzando factory specifiche per ciascun backend. Questa separazione consente di evitare
-duplicazioni e facilita l’estensione del motore con nuovi tipi di risorse senza modificare la logica di rendering.
+duplicazioni e facilita l'estensione del motore con nuovi tipi di risorse senza modificare la logica di rendering.
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
 pipeline di rendering (Fig.\ref{fig:uml-scene-renderer}). Le metriche di performance sono raccolte dal modulo
@@ -515,15 +515,15 @@ la sincronizzazione e la gestione delle risorse sono affidate al driver, mentre 
 esplicito di buffer, command pool e sincronizzazione tramite \texttt{Semaphore} e \texttt{Fence}. Questa separazione facilita
 il confronto diretto tra i due backend senza alterare la logica della scena.
 La pipeline di rendering è basata su deferred rendering. Il \emph{geometry pass} popola i G-buffer con informazioni sui
-vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l’illuminazione, evitando
+vertici e sui materiali. Il \emph{lighting pass} utilizza queste informazioni per calcolare l'illuminazione, evitando
 ricalcoli geometrici e ottimizzando le operazioni per frammento. L'oct-encoding delle normali
-riduce lo spazio occupato senza perdita significativa di precisione, mentre l’integrazione dei parametri PBR nei canali
-texture ottimizza l’uso della memoria GPU.
+riduce lo spazio occupato senza perdita significativa di precisione, mentre l'integrazione dei parametri PBR nei canali
+texture ottimizza l'uso della memoria GPU.
 
 \section{Componenti e Scene Graph}
 Il motore integra un sistema a componenti, dove ogni nodo della scena può contenere uno o più componenti, tra cui
 trasformazioni, luci e sistemi di particelle. Ogni frame, i componenti vengono aggiornati in sequenza, propagando le
-trasformazioni e aggiornando gli stati di input e fisica. Questo approccio semplifica l’aggiunta di nuovi comportamenti
+trasformazioni e aggiornando gli stati di input e fisica. Questo approccio semplifica l'aggiunta di nuovi comportamenti
 agli oggetti senza alterare la gerarchia principale della scena e consente di separare nettamente logica e rendering.
 
 \section{Pipeline di Deferred Rendering}
@@ -554,7 +554,7 @@ con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memo
 \end{figure}
 In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I \texttt{command buffer} sono generati
 in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
-è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l’overhead del driver e consente di
+è gestita tramite \texttt{Semaphore} e \texttt{Fence}. Questo approccio riduce l'overhead del driver e consente di
 scalare le prestazioni con il numero di core disponibili (Fig.\ref{fig:uml-activity-geometrythreading}). In OpenGL, invece, la pipeline rimane single-thread,
 affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
 \begin{figure}[htbp]
@@ -567,7 +567,7 @@ affidando la gestione dei comandi al driver, il che evidenzia le differenze pres
 \section{Gestione delle Risorse}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che crea, carica e memorizza mesh e
 texture. Le factory astratte (\texttt{IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
-Questa progettazione garantisce portabilità e facilita la manutenzione (Fig.\ref{fig:uml-resources}). L’uso di template per
+Questa progettazione garantisce portabilità e facilita la manutenzione (Fig.\ref{fig:uml-resources}). L'uso di template per
 materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
 Ogni risorsa ha un \texttt{ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}).
 \begin{figure}[htbp]
@@ -783,8 +783,41 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 \end{table}
 
 \section{Risultati}
+I risultati mostrano un miglioramento complessivo delle prestazioni del motore di rendering quando si utilizza
+l'API Vulkan rispetto a OpenGL, mantenendo inalterate le condizioni di test e le scene analizzate.
+Nelle scene con carichi di lavoro medio-bassi (scene 0, 1, 2 e 4) è stato osservato un incremento medio delle
+% TODO: Fix percentage
+prestazioni pari a circa il 10\%. Tale miglioramento si manifesta principalmente in una riduzione del tempo medio
+per frame indicativa di un minore overhead lato CPU. \\
+La scena 3, caratterizzata dal più alto numero di sorgenti luminose e dalla maggiore complessità di shading,
+ha evidenziato un incremento di performance significativamente più elevato, pari a circa il 25\%. In questo caso,
+la natura multithreaded del command recording di Vulkan consente una migliore distribuzione del carico sulla CPU,
+riducendo sensibilmente i tempi di preparazione dei comandi di rendering rispetto al modello single-thread di OpenGL.
 
 \section{Discussione}
+I dati raccolti confermano il vantaggio architetturale offerto da Vulkan nei contesti multithreaded.
+L'approccio a basso livello e l'esplicita gestione delle risorse consentono un utilizzo più efficiente della CPU,
+specialmente quando il numero di draw call e di sorgenti luminose aumenta in modo significativo.
+Nei casi di carico ridotto (scene 0, 1 e 2) il guadagno prestazionale resta limitato, poiché l'overhead di
+command recording rappresenta una frazione meno rilevante del tempo di frame complessivo. Tuttavia, la stabilità
+del frame time risulta comunque migliorata, grazie alla minore interferenza del driver nel percorso di esecuzione.
+La scena 3 rappresenta il caso in cui Vulkan riesce a esprimere appieno il proprio vantaggio,
+sfruttando più core CPU per la generazione parallela dei command buffer. In OpenGL, il vincolo al thread principale
+genera un collo di bottiglia evidente, che si traduce in una maggiore latenza nella preparazione delle draw call e
+in un minor utilizzo complessivo delle risorse hardware. In Vulkan, al contrario, la CPU riesce a inviare i comandi
+alla GPU con maggiore rapidità e continuità, portando a un utilizzo più elevato e costante della GPU stessa.
+Questo si traduce in un incremento complessivo della produttività del sistema, con la GPU che rimane impegnata
+in modo più efficiente e con tempi di inattività ridotti.
+La scena 4, focalizzata sui sistemi particellari, evidenzia invece un miglioramento contenuto ma costante, segno che
+l'ottimizzazione lato CPU incide solo marginalmente in scenari dominati dal carico computazionale della GPU.
+Nel complesso, Vulkan si dimostra più scalabile, prevedibile e capace di sfruttare al meglio l'hardware moderno,
+mentre OpenGL, pur garantendo buone prestazioni in carichi moderati, tende a saturare più rapidamente le risorse CPU.
+È importante sottolineare che questi vantaggi comportano un costo in termini di complessità di sviluppo.
+L'API Vulkan richiede una gestione manuale di molti aspetti che in OpenGL vengono automatizzati dal driver,
+come la creazione delle pipeline, la sincronizzazione esplicita e l'allocazione della memoria. Ciò rende il processo
+di sviluppo significativamente più articolato e richiede maggiore tempo, competenze e attenzione nella gestione delle
+risorse. In cambio, tuttavia, l'applicazione ottiene un controllo fine sull'intero flusso di rendering e la possibilità
+di ottimizzare l'esecuzione in base all'hardware disponibile.
 
 %----------------------------------------------------------------------------------------
 \chapterWithoutNumber{Conclusioni e Sviluppi Futuri}
@@ -792,12 +825,52 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 %----------------------------------------------------------------------------------------
 
 \paragraph{Sintesi del Lavoro}
+Il lavoro svolto ha portato alla realizzazione di un motore di rendering sviluppato in C++23, capace di operare
+sia con l'API OpenGL 4.6 sia con Vulkan 1.4, selezionabili tramite parametro a riga di comando. Il motore
+implementa un deferred renderer (geometry e lighting pass), supporta materiali PBR, luci direzionali,
+spot e point light, sistemi particellari basati su instancing e una pipeline di rendering dedicata ai gizmo
+di debug. Tutte le componenti sono state progettate in ottica modulare e orientata agli oggetti,
+utilizzando librerie moderne come GLFW, GLAD, Vulkan Memory Allocator, VkBootstrap e ImGui.
+L'obiettivo principale del lavoro era confrontare in modo diretto le performance e il comportamento
+delle due API grafiche, con particolare attenzione all'impatto del multithreading di Vulkan rispetto all'approccio
+single-threaded di OpenGL. L'intero motore è stato costruito per garantire test riproducibili, così da
+ottenere una valutazione oggettiva e indipendente dalle condizioni esterne.
 
 \paragraph{Risultati Principali}
+% TODO: Fix percentage(s)
+I risultati sperimentali hanno evidenziato un miglioramento medio delle prestazioni di circa il XX\% a favore di Vulkan
+nelle scene a carico grafico medio-basso, e fino al XX\% nei contesti più complessi, come la scena caratterizzata da
+un elevato numero di sorgenti luminose. Le analisi mostrano che Vulkan sfrutta in modo più efficiente la CPU,
+grazie alla possibilità di generare e inviare i comandi di rendering in parallelo su più thread. \\
+Di conseguenza, la GPU viene utilizzata in maniera più costante e con minori tempi di inattività,
+mentre in OpenGL il vincolo single-threaded del driver introduce un collo di bottiglia lato CPU. \\
+Oltre al miglioramento in termini di frame time e stabilità, Vulkan ha mostrato una maggiore prevedibilità delle
+prestazioni e una migliore scalabilità al crescere del numero di draw call. In generale, l'architettura dell'API
+risulta più adatta ai sistemi multi-core moderni, confermando la validità del suo approccio a basso livello.
 
 \paragraph{Limitazioni del Lavoro}
+Nonostante i risultati ottenuti, il lavoro presenta alcune limitazioni.
+In primo luogo, la complessità di Vulkan comporta un maggiore tempo di sviluppo e una curva di apprendimento più ripida
+rispetto a OpenGL. La necessità di gestire manualmente pipeline, sincronizzazione e memoria aumenta la possibilità
+di errori e richiede un'attenzione ingegneristica significativa. \\
+Inoltre, i test sono stati condotti su un numero limitato di configurazioni hardware, e non includono un'analisi
+approfondita del comportamento su dispositivi mobile o integrati. Alcune ottimizzazioni specifiche per GPU AMD o Intel
+potrebbero produrre risultati diversi. Infine, il motore, pur completo per gli scopi della tesi, non implementa ancora
+tecniche avanzate come compute shader per la gestione delle particelle o post-processing complesso,
+che potrebbero ulteriormente evidenziare le differenze tra le API.
 
 \paragraph{Sviluppi Futuri}
+I possibili sviluppi futuri del progetto includono diverse direzioni di approfondimento.
+Dal punto di vista tecnico, l'integrazione di un renderer basato su compute shader e la gestione asincrona dei dati
+tra CPU e GPU permetterebbero di valutare ulteriormente i vantaggi del modello esplicito di Vulkan.
+L'estensione del motore verso una gestione multithreaded completa, con job system dedicato al caricamento e
+all'aggiornamento delle risorse, consentirebbe un confronto ancora più accurato sullo scaling delle performance.
+Un ulteriore sviluppo riguarda la possibilità di implementare un sistema di rendering ibrido,
+capace di sfruttare sia Vulkan che OpenGL in base al contesto o all'hardware disponibile, con l'obiettivo di massimizzare
+la compatibilità e la portabilità. \\
+Infine, il motore potrebbe essere esteso con funzionalità avanzate, come il supporto al ray tracing,
+l'implementazione di tecniche di global illumination e un sistema di asset streaming,
+rendendolo una base solida per progetti di ricerca o applicazioni real-time più complesse.
 
 % End of thesis
 \backmatter
