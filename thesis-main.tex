@@ -854,7 +854,7 @@ In primo luogo, la complessità di Vulkan comporta un maggiore tempo di sviluppo
 rispetto a OpenGL. La necessità di gestire manualmente pipeline, sincronizzazione e memoria aumenta la possibilità
 di errori e richiede un'attenzione ingegneristica significativa. \\
 Inoltre, i test sono stati condotti su un numero limitato di configurazioni hardware, e non includono un'analisi
-approfondita del comportamento su dispositivi mobile o integrati. Alcune ottimizzazioni specifiche per GPU AMD o Intel
+approfondita del comportamento su dispositivi mobile o integrati. Alcune ottimizzazioni specifiche per GPU Intel
 potrebbero produrre risultati diversi. Infine, il motore, pur completo per gli scopi della tesi, non implementa ancora
 tecniche avanzate come compute shader per la gestione delle particelle o post-processing complesso,
 che potrebbero ulteriormente evidenziare le differenze tra le API.
@@ -869,7 +869,7 @@ Un ulteriore sviluppo riguarda la possibilità di implementare un sistema di ren
 capace di sfruttare sia Vulkan che OpenGL in base al contesto o all'hardware disponibile, con l'obiettivo di massimizzare
 la compatibilità e la portabilità. \\
 Infine, il motore potrebbe essere esteso con funzionalità avanzate, come il supporto al ray tracing,
-l'implementazione di tecniche di global illumination e un sistema di asset streaming,
+l'implementazione di tecniche di global illumination e un sistema di asset streaming, armature ed animazioni,
 rendendolo una base solida per progetti di ricerca o applicazioni real-time più complesse.
 
 % End of thesis
@@ -881,7 +881,7 @@ rendendolo una base solida per progetti di ricerca o applicazioni real-time più
 \bibliography{bibliography}
 
 \begin{acknowledgements}
-   Desidero ringraziare la \textbf{Prof.ssa~[Damiana Lazzaro]}, relatore della tesi, per la disponibilità, la guida e
+   Desidero ringraziare la \textbf{Prof.ssa~[Damiana Lazzaro]}, relatrice della tesi, per la disponibilità, la guida e
    i suggerimenti forniti durante le diverse fasi del lavoro. \\
    Il lavoro si è basato sull’utilizzo di diverse librerie e strumenti open–source, tra cui
    \lstinline{GLFW}~\cite{glfw}, \lstinline{GLAD}~\cite{glad}, \lstinline{Vulkan}~\cite{vulkan_overview,khronos_vulkan_spec},
