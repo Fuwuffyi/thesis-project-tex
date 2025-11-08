@@ -816,24 +816,24 @@ latenza nella preparazione delle draw call, ottenendo frame time più regolari e
 si traduce in una maggiore stabilità visiva e in un comportamento più prevedibile del motore di rendering.
 La scena 3, con il numero massimo di sorgenti luminose e un'elevata complessità di shading, presenta un comportamento
 più eterogeneo. Su alcune configurazioni hardware (in particolare la piattaforma C) è stato registrato un incremento
-eccezionale delle prestazioni, fino al 250\%, mentre su altre si è osservato un lieve peggioramento (5–15\%). Questa
+eccezionale delle prestazioni, fino al 250\%, mentre su altre si è osservato un lieve peggioramento (5-15\%). Questa
 divergenza è attribuibile principalmente a due fattori: la diversa ottimizzazione dei driver e il grado di maturità
-dell’implementazione Vulkan rispetto a quella OpenGL. Poiché il carico in questo scenario è prevalentemente GPU-bound,
+dell'implementazione Vulkan rispetto a quella OpenGL. Poiché il carico in questo scenario è prevalentemente GPU-bound,
 l'impatto del command recording multithreaded risulta ridotto, mentre il peso della gestione manuale delle pipeline e
 delle risorse di memoria può introdurre un overhead aggiuntivo nei casi meno ottimizzati.
 La scena 4, focalizzata sui sistemi particellari e fortemente legata all'elaborazione GPU, mostra un guadagno limitato
-ma costante. In questo contesto la riduzione dell’overhead CPU incide in misura marginale, mentre il tempo di frame è
+ma costante. In questo contesto la riduzione dell'overhead CPU incide in misura marginale, mentre il tempo di frame è
 determinato principalmente dalle capacità computazionali della GPU. Ciò conferma che i benefici di Vulkan si manifestano
-più chiaramente nei casi in cui l’applicazione è vincolata dalle prestazioni della CPU.
-Nel complesso, Vulkan si dimostra un’API più scalabile, prevedibile e capace di sfruttare in modo più efficiente
-l’hardware moderno, specialmente in presenza di architetture multicore e scene complesse. OpenGL, pur mantenendo buone
+più chiaramente nei casi in cui l'applicazione è vincolata dalle prestazioni della CPU.
+Nel complesso, Vulkan si dimostra un'API più scalabile, prevedibile e capace di sfruttare in modo più efficiente
+l'hardware moderno, specialmente in presenza di architetture multicore e scene complesse. OpenGL, pur mantenendo buone
 prestazioni in contesti moderati, tende a saturare rapidamente le risorse CPU a causa del vincolo al thread principale
 e della maggiore astrazione offerta dal driver.
 È tuttavia importante evidenziare che questi vantaggi prestazionali sono ottenuti al costo di una maggiore complessità
 di sviluppo. Vulkan richiede la gestione esplicita di pipeline, sincronizzazioni e allocazioni di memoria, aspetti che
 in OpenGL sono automatizzati dal driver. Questo si traduce in un incremento del tempo di sviluppo e in una maggiore
-attenzione necessaria per evitare errori di gestione. In cambio, l’applicazione ottiene un controllo fine sull’intero
-flusso di rendering e la possibilità di ottimizzare il comportamento in funzione dell’hardware e del carico di lavoro.
+attenzione necessaria per evitare errori di gestione. In cambio, l'applicazione ottiene un controllo fine sull'intero
+flusso di rendering e la possibilità di ottimizzare il comportamento in funzione dell'hardware e del carico di lavoro.
 In sintesi, i dati sperimentali confermano che Vulkan, pur imponendo una curva di apprendimento più ripida e una
 maggiore complessità ingegneristica, offre vantaggi concreti in termini di efficienza, parallelismo e prevedibilità
 del comportamento. OpenGL resta più immediato da implementare, ma meno adatto a sfruttare pienamente le architetture
@@ -846,14 +846,14 @@ multicore e le GPU di nuova generazione.
 
 \paragraph{Sintesi del Lavoro}
 Il lavoro ha portato alla realizzazione di un motore di rendering sviluppato in C++23, in grado di operare
-sia con l’API OpenGL 4.6 sia con Vulkan 1.4, selezionabili tramite parametro a riga di comando.
+sia con l'API OpenGL 4.6 sia con Vulkan 1.4, selezionabili tramite parametro a riga di comando.
 Il motore implementa un sistema di rendering differito (geometry e lighting pass), con supporto a materiali PBR,
 luci direzionali, spot e point light, oltre a sistemi particellari basati su instancing e una pipeline dedicata
 al rendering dei gizmo di debug.
-L’architettura è stata progettata in modo modulare e orientato agli oggetti, facendo uso di librerie moderne
+L'architettura è stata progettata in modo modulare e orientato agli oggetti, facendo uso di librerie moderne
 come GLFW, GLAD, Vulkan Memory Allocator, VkBootstrap e ImGui.
-L’obiettivo principale del lavoro è stato quello di confrontare direttamente le prestazioni e il comportamento
-delle due API grafiche, con particolare attenzione all’impatto del multithreading di Vulkan rispetto all’approccio
+L'obiettivo principale del lavoro è stato quello di confrontare direttamente le prestazioni e il comportamento
+delle due API grafiche, con particolare attenzione all'impatto del multithreading di Vulkan rispetto all'approccio
 single-threaded di OpenGL. Il motore è stato realizzato per consentire test riproducibili, garantendo una
 valutazione oggettiva e indipendente dalle condizioni esterne.
 
@@ -862,12 +862,12 @@ I risultati sperimentali hanno evidenziato un miglioramento medio delle prestazi
 a favore di Vulkan nelle scene a carico grafico medio, e fino al 250\% in specifici casi ad alta complessità,
 come le scene con numerose sorgenti luminose.
 Le analisi confermano che Vulkan sfrutta in modo più efficiente la CPU grazie alla possibilità di generare e inviare
-i comandi di rendering in parallelo su più thread, riducendo l’overhead del driver.
+i comandi di rendering in parallelo su più thread, riducendo l'overhead del driver.
 Ne consegue un utilizzo più costante della GPU, con minori tempi di inattività e una maggiore regolarità del frame time.
 Al contrario, in OpenGL il vincolo al thread principale introduce un collo di bottiglia lato CPU, limitando la
 scalabilità in presenza di carichi elevati. \\
 Oltre ai benefici prestazionali, Vulkan ha mostrato una maggiore prevedibilità e stabilità delle performance,
-specialmente all’aumentare del numero di draw call, confermando la validità del suo approccio a basso livello
+specialmente all'aumentare del numero di draw call, confermando la validità del suo approccio a basso livello
 e la sua idoneità per le architetture multicore moderne.
 
 \paragraph{Limitazioni del Lavoro}
@@ -875,7 +875,7 @@ Nonostante i risultati ottenuti, il lavoro presenta alcune limitazioni.
 La complessità intrinseca di Vulkan comporta un tempo di sviluppo maggiore e una curva di apprendimento più ripida
 rispetto a OpenGL. La gestione manuale di pipeline, sincronizzazione e memoria aumenta la possibilità di errori
 e richiede una progettazione più attenta.
-Inoltre, i test sono stati condotti su un numero limitato di configurazioni hardware e non includono un’analisi
+Inoltre, i test sono stati condotti su un numero limitato di configurazioni hardware e non includono un'analisi
 approfondita del comportamento su GPU integrate o dispositivi mobili. Alcune ottimizzazioni specifiche per GPU AMD
 e Intel potrebbero portare a risultati differenti. \\
 Infine, il motore, pur completo per gli scopi di questa tesi, non include ancora tecniche avanzate come compute shader
@@ -884,12 +884,12 @@ le differenze prestazionali tra le API.
 
 \paragraph{Sviluppi Futuri}
 Gli sviluppi futuri del progetto possono procedere in diverse direzioni.
-Dal punto di vista tecnico, l’integrazione di un renderer basato su compute shader e la gestione asincrona dei dati
+Dal punto di vista tecnico, l'integrazione di un renderer basato su compute shader e la gestione asincrona dei dati
 tra CPU e GPU permetterebbero di analizzare in modo più approfondito i vantaggi del modello esplicito di Vulkan.
-L’introduzione di un job system dedicato al caricamento e all’aggiornamento delle risorse consentirebbe di estendere
+L'introduzione di un job system dedicato al caricamento e all'aggiornamento delle risorse consentirebbe di estendere
 la gestione multithreaded del motore e migliorare la scalabilità complessiva.
-Un’ulteriore evoluzione potrebbe riguardare la realizzazione di un sistema di rendering ibrido, capace di utilizzare
-OpenGL o Vulkan in base all’hardware disponibile, massimizzando compatibilità e portabilità.
+Un'ulteriore evoluzione potrebbe riguardare la realizzazione di un sistema di rendering ibrido, capace di utilizzare
+OpenGL o Vulkan in base all'hardware disponibile, massimizzando compatibilità e portabilità.
 Infine, il motore potrebbe essere ampliato con funzionalità avanzate, come il supporto al ray tracing,
 tecniche di global illumination, asset streaming, animazioni scheletriche e gestione di armature,
 rendendolo una base solida per progetti di ricerca o applicazioni real-time di livello professionale.
@@ -905,11 +905,11 @@ rendendolo una base solida per progetti di ricerca o applicazioni real-time di l
 \begin{acknowledgements}
    Desidero ringraziare la \textbf{Prof.ssa~[Damiana Lazzaro]}, relatrice della tesi, per la disponibilità, la guida e
    i suggerimenti forniti durante le diverse fasi del lavoro. \\
-   Il lavoro si è basato sull’utilizzo di diverse librerie e strumenti open–source, tra cui
+   Il lavoro si è basato sull'utilizzo di diverse librerie e strumenti open-source, tra cui
    \lstinline{GLFW}~\cite{glfw}, \lstinline{GLAD}~\cite{glad}, \lstinline{Vulkan}~\cite{vulkan_overview,khronos_vulkan_spec},
    \lstinline{VkBootstrap}~\cite{vkbootstrap}, \lstinline{Vulkan Memory Allocator}~\cite{vma} e \lstinline{ImGui}~\cite{imgui}
    che hanno reso possibile la realizzazione del motore di rendering. \\
-   Un ringraziamento particolare è rivolto alla comunità open–source per il continuo contributo allo sviluppo di
+   Un ringraziamento particolare è rivolto alla comunità open-source per il continuo contributo allo sviluppo di
    strumenti e risorse che rendono accessibile la ricerca e la sperimentazione nel campo della computer graphics.
 \end{acknowledgements}
 
