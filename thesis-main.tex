@@ -785,7 +785,6 @@ I risultati mostrano un miglioramento complessivo delle prestazioni del motore d
 utilizzata l'API Vulkan rispetto a OpenGL, mantenendo invariate le condizioni di test e le scene analizzate.
 La Figura~\ref{fig:heatmap-pc-fps} riassume il numero medio di frame per secondo (FPS) ottenuto da ciascuna
 configurazione hardware su tutte le scene e per entrambe le API grafiche.
-% TODO: Make font bigger
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/heatmap_pc_fps.png}
@@ -809,7 +808,6 @@ una gestione più efficiente delle risorse grafiche e dell'allocazione esplicita
 automatizzato di OpenGL. \\
 La Figura~\ref{fig:heatmap-pc-improvements} mostra i miglioramenti percentuali ottenuti, suddivisi per configurazione
 hardware e scena, fornendo una visione comparativa del guadagno effettivo per API.
-% TODO: Make font bigger
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.95\linewidth]{figures/heatmap_pc_improvements.png}
@@ -831,7 +829,6 @@ prevedibile del motore di rendering. Tuttavia, in alcune configurazioni Vulkan m
 rispetto alla media. Questo comportamento è attribuibile al fatto che l'API registra i command buffer del frame
 successivo mentre la GPU sta ancora elaborando quello corrente, introducendo leggere oscillazioni nel frame time dovute alla
 concorrenza tra CPU e GPU (Fig.\ref{fig:frametime-stability}). \\
-% TODO: Make font bigger
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/frametime_stability.png}
@@ -854,7 +851,6 @@ l'hardware moderno, specialmente in presenza di architetture multicore e scene c
 prestazioni in contesti moderati, tende a saturare rapidamente le risorse CPU a causa del vincolo al thread principale
 e della maggiore astrazione offerta dal driver. Qui vengono riportati i risultati ottenuti su tutte le scene da tutte le
 configurazioni hardware (Fig.\ref{fig:cross-pc-results}). \\
-% TODO: Make font bigger
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/cross_pc_results.png}
@@ -867,7 +863,6 @@ mostra una stabilità comparabile a quella di OpenGL nella maggior parte degli s
 una variabilità significativa degli FPS rispetto a OpenGL, suggerendo che in questo caso specifico il comportamento può
 essere più sensibile alla configurazione hardware. Ciò potrebbe spiegare le discrepanze osservate nei test eseguiti
 sulla piattaforma D. \\
-% TODO: Make font bigger
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/percentile_comparison.png}

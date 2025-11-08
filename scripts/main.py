@@ -10,14 +10,32 @@ from scipy import stats
 # ==============================
 # Configuration
 # ==============================
-plt.style.use('seaborn-v0_8-darkgrid')
-sns.set_palette("husl")
-
 DATA_ROOT = "data_clean"
 IMG_ROOT = "img"
+FONT_SIZE = 18  # <-- master font size variable
+
 os.makedirs(IMG_ROOT, exist_ok=True)
 
 pattern = re.compile(r"Scene_(\d+)_(opengl|vulkan)_.+_(frames|system)\.csv")
+
+plt.style.use('seaborn-v0_8-darkgrid')
+sns.set_palette("husl")
+
+plt.rcParams.update({
+    'font.size': FONT_SIZE,              # Base font size
+    'font.family': 'sans-serif',         # or 'serif', 'monospace', etc.
+    'font.sans-serif': ['DejaVu Sans'],  # Optional: specify actual font list
+    'axes.titlesize': FONT_SIZE + 4,
+    'axes.titleweight': 'bold',          # Control weight
+    'axes.labelsize': FONT_SIZE + 2,
+    'axes.labelweight': 'regular',
+    'xtick.labelsize': FONT_SIZE,
+    'ytick.labelsize': FONT_SIZE,
+    'legend.fontsize': FONT_SIZE,
+    'figure.titlesize': FONT_SIZE + 6,   # Title for the whole figure
+    'figure.titleweight': 'bold',
+})
+
 
 # ==============================
 # Data Collection
@@ -174,7 +192,7 @@ if "Average FPS" in summary.columns:
         for bar in bars:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2., height, f'{height:.0f}', 
-                   ha='center', va='bottom', fontsize=10, fontweight='bold')
+                   ha='center', va='bottom', fontsize=FONT_SIZE-2, fontweight='bold')
 
     ax.set_xlabel('Scena', fontsize=14, fontweight='bold')
     ax.set_ylabel('FPS Medio', fontsize=14, fontweight='bold')
@@ -359,7 +377,7 @@ if not frames.empty and "FrameTime(ms)" in frames.columns:
         for bar in bars:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2., height,
-                   f'{height:.1f}%', ha='center', va='bottom', fontsize=9)
+                   f'{height:.1f}%', ha='center', va='bottom', fontsize=FONT_SIZE-2)
     
     ax.set_xlabel('Scena', fontsize=14, fontweight='bold')
     ax.set_ylabel('Coefficiente di Variazione Medio (%)', fontsize=14, fontweight='bold')
@@ -393,7 +411,7 @@ if "P1 FPS" in summary.columns and "P99 FPS" in summary.columns:
         for bar in bars:
             height = bar.get_height()
             ax1.text(bar.get_x() + bar.get_width()/2., height, f'{height:.0f}',
-                    ha='center', va='bottom', fontsize=9)
+                    ha='center', va='bottom', fontsize=FONT_SIZE-2)
     
     ax1.set_xlabel('Scena', fontsize=12, fontweight='bold')
     ax1.set_ylabel('FPS 1% Più Bassi', fontsize=12, fontweight='bold')
