@@ -790,6 +790,14 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 \section{Risultati}
 I risultati mostrano un miglioramento complessivo delle prestazioni del motore di rendering quando viene
 utilizzata l'API Vulkan rispetto a OpenGL, mantenendo invariate le condizioni di test e le scene analizzate.
+La Figura~\ref{fig:heatmap-pc-fps} riassume il numero medio di frame per secondo (FPS) ottenuto da ciascuna
+configurazione hardware su tutte le scene e per entrambe le API grafiche.
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/heatmap_pc_fps.png}
+   \caption{FPS medi registrati per ogni configurazione hardware e scena, confrontando Vulkan e OpenGL.}
+   \label{fig:heatmap-pc-fps}
+\end{figure}
 Nelle scene con carichi di lavoro medio-alti per la CPU (scene 0, 1, 2 e 4) è stato osservato un incremento medio
 delle prestazioni compreso tra il 20\% e il 25\%. Tale miglioramento si manifesta principalmente attraverso
 una riduzione del tempo medio per frame, indicativa di un minore overhead lato CPU con Vulkan. \\
@@ -801,8 +809,18 @@ all'implementazione meno ottimizzata del backend Vulkan rispetto a quello OpenGL
 complessità dell'API e alla sua relativa novità nel contesto di sviluppo del progetto. \\
 Nonostante ciò, sull'architettura hardware C è stato registrato un incremento di prestazioni particolarmente
 rilevante nella scena 3, pari a circa il 250\%, suggerendo che il comportamento di Vulkan beneficia in modo
-più marcato di determinate combinazioni CPU-GPU e driver.
-% TODO: Add graph images
+più marcato di determinate combinazioni CPU-GPU e driver. \\
+La Figura~\ref{fig:heatmap-pc-improvements} mostra i miglioramenti percentuali ottenuti, suddivisi per configurazione
+hardware e scena, fornendo una visione comparativa del guadagno effettivo per API.
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=.8\linewidth]{figures/heatmap_pc_improvements.png}
+   \caption{Miglioramento percentuale delle prestazioni per ogni configurazione hardware e scena,
+   calcolato come differenza relativa tra Vulkan e OpenGL.}
+   \label{fig:heatmap-pc-improvments}
+\end{figure}
+
+% TODO: Add further graph images
 
 \section{Discussione}
 I risultati sperimentali confermano il vantaggio architetturale offerto da Vulkan nei contesti in cui la CPU rappresenta
