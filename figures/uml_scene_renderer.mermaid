@@ -1,12 +1,14 @@
 graph LR
-    SceneManager --> Node
+    Scene --> Node
     Node --> TransformComponent
     Node --> LightComponent
     Node --> ParticleSystemComponent
-    Node --> Renderer
+    Node --> RendererSystemComponent
+    Renderer --> Scene
     Renderer --> GLRenderer
     Renderer --> VulkanRenderer
     GLRenderer --> ResourceManager
     VulkanRenderer --> ResourceManager
     ResourceManager --> IMesh
-    ResourceManager --> ITexture
+    ResourceManager --> IMaterial
+    IMaterial --> ITexture

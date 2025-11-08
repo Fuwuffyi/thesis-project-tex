@@ -83,7 +83,6 @@ efficienza, prevedibilità delle prestazioni e best practice per lo sviluppo di 
 % Main content
 \mainmatter
 
-% TODO: Check image/listing/table references
 % TODO: Improve chapter 4?
 
 %----------------------------------------------------------------------------------------
@@ -180,14 +179,14 @@ come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf
    \label{fig:g-buffer-example}
 \end{figure}
 Nel secondo passaggio, denominato \emph{lighting pass}, l'illuminazione viene calcolata utilizzando i dati salvati
-nei buffer (Fig.\ref{fig:g-buffer-example}), evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni
+nei buffer (Fig.\ref{fig:g-buffer-example} e \ref{fig:deferred-pipeline-example}), evitando di dover eseguire nuovamente le trasformazioni geometriche per ogni
 luce. L'equazione generale per il colore finale di un frammento è:
 \begin{align*}
 C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
 \end{align*}
 dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
-indicato per applicazioni moderne e motori di gioco con scenari complessi (Fig.\ref{fig:deferred-pipeline-example}).
+indicato per applicazioni moderne e motori di gioco con scenari complessi.
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
@@ -281,7 +280,7 @@ G_1(\omega,\mathbf{n}) =
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
 In parole semplici, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale, parte
-della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita (Fig.\ref{fig:pbr-material-render}).
+della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita.
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa diventa:
@@ -306,6 +305,10 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
     \item $F$ → intensità speculare in base all'angolo di visuale;
     \item $G$ → riduzione della luce dovuta all'auto-occlusione dei microfacets.
 \end{itemize}
+\noindent
+L'aumento di roughness disperde la luce, generando highlight più ampi e opachi;
+l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa
+(Esempi nella Fig.\ref{fig:pbr-material-render} e \ref{fig:pbr-material-example}).
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
@@ -313,17 +316,14 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
       (colonne) sui materiali PBR.}
    \label{fig:pbr-material-render}
 \end{figure}
-\noindent
-L'aumento di roughness disperde la luce, generando highlight più ampi e opachi (Fig.\ref{fig:pbr-material-example});
-l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa.
-Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
-di materiali in ambienti virtuali.
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
    \label{fig:pbr-material-example}
 \end{figure}
+Queste relazioni rendono il PBR un modello coerente e fisicamente plausibile per la rappresentazione
+di materiali in ambienti virtuali.
 
 \section{Graphics API: OpenGL and Vulkan}
 OpenGL e Vulkan rappresentano due approcci concettualmente diversi allo sviluppo di applicazioni grafiche. \\
@@ -546,7 +546,8 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig
     \label{fig:g-buffer-textures}
 \end{figure}
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
-con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda (Fig.\ref{fig:uml-activity-rendering}).
+con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda).
+% TODO: Move this figure?
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
