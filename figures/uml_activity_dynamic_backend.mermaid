@@ -1,17 +1,16 @@
+---
+config:
+  fontSize: 24
+---
 sequenceDiagram
-    participant User
     participant Program
     participant ResourceManager
     participant RendererFactory
     participant IRenderer
     participant GLRenderer
     participant VkRenderer
-
-    User->>Program: program -g or -v
-
     Program->>ResourceManager: loadScene()
     ResourceManager-->>Program: Scene
-
     alt OpenGL mode
         activate Program
         Program->>RendererFactory: create(API::OpenGL)
@@ -37,7 +36,6 @@ sequenceDiagram
         Program-->>User: Vulkan renderer ready
         deactivate Program
     end
-
     Program->>IRenderer: setActiveScene(Scene)
     Program->>IRenderer: setActiveCamera(Camera)
     IRenderer-->>Program: render configured
