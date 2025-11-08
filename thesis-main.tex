@@ -112,8 +112,8 @@ Il progetto è stato sviluppato con un approccio incrementale, secondo cicli ite
 Il motore adotta una struttura modulare che separa la logica di rendering dalla gestione della scena, così da consentire
 il confronto diretto tra i due backend.
 I test prestazionali sono stati condotti su una scena principale: la cattedrale di Sponza~\cite{sponza_original,sponza_intel2022},
-utilizzando diversi hardware, variando numero di luci e \emph{particle systems}, per misurare in modo oggettivo i benefici derivati
-dal parallelismo offerto da Vulkan.
+utilizzando diverse configurazioni hardware, variando numero di luci e \emph{particle systems}, per misurare in modo
+oggettivo i benefici derivati dal parallelismo offerto da Vulkan.
 
 \paragraph{Struttura della tesi}
 La struttura della tesi è la seguente:
@@ -535,8 +535,9 @@ non utilizzati delle texture, riducendo l'uso della memoria GPU.
 Per il geometry pass, viene utilizzato uno shader GLSL dedicato che calcola le informazioni necessarie per ciascun
 frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig.\ref{fig:g-buffer-textures}):
 \begin{itemize}
-    \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO.
-    \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic.
+    \item \texttt{gAlbedo}: canali RGB per il colore diffuso, canale A per l'AO;
+    \item \texttt{gNormal}: normali codificate tramite un algoritmo di \emph{oct-encoding} nei canali RG, canale B per roughness, canale A per metallic;
+    \item gDepth: depth texture utilizzata per ottenere la posizione dei mesh per pixel.
 \end{itemize}
 \begin{figure}[htbp]
     \centering
@@ -776,7 +777,11 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 \centering
 \begin{tabular}{l|l|l|l}
    \textbf{ID} & \textbf{CPU} & \textbf{GPU} & \textbf{VRAM} \\ \hline
-   A & AMD Ryzen 7 9800X3D & NVIDIA RTX 5080 & 16 GB GDDR7 \\
+   A & AMD Ryzen 7 9800X3D & NVIDIA RTX 5080 & 16 GB GDDR7 \\ % Fuwuffy
+   B & AMD Ryzen 7 2700 & NVIDIA RTX 3070ti & 8 GB GDDR6X \\ % Ponse
+   C & Intel Core i7-8700K & NVIDIA RTX 3070 & 8 GB GDDR6 \\ % Medijaster
+   D & AMD Ryzen 7 8700F & NVIDIA GT 1030 & 4 GB GDDR5 \\ % FuwuffyParents
+   E & Intel Core i3-1005G1 & Mesa Intel UHD Graphics (ICL GT1) & X \\ % FuwuffyLaptop
 \end{tabular}
 \caption{Configurazioni hardware utilizzate nei test}
 \label{tab:table-hw}
@@ -855,7 +860,7 @@ In primo luogo, la complessità di Vulkan comporta un maggiore tempo di sviluppo
 rispetto a OpenGL. La necessità di gestire manualmente pipeline, sincronizzazione e memoria aumenta la possibilità
 di errori e richiede un'attenzione ingegneristica significativa. \\
 Inoltre, i test sono stati condotti su un numero limitato di configurazioni hardware, e non includono un'analisi
-approfondita del comportamento su dispositivi mobile o integrati. Alcune ottimizzazioni specifiche per GPU Intel
+approfondita del comportamento su dispositivi mobile o integrati. Alcune ottimizzazioni specifiche per GPU Intel e GPU AMD
 potrebbero produrre risultati diversi. Infine, il motore, pur completo per gli scopi della tesi, non implementa ancora
 tecniche avanzate come compute shader per la gestione delle particelle o post-processing complesso,
 che potrebbero ulteriormente evidenziare le differenze tra le API.
