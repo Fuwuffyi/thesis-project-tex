@@ -688,7 +688,7 @@ tempo reale tramite l'interfaccia grafica del motore .
 \section{Simulazione di Particelle}
 Il motore integra sistemi di particelle configurabili tramite {\ttfamily ParticleSystemComponent}.
 Ogni sistema contiene array di {\ttfamily ParticleInstanceData} che memorizzano posizione, velocità,
-colore e altri attributi. Le particelle sono aggiornate ogni frame tramite integrazione
+colore e altri attributi. Le particelle sono aggiornate per ogni frame tramite integrazione
 semi-implicita della fisica, includendo accelerazione e velocità
 Per il rendering, le particelle sono disegnate con instancing, riducendo drasticamente il numero
 di draw call. Il calcolo multithreaded delle particelle è attivo per entrambi gli API in quanto non influisce
