@@ -809,7 +809,10 @@ all'implementazione meno ottimizzata del backend Vulkan rispetto a quello OpenGL
 complessità dell'API e alla sua relativa novità nel contesto di sviluppo del progetto. \\
 Nonostante ciò, sull'architettura hardware C è stato registrato un incremento di prestazioni particolarmente
 rilevante nella scena 3, pari a circa il 250\%, suggerendo che il comportamento di Vulkan beneficia in modo
-più marcato di determinate combinazioni CPU-GPU e driver. \\
+più marcato di determinate combinazioni CPU-GPU e driver.
+Inoltre, in tutte le scene si è riscontrata una riduzione dell'utilizzo della memoria video (VRAM) con Vulkan, segno di
+una gestione più efficiente delle risorse grafiche e dell'allocazione esplicita della memoria rispetto all'approccio
+automatizzato di OpenGL. \\
 La Figura~\ref{fig:heatmap-pc-improvements} mostra i miglioramenti percentuali ottenuti, suddivisi per configurazione
 hardware e scena, fornendo una visione comparativa del guadagno effettivo per API.
 \begin{figure}[htbp]
@@ -826,12 +829,21 @@ hardware e scena, fornendo una visione comparativa del guadagno effettivo per AP
 I risultati sperimentali confermano il vantaggio architetturale offerto da Vulkan nei contesti in cui la CPU rappresenta
 il principale collo di bottiglia. L'approccio esplicito dell'API e la possibilità di parallelizzare la registrazione
 dei comandi consentono un utilizzo più efficiente dei core disponibili, riducendo sensibilmente l'overhead di gestione
-del driver rispetto a OpenGL.
+del driver rispetto a OpenGL. \\
 Nei casi di carico medio (scene 0, 1 e 2), caratterizzati da un numero moderato di luci dinamiche e materiali PBR,
 si osserva un incremento prestazionale compreso tra il 20\% e il 25\%. In questi scenari il carico della GPU rimane
 sufficiente a mantenere la pipeline occupata, ma l'efficienza del multithreading di Vulkan permette di ridurre la
-latenza nella preparazione delle draw call, ottenendo frame time più regolari e una minore varianza temporale. Ciò
-si traduce in una maggiore stabilità visiva e in un comportamento più prevedibile del motore di rendering.
+latenza nella preparazione delle draw call. Ciò si traduce in una maggiore stabilità visiva e in un comportamento più
+prevedibile del motore di rendering. Tuttavia, in alcune configurazioni Vulkan mostra una maggiore variabilità degli FPS
+rispetto alla media. Questo comportamento è attribuibile al fatto che l'API registra i command buffer del frame
+successivo mentre la GPU sta ancora elaborando quello corrente, introducendo leggere oscillazioni nel frame time dovute alla
+concorrenza tra CPU e GPU (Fig.\ref{fig:fps-derivation-errorbars}). \\
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=.85\linewidth]{figures/fps_derivation_errorbars.png}
+   \caption{Derivazione standard degli FPS per scena.}
+   \label{fig:fps-derivation-errorbars}
+\end{figure}
 La scena 3, con il numero massimo di sorgenti luminose e un'elevata complessità di shading, presenta un comportamento
 più eterogeneo. Su alcune configurazioni hardware (in particolare la piattaforma C) è stato registrato un incremento
 eccezionale delle prestazioni, fino al 250\%, mentre su altre si è osservato un lieve peggioramento (5-15\%). Questa
@@ -842,11 +854,11 @@ delle risorse di memoria può introdurre un overhead aggiuntivo nei casi meno ot
 La scena 4, focalizzata sui sistemi particellari e fortemente legata all'elaborazione GPU, mostra un guadagno limitato
 ma costante. In questo contesto la riduzione dell'overhead CPU incide in misura marginale, mentre il tempo di frame è
 determinato principalmente dalle capacità computazionali della GPU. Ciò conferma che i benefici di Vulkan si manifestano
-più chiaramente nei casi in cui l'applicazione è vincolata dalle prestazioni della CPU.
+più chiaramente nei casi in cui l'applicazione è vincolata dalle prestazioni della CPU. \\
 Nel complesso, Vulkan si dimostra un'API più scalabile, prevedibile e capace di sfruttare in modo più efficiente
 l'hardware moderno, specialmente in presenza di architetture multicore e scene complesse. OpenGL, pur mantenendo buone
 prestazioni in contesti moderati, tende a saturare rapidamente le risorse CPU a causa del vincolo al thread principale
-e della maggiore astrazione offerta dal driver.
+e della maggiore astrazione offerta dal driver. \\
 È tuttavia importante evidenziare che questi vantaggi prestazionali sono ottenuti al costo di una maggiore complessità
 di sviluppo. Vulkan richiede la gestione esplicita di pipeline, sincronizzazioni e allocazioni di memoria, aspetti che
 in OpenGL sono automatizzati dal driver. Questo si traduce in un incremento del tempo di sviluppo e in una maggiore
