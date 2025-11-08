@@ -836,12 +836,12 @@ latenza nella preparazione delle draw call. Ciò si traduce in una maggiore stab
 prevedibile del motore di rendering. Tuttavia, in alcune configurazioni Vulkan mostra una maggiore variabilità degli FPS
 rispetto alla media. Questo comportamento è attribuibile al fatto che l'API registra i command buffer del frame
 successivo mentre la GPU sta ancora elaborando quello corrente, introducendo leggere oscillazioni nel frame time dovute alla
-concorrenza tra CPU e GPU (Fig.\ref{fig:fps-derivation-errorbars}). \\
+concorrenza tra CPU e GPU (Fig.\ref{fig:frametime-stability}). \\
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.85\linewidth]{figures/fps_derivation_errorbars.png}
-   \caption{Derivazione standard degli FPS per scena.}
-   \label{fig:fps-derivation-errorbars}
+   \includegraphics[width=.85\linewidth]{figures/frametime_stability.png}
+   \caption{Stabilitá degli FPS per scena.}
+   \label{fig:frametime-stability}
 \end{figure}
 La scena 3, con il numero massimo di sorgenti luminose e un'elevata complessità di shading, presenta un comportamento
 più eterogeneo. Su alcune configurazioni hardware (in particolare la piattaforma C) è stato registrato un incremento
@@ -857,7 +857,26 @@ più chiaramente nei casi in cui l'applicazione è vincolata dalle prestazioni d
 Nel complesso, Vulkan si dimostra un'API più scalabile, prevedibile e capace di sfruttare in modo più efficiente
 l'hardware moderno, specialmente in presenza di architetture multicore e scene complesse. OpenGL, pur mantenendo buone
 prestazioni in contesti moderati, tende a saturare rapidamente le risorse CPU a causa del vincolo al thread principale
-e della maggiore astrazione offerta dal driver. \\
+e della maggiore astrazione offerta dal driver. Qui vengono riportati i risultati ottenuti su tutte le scene da tutte le
+configurazioni hardware (Fig.\ref{fig:cross-pc-results}). \\
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=.85\linewidth]{figures/cross_pc_results.png}
+   \caption{FPS ottenuti da tutti gli hardware su tutte le scene.}
+   \label{fig:cross-pc-results}
+\end{figure}
+Per una valutazione più dettagliata della stabilità delle prestazioni, sono stati confrontati i valori di FPS relativi
+ai casi migliore e peggiore per entrambe le API. Come evidenziato in Figura~\ref{fig:percentile-comparisons}, Vulkan
+mostra una stabilità comparabile a quella di OpenGL nella maggior parte degli scenari. Tuttavia, la scena 3 presenta
+una variabilità significativa degli FPS rispetto a OpenGL, suggerendo che in questo caso specifico il comportamento può
+essere più sensibile alla configurazione hardware. Ciò potrebbe spiegare le discrepanze osservate nei test eseguiti
+sulla piattaforma D. \\
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=.85\linewidth]{figures/percentile_comparison.png}
+   \caption{Confronto dei valori di FPS tra il caso migliore e il caso peggiore.}
+   \label{fig:percentile-comparisons}
+\end{figure}
 È tuttavia importante evidenziare che questi vantaggi prestazionali sono ottenuti al costo di una maggiore complessità
 di sviluppo. Vulkan richiede la gestione esplicita di pipeline, sincronizzazioni e allocazioni di memoria, aspetti che
 in OpenGL sono automatizzati dal driver. Questo si traduce in un incremento del tempo di sviluppo e in una maggiore
