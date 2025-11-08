@@ -432,7 +432,7 @@ if "P1 FPS" in summary.columns and "P99 FPS" in summary.columns:
         for bar in bars:
             height = bar.get_height()
             ax2.text(bar.get_x() + bar.get_width()/2., height, f'{height:.0f}',
-                    ha='center', va='bottom', fontsize=9)
+                    ha='center', va='bottom', fontsize=FONT_SIZE-2)
     
     ax2.set_xlabel('Scena', fontsize=12, fontweight='bold')
     ax2.set_ylabel('FPS 99% Più Alti', fontsize=12, fontweight='bold')
@@ -485,7 +485,7 @@ if not frames.empty and "FPS" in frames.columns:
                 colors.append('#e74c3c')
         
         if data_by_pc:
-            bp = ax.boxplot(data_by_pc, labels=labels, patch_artist=True, showmeans=True,
+            bp = ax.boxplot(data_by_pc, tick_labels=labels, patch_artist=True, showmeans=True,
                            meanprops=dict(marker='D', markerfacecolor='yellow', markersize=6))
             
             for patch, color in zip(bp['boxes'], colors):
