@@ -604,8 +604,9 @@ di risorse e materiali, e i sistemi di rendering. La struttura principale del pr
     \item \texttt{resources/meshes} e \texttt{resources/textures}: asset 3D e texture utilizzate dal motore.
 \end{itemize}
 La selezione del backend avviene a runtime tramite opzioni di comando, senza alterare il flusso logico
-del motore. Questo permette di eseguire test comparativi tra OpenGL e Vulkan utilizzando la stessa
+del motore~\ref{lst:renderer-factory}. Questo permette di eseguire test comparativi tra OpenGL e Vulkan utilizzando la stessa
 scena e gli stessi asset.
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 
 \section{Componenti Principali}
 Il cuore del motore è costituito dai seguenti moduli:
@@ -618,11 +619,10 @@ Il cuore del motore è costituito dai seguenti moduli:
     \item \texttt{ResourceManager}: carica, memorizza e gestisce mesh, texture e shader, utilizzando factory
           specifiche per OpenGL e Vulkan.
 \end{itemize}
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
 
 \section{Gestione della Scena e dei Componenti}
 La scena è rappresentata come un grafo di nodi (\texttt{Node}) che possono contenere componenti
-come \texttt{TransformComponent}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}.
+come \texttt{TransformComponent}, \texttt{LightComponent} e \texttt{ParticleSystemComponent}~\ref{lst:scene-management}.
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-management}]{listings/scene_management.cpp}
 Ogni nodo mantiene riferimenti ai figli e ai genitori, permettendo la propagazione automatica delle
 trasformazioni lungo la gerarchia. Questo approccio consente di gestire complesse relazioni
@@ -630,18 +630,18 @@ di parenthood e trasformazioni locali/globali in modo trasparente.
 Il ciclo di aggiornamento della scena prevede una traversata gerarchica in cui ciascun nodo
 aggiorna i componenti registrati. I \texttt{TransformComponent} calcolano le matrici globali a
 partire dalle trasformazioni locali, mentre i componenti di luce aggiornano i dati inviati agli
-shader.
+shader. \\
 I sistemi di particelle calcolano posizione, velocità e altre proprietà fisiche delle
 particelle, integrando la simulazione in modo multithreaded quando il backend lo permette.
 L'approccio a componenti rende semplice l'estensione della scena con nuovi comportamenti senza
 alterare la gerarchia principale e separa chiaramente la logica di aggiornamento dallo stadio
-di rendering.
+di rendering~\ref{lst:scene-update}.
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-update}]{listings/scene_update.cpp}
 
 \section{Gestione delle risorse}
 La gestione delle risorse è centralizzata nel modulo \texttt{ResourceManager}, che si occupa di
 caricare, creare e memorizzare mesh, texture e shader. Ogni risorsa è identificata tramite
-\texttt{ResourceHandle} con UID univoci, garantendo riferimenti consistenti senza duplicazioni.
+\texttt{ResourceHandle} con UID univoci, garantendo riferimenti consistenti senza duplicazioni~\ref{lst:resource-management}.
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:resource-management}]{listings/resource_management.cpp}
 Le factory astratte (\texttt{IResourceFactory}) permettono di istanziare risorse specifiche
 per OpenGL o Vulkan. Questo design consente al motore di utilizzare risorse condivise in modo
@@ -678,7 +678,7 @@ Durante il \emph{geometry pass}, gli shader scrivono nei G-buffer le informazion
 albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare la memoria,
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
 canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. Queste scelte riducono
-l'occupazione di memoria senza compromettere la qualità visiva.
+l'occupazione di memoria senza compromettere la qualità visiva~\ref{lst:geometry-pass-snippet}.
 \lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/geometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
@@ -690,7 +690,7 @@ tramite \texttt{MaterialTemplate} e \texttt{MaterialInstance}, con parametri fis
 roughness, metalness e albedo. Le informazioni vengono passate agli shader tramite uniform buffer (OpenGL) o
 descriptor set (Vulkan).
 La gestione dei materiali consente di applicare facilmente diversi set di texture PBR e modificare i parametri in
-tempo reale tramite l'interfaccia grafica del motore.
+tempo reale tramite l'interfaccia grafica del motore~\ref{lst:lighting-pass-snippet}.
 \lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:lighting-pass-snippet}]{listings/lighting_snippet.glsl}
 
 \section{Simulazione di Particelle}
@@ -727,7 +727,8 @@ Vulkan richiede invece che gli shader siano compilati in anticipo nel formato bi
 Nel progetto, la compilazione avviene tramite gli strumenti ufficiali di Vulkan, consentendo
 di catturare errori a livello di build anziché a runtime e migliorando la stabilità complessiva
 del sistema. Questa pipeline di compilazione permette inoltre un migliore controllo sull'ottimizzazione
-e sull'interfacciamento con descriptor set e layout della pipeline.
+e sull'interfacciamento con descriptor set e layout della pipeline. \\
+Un esempio della compilazione in SPIR-V eseguita dal file CMake viene mostrato nel listino~\ref{lst:spv-compilation}.
 \lstinputlisting[float,floatplacement=htbp,label={lst:spv-compilation}]{listings/spv_compilation.cmake}
 
 %----------------------------------------------------------------------------------------
@@ -820,10 +821,8 @@ hardware e scena, fornendo una visione comparativa del guadagno effettivo per AP
    \includegraphics[width=.95\linewidth]{figures/heatmap_pc_improvements.png}
    \caption{Miglioramento percentuale delle prestazioni per ogni configurazione hardware e scena,
    calcolato come differenza relativa tra Vulkan e OpenGL.}
-   \label{fig:heatmap-pc-improvments}
+   \label{fig:heatmap-pc-improvements}
 \end{figure}
-
-% TODO: Add further graph images
 
 \section{Discussione}
 I risultati sperimentali confermano il vantaggio architetturale offerto da Vulkan nei contesti in cui la CPU rappresenta
