@@ -150,7 +150,7 @@ mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pi
 proprietà del materiale.
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/rendering_pipeline_overview.png}
+   \includegraphics[width=.95\linewidth]{figures/rendering_pipeline_overview.png}
    \caption{Stadi di una pipeline di rendering.}
    \label{fig:rendering-pipeline-overview}
 \end{figure}
@@ -172,7 +172,7 @@ come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf
 (albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO).
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/g_buffer_example.png}
+   \includegraphics[width=.95\linewidth]{figures/g_buffer_example.png}
    \caption{Esempio di G-buffer in una pipeline di deferred rendering da \cite{learnopengl}.}
    \label{fig:g-buffer-example}
 \end{figure}
@@ -187,7 +187,7 @@ Questo approccio permette di gestire un numero elevato di luci in modo più effi
 indicato per applicazioni moderne e motori di gioco con scenari complessi.
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/deferred_pipeline_example.png}
+   \includegraphics[width=.9\linewidth]{figures/deferred_pipeline_example.png}
    \caption{Schema generale della pipeline di deferred rendering da \cite{learnopengl}.}
    \label{fig:deferred-pipeline-example}
 \end{figure}
@@ -309,14 +309,14 @@ l'aumento del valore metallic incrementa la riflessione speculare e riduce la co
 (Esempi nella Fig.\ref{fig:pbr-material-render} e \ref{fig:pbr-material-example}).
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/pbr_material_render.png}
+   \includegraphics[width=1.1\linewidth]{figures/pbr_material_render.png}
    \caption{Array di 10$\times$10 cubi che mostra l'effetto della variazione di roughness (righe) e metalness
       (colonne) sui materiali PBR.}
    \label{fig:pbr-material-render}
 \end{figure}
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/pbr_material_example.png}
+   \includegraphics[width=.95\linewidth]{figures/pbr_material_example.png}
    \caption{Esempio di materiale PBR da \cite{learnopengl}.}
    \label{fig:pbr-material-example}
 \end{figure}
@@ -490,7 +490,7 @@ pipeline di rendering (Fig.\ref{fig:uml-scene-renderer}). Le metriche di perform
 {\ttfamily PerformanceLogger} e rese disponibili tramite {\ttfamily PerformanceGUI}, consentendo il monitoraggio in tempo reale.
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=.8\linewidth]{figures/uml_scene_renderer.png}
+   \includegraphics[width=.95\linewidth]{figures/uml_scene_renderer.png}
    \caption{Architettura generale del motore di rendering, con interazioni tra scena, renderer e gestione delle risorse.}
    \label{fig:uml-scene-renderer}
 \end{figure}
@@ -539,7 +539,7 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig
 \end{itemize}
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=.8\linewidth]{figures/g_buffer_textures.png}
+    \includegraphics[width=.95\linewidth]{figures/g_buffer_textures.png}
     \caption{Struttura del G-buffer con le texture e i canali utilizzati.}
     \label{fig:g-buffer-textures}
 \end{figure}
@@ -552,7 +552,7 @@ scalare le prestazioni con il numero di core disponibili (Fig.\ref{fig:uml-activ
 affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=.8\linewidth]{figures/uml_activity_geometrythreading.png}
+    \includegraphics[width=.95\linewidth]{figures/uml_activity_geometrythreading.png}
     \caption{Generazione di command buffer in parallelo.}
     \label{fig:uml-activity-geometrythreading}
 \end{figure}
