@@ -546,14 +546,7 @@ frammento della scena. Lo shader scrive nei G-buffer due texture principali (Fig
     \label{fig:g-buffer-textures}
 \end{figure}
 La combinazione di queste tecniche garantisce un G-buffer compatto e performante, compatibile sia con OpenGL sia
-con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda).
-% TODO: Move this figure?
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=.8\linewidth]{figures/uml_activity_rendering.png}
-    \caption{Flusso di rendering della scena attraverso il motore e i backend.}
-    \label{fig:uml-activity-rendering}
-\end{figure}
+con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memoria e banda). \\
 In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I {\ttfamily command buffer} sono generati
 in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
 è gestita tramite {\ttfamily Semaphore} e {\ttfamily Fence}. Questo approccio riduce l'overhead del driver e consente di
