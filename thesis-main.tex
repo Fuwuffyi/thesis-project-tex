@@ -165,7 +165,7 @@ numero limitato di luci dinamiche o in applicazioni dove la compatibilità e la 
 Il \emph{deferred rendering}, invece, suddivide il processo di rendering in più passaggi. Nel primo, chiamato
 \emph{geometry pass}, vengono memorizzate nei cosiddetti \emph{G-buffer} le informazioni geometriche necessarie,
 come la posizione dei punti \(\mathbf{P}\), le normali delle superfici \(\mathbf{N}\) e le proprietà dei materiali
-(albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO).
+(albedo \(A\), roughness \(r\), metallic \(m\), normal map \(\mathbf{N}\), ambient occlusion AO). \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.95\linewidth]{figures/g_buffer_example.png}
@@ -305,7 +305,7 @@ In pratica, ogni termine della formula corrisponde a un effetto visivo:
 \noindent
 L'aumento di roughness disperde la luce, generando highlight più ampi e opachi;
 l'aumento del valore metallic incrementa la riflessione speculare e riduce la componente diffusa
-(Esempi nella Fig.\ref{fig:pbr-material-render} e \ref{fig:pbr-material-example}).
+(Esempi nella Fig.\ref{fig:pbr-material-render} e \ref{fig:pbr-material-example}). \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/pbr_material_render.png}
@@ -473,7 +473,7 @@ permettendo di costruire gerarchie complesse e di propagare trasformazioni e pro
 Il modulo di rendering interagisce con i backend grafici attraverso l'interfaccia astratta {\ttfamily IRenderer}, che
 definisce i metodi fondamentali per inizializzare le pipeline, eseguire il rendering dei frame e liberare le risorse. Le
 implementazioni concrete {\ttfamily GLRenderer} e {\ttfamily VulkanRenderer} incapsulano la complessità specifica delle due
-API, permettendo al resto del sistema di interagire in maniera unificata (Fig.\ref{fig:uml-activity-dynamic-backend}).
+API, permettendo al resto del sistema di interagire in maniera unificata (Fig.\ref{fig:uml-activity-dynamic-backend}). \\
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\linewidth]{figures/uml_activity_dynamic_backend.png}
@@ -486,7 +486,7 @@ duplicazioni e facilita l'estensione del motore con nuovi tipi di risorse senza 
 Il flusso di dati all'interno del motore parte dall'inserimento degli oggetti nella scena, passa attraverso i componenti
 della scena, viene trasformato in strutture di dati compatibili con il backend selezionato e infine elaborato dalla
 pipeline di rendering (Fig.\ref{fig:uml-scene-renderer}). Le metriche di performance sono raccolte dal modulo
-{\ttfamily PerformanceLogger} e rese disponibili tramite {\ttfamily PerformanceGUI}, consentendo il monitoraggio in tempo reale.
+{\ttfamily PerformanceLogger} e rese disponibili tramite {\ttfamily PerformanceGUI}, consentendo il monitoraggio in tempo reale. \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/uml_scene_renderer.png}
@@ -547,8 +547,9 @@ con Vulkan, mantenendo alta la qualità visiva e minimizzando l'overhead di memo
 In Vulkan, la pipeline è progettata per sfruttare il multithreading della CPU. I {\ttfamily command buffer} sono generati
 in parallelo su più thread, ciascuno occupandosi di un sottoinsieme di oggetti della scena, mentre la sincronizzazione
 è gestita tramite {\ttfamily Semaphore} e {\ttfamily Fence}. Questo approccio riduce l'overhead del driver e consente di
-scalare le prestazioni con il numero di core disponibili (Fig.\ref{fig:uml-activity-geometrythreading}). In OpenGL, invece, la pipeline rimane single-thread,
-affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali tra le due API in scenari complessi.
+scalare le prestazioni con il numero di core disponibili (Fig.\ref{fig:uml-activity-geometrythreading}). In OpenGL, invece,
+la pipeline rimane single-thread, affidando la gestione dei comandi al driver, il che evidenzia le differenze prestazionali
+tra le due API in scenari complessi. \\
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=.95\linewidth]{figures/uml_activity_geometrythreading.png}
@@ -561,7 +562,7 @@ La gestione delle risorse è centralizzata nel modulo {\ttfamily ResourceManager
 texture. Le factory astratte ({\ttfamily IResourceFactory}) permettono di implementare varianti specifiche per OpenGL e Vulkan.
 Questa progettazione garantisce portabilità e facilita la manutenzione (Fig.\ref{fig:uml-resources}). L'uso di template per
 materiali PBR e parametri per ogni oggetto permette di adattare facilmente le risorse alle necessità di rendering.
-Ogni risorsa ha un {\ttfamily ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}).
+Ogni risorsa ha un {\ttfamily ResourceHandle} che garantisce riferimenti unici tramite UID (\emph{Unique Identifier}). \\
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=.95\linewidth]{figures/uml_resources.png}
@@ -719,12 +720,10 @@ gizmos e ImGui). \\
    \caption{Performance overlay che mostra metriche in tempo reale e grafico dei frame time.}
    \label{fig:performance-overlay}
 \end{figure}
-
 L’implementazione si basa su un sistema di accumulo statistico che conserva valori medi, minimi e massimi nel tempo,
 consentendo analisi più accurate delle prestazioni. Il codice è ottimizzato per ridurre l’overhead della GUI stessa,
 grazie all’uso di {\ttfamily std::ranges} e operazioni a costo costante dove possibile (Listino~\ref{lst:performance-gui-snippet}). \\
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:performance-gui-snippet}, caption={Implementazione del performance overlay con statistiche in tempo reale.}]{listings/performance_gui_snippet.cpp}
-
 Un altro elemento chiave dell’interfaccia è il {\ttfamily Scene Inspector}, che offre una vista gerarchica completa di tutti i nodi
 della scena e consente la selezione, l’ispezione e la modifica dei componenti in tempo reale (Fig.~\ref{fig:scene-inspector}).
 L’interfaccia è organizzata in due pannelli principali: la \textit{Hierarchy View}, che mostra l’albero dei nodi con
@@ -732,14 +731,13 @@ indicatori di stato e funzioni di espansione o collasso, e l’\textit{Inspector
 selezionato e permette di modificare i componenti associati, come Transform, Light, Renderer o ParticleSystem. L’inspector
 consente anche l’aggiunta dinamica di nuovi nodi e componenti tramite menu contestuali, semplificando la prototipazione
 rapida e il debug visuale. La traversata ricorsiva ottimizzata della gerarchia assicura coerenza tra la vista logica e
-la rappresentazione visuale.
+la rappresentazione visuale. \\
 \begin{figure}[htbp]
    \centering
    \fbox{\includegraphics[width=0.45\linewidth]{figures/scene_inspector.png}}
    \caption{Scene inspector con vista gerarchica dei nodi e pannello di ispezione dei componenti.}
    \label{fig:scene-inspector}
 \end{figure}
-
 Il {\ttfamily MaterialEditor} fornisce invece un’interfaccia completa per la gestione e la modifica dei materiali
 PBR (Fig.~\ref{fig:material-editor}). È composto da tre finestre principali: il \textit{Material Browser}, che elenca
 tutti i materiali disponibili e supporta la creazione e la selezione tramite drag-and-drop; il pannello
@@ -747,7 +745,7 @@ tutti i materiali disponibili e supporta la creazione e la selezione tramite dra
 metalness o albedo, utilizzando controlli dedicati per ogni tipo di dato (slider, color picker o input numerici);
 e infine la sezione \textit{Texture Slots}, che gestisce le texture associate al materiale con anteprima e tooltip informativi.
 Il sistema di drag-and-drop permette di trascinare materiali o texture direttamente sui componenti della scena, con
-aggiornamento immediato del rendering grazie al refresh degli uniform buffer (Listino~\ref{lst:material-editor-snippet}).
+aggiornamento immediato del rendering grazie al refresh degli uniform buffer (Listino~\ref{lst:material-editor-snippet}). \\
 \begin{figure}[htbp]
    \centering
    \fbox{\includegraphics[width=0.6\linewidth]{figures/material_editor.png}}
@@ -755,12 +753,11 @@ aggiornamento immediato del rendering grazie al refresh degli uniform buffer (Li
    \label{fig:material-editor}
 \end{figure}
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:material-editor-snippet}, caption={Sistema di drag-and-drop per texture nel material editor.}]{listings/material_editor_snippet.cpp}
-
 Per la gestione delle risorse grafiche, il {\ttfamily Texture Browser} offre una galleria visuale di tutte le texture
 caricate, disposte in una griglia adattiva (Fig.~\ref{fig:texture-browser}). Ogni elemento mostra un’anteprima ad alta
 risoluzione, il nome completo del file e le dimensioni in pixel, oltre al supporto per il drag-and-drop verso gli slot
 dei materiali. L’implementazione astrae le differenze tra i backend OpenGL e Vulkan, convertendo gli identificativi GPU
-in {\ttfamily ImTextureID} compatibili con il sistema di rendering immediato di ImGui.
+in {\ttfamily ImTextureID} compatibili con il sistema di rendering immediato di ImGui. \\
 \begin{figure}[htbp]
    \centering
    \fbox{\includegraphics[width=0.5\linewidth]{figures/texture_browser.png}}
@@ -855,7 +852,7 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 I risultati mostrano un miglioramento complessivo delle prestazioni del motore di rendering quando viene
 utilizzata l'API Vulkan rispetto a OpenGL, mantenendo invariate le condizioni di test e le scene analizzate.
 La Figura~\ref{fig:heatmap-pc-fps} riassume il numero medio di frame per secondo (FPS) ottenuto da ciascuna
-configurazione hardware su tutte le scene e per entrambe le API grafiche.
+configurazione hardware su tutte le scene e per entrambe le API grafiche. \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=1.0\linewidth]{figures/heatmap_pc_fps.png}
@@ -878,7 +875,7 @@ Inoltre, in tutte le scene si è riscontrata una riduzione dell'utilizzo della m
 una gestione più efficiente delle risorse grafiche e dell'allocazione esplicita della memoria rispetto all'approccio
 automatizzato di OpenGL. \\
 La Figura~\ref{fig:heatmap-pc-improvements} mostra i miglioramenti percentuali ottenuti, suddivisi per configurazione
-hardware e scena, fornendo una visione comparativa del guadagno effettivo per API.
+hardware e scena, fornendo una visione comparativa del guadagno effettivo per API. \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.95\linewidth]{figures/heatmap_pc_improvements.png}
