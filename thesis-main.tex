@@ -40,11 +40,11 @@
 \school{\unibo}
 \programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
 \title{OpenGL e Vulkan: uno studio comparativo}
-\author{Palazzini Luca}
+\author{Luca Palazzini}
 \date{\today}
 \subject{Computer Graphics}
 \supervisor{Prof.ssa Damiana Lazzaro}
-\session{I}
+\session{}
 \academicyear{2024-2025}
 
 \mainlinespacing{1.241}
@@ -90,21 +90,16 @@ efficienza, prevedibilità delle prestazioni e best practice per lo sviluppo di 
 
 Negli ultimi anni, il campo della grafica computazionale ha visto un'evoluzione significativa delle \emph{Graphics APIs}
 verso modelli di programmazione più vicini all'hardware e orientati alle alte prestazioni.
-Il contributo principale di questo lavoro consiste nello sviluppo di un motore di rendering modulare che consente
-un confronto controllato tra backend OpenGL e Vulkan, con l'obiettivo di analizzarne le differenze prestazionali e architetturali.
+Il presente lavoro propone lo sviluppo di un motore di rendering modulare in C++23 (progettato per operare sia con
+OpenGL 4.6 che con  Vulkan 1.4) con l'obiettivo principale di condurre un confronto prestazionale e architetturale
+controllato tra i due backend. \\
 Il confronto si concentra in particolare sull'impatto del multithreading in Vulkan rispetto al modello single-thread
 tipico di OpenGL, analizzando come la differente gestione della pipeline grafica influisca sulle prestazioni complessive.
-L'obiettivo principale del lavoro è progettare e sviluppare un motore di rendering scritto in \emph{C++23},
-in grado di operare sia con OpenGL 4.6 sia con Vulkan 1.4. \\
 Il motore implementa un approccio di tipo \emph{deferred rendering}, supporta materiali Physically Based Rendering (PBR),
 luci direzionali, puntuali e spot, e include ulteriori passaggi di rendering per particelle e oggetti di debug.
 L'architettura segue un paradigma orientato agli oggetti, integrando librerie e framework comuni.
 L'obiettivo sperimentale è valutare, a parità di contenuto e condizioni di rendering, l'efficienza delle due API
-in termini di:
-\begin{itemize}
-   \item tempo medio per frame e frame rate;
-   \item utilizzo della CPU e della GPU.
-\end{itemize}
+in termini di tempo medio per frame, frame rate ed utilizzo della CPU e della GPU. \\
 Il progetto è stato sviluppato con un approccio incrementale, secondo cicli iterativi di implementazione e validazione.
 Il motore adotta una struttura modulare che separa la logica di rendering dalla gestione della scena, così da consentire
 il confronto diretto tra i due backend.
@@ -147,7 +142,7 @@ elaborazione dei vertici, assemblaggio dei primitivi, rasterizzazione, shading d
 \emph{framebuffer} (Fig.\ref{fig:rendering-pipeline-overview}).
 Nello stadio di elaborazione dei vertici, ogni punto della geometria viene trasformato nello spazio di proiezione,
 mentre nello stadio dei frammenti viene calcolato il colore finale di ciascun pixel tenendo conto della luce e delle
-proprietà del materiale.
+proprietà del materiale. \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.95\linewidth]{figures/rendering_pipeline_overview.png}
@@ -182,9 +177,10 @@ luce. L'equazione generale per il colore finale di un frammento è:
 \begin{align*}
 C_{\text{final}} = \sum_{i=1}^{N_\text{luci}} L_i(\mathbf{P}, \mathbf{N}) \cdot f_r(\mathbf{V}, \mathbf{L}_i, \mathbf{N})
 \end{align*}
-dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di BRDF utilizzata per il materiale del frammento.
+dove \(L_i\) è il contributo della luce i-esima e \(f_r\) è la funzione di Bidirectional Reflectance Distribution Function
+(BRDF) che descrive come la luce viene riflessa da una superficie opaca, utilizzata per il materiale del frammento. \\
 Questo approccio permette di gestire un numero elevato di luci in modo più efficiente, rendendolo particolarmente
-indicato per applicazioni moderne e motori di gioco con scenari complessi.
+indicato per applicazioni moderne e motori di gioco con scenari complessi. \\
 \begin{figure}[htbp]
    \centering
    \includegraphics[width=.9\linewidth]{figures/deferred_pipeline_example.png}
@@ -277,8 +273,8 @@ G_1(\omega,\mathbf{n}) =
 \frac{2(\mathbf{n}\cdot\omega)}
 {(\mathbf{n}\cdot\omega) + \sqrt{r^2 + (1-r^2)(\mathbf{n}\cdot\omega)^2}}
 \end{align*}
-In parole semplici, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale, parte
-della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita.
+In pratica, questo significa che, quando la luce colpisce la superficie a un angolo basso o quando la vista è laterale,
+parte della luce viene "nascosta" dai microfacets, riducendo la riflessione percepita.
 
 \subsection*{Equazione completa di illuminazione}
 Combinando i termini precedenti, l'illuminazione riflessa diventa:
@@ -427,7 +423,7 @@ librerie disponibili. Il linguaggio scelto è \textbf{C++23}, che offre un buon 
 astrazione e modernità, consentendo l'utilizzo di costrutti avanzati come le \emph{smart pointer} e le
 \emph{range-based loops}. Le API grafiche target sono OpenGL 4.6 e Vulkan 1.4, in modo da garantire compatibilità
 con la maggior parte delle GPU moderne. \\
-Dal punto di vista hardware, i test sono stati condotti su molteplici configurazioni dotata di processore multi-core e GPU
+Dal punto di vista hardware, i test sono stati condotti su molteplici configurazioni dotate di processore multi-core e GPU
 di fascia medio-alta compatibile con le specifiche Vulkan. Le prestazioni sono state misurate su tutti gli hardware
 con entrambi gli API e con scene che variano in quantità di luci e effetti particellari. \\
 Il motore si appoggia a un insieme di librerie open source per ridurre il tempo di sviluppo e migliorare la stabilità
@@ -469,7 +465,7 @@ confronto controllato delle prestazioni tra le due API.
 Il motore di rendering è strutturato secondo un approccio modulare che separa nettamente la gestione della scena dalla
 logica di rendering e dalla gestione delle risorse. \\
 La scena è organizzata tramite un {\ttfamily Scene Manager}, che contiene nodi ({\ttfamily Node}) e componenti specifici come
-{\ttfamily TransformComponent}, {\ttfamily LightComponent} e {\ttfamily ParticleSystem-\\Component}. Ogni nodo può avere figli,
+{\ttfamily TransformComponent}, {\ttfamily LightComponent} e {\ttfamily ParticleSystemComponent}. Ogni nodo può avere figli,
 permettendo di costruire gerarchie complesse e di propagare trasformazioni e proprietà luminose lungo la scena. \\
 Il modulo di rendering interagisce con i backend grafici attraverso l'interfaccia astratta {\ttfamily IRenderer}, che
 definisce i metodi fondamentali per inizializzare le pipeline, eseguire il rendering dei frame e liberare le risorse. Le
@@ -669,8 +665,13 @@ e descriptor set in Vulkan, rispettando le specifiche di ciascun backend.
 Durante il \emph{geometry pass}, gli shader scrivono nei G-buffer le informazioni PBR:
 albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare la memoria,
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
-canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. Queste scelte riducono
-l'occupazione di memoria senza compromettere la qualità visiva (Listino ~\ref{lst:geometry-pass-snippet}).
+canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. L’oct-encoding consente di comprimere una normale
+tridimensionale in due componenti, riducendo l’occupazione di memoria nel G-buffer. Nel codice,
+la normale \( n \) viene prima proiettata sul piano unitario dividendo ciascun asse per la somma dei valori assoluti
+delle sue componenti. Se la componente \( z \) è negativa, le coordinate vengono riflesse per mappare l’emisfero inferiore
+sul superiore, garantendo continuità. Le coordinate risultanti sono poi scalate da \([-1,1]\) a \([0,1]\) per la
+memorizzazione in texture a 8 bit per canale. Questo metodo permette di memorizzare normali con buona precisione
+usando solo due canali (RG), liberando spazio per altri parametri PBR nello stesso G-buffer (Listino ~\ref{lst:geometry-pass-snippet}). \\
 \lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/geometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
@@ -683,7 +684,7 @@ tramite {\ttfamily MaterialTemplate} e {\ttfamily MaterialInstance}, con paramet
 roughness, metalness e albedo. Le informazioni vengono passate agli shader tramite uniform buffer (OpenGL) o
 descriptor set (Vulkan).
 La gestione dei materiali consente di applicare facilmente diversi set di texture PBR e modificare i parametri in
-tempo reale tramite l'interfaccia grafica del motore .
+tempo reale tramite l'interfaccia grafica del motore.
 
 \section{Simulazione di Particelle}
 Il motore integra sistemi di particelle configurabili tramite {\ttfamily ParticleSystemCompo-\\nent}.
