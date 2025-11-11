@@ -854,22 +854,15 @@ più architetture hardware riportate nella Tabella~\ref{tab:table-hw}, al fine d
 \section{Risultati}
 I risultati mostrano un miglioramento complessivo delle prestazioni del motore di rendering quando viene
 utilizzata l'API Vulkan rispetto a OpenGL, mantenendo invariate le condizioni di test e le scene analizzate.
-Per fornire una visione dettagliata delle prestazioni, le Figure~\ref{fig:fps-by-hw-1}
-e~\ref{fig:fps-by-hw-2} mostrano il confronto diretto tra OpenGL e Vulkan per ciascuna scena,
-in funzione della configurazione hardware utilizzata. Questi grafici evidenziano come il vantaggio
-prestazionale di Vulkan vari significativamente in base alla complessità della scena e alle
+Per fornire una visione dettagliata delle prestazioni, la Figure~\ref{fig:fps-by-hw} mostrano il confronto diretto tra
+OpenGL e Vulkan per ciascuna scena, in funzione della configurazione hardware utilizzata. Questi grafici evidenziano
+come il vantaggio prestazionale di Vulkan vari significativamente in base alla complessità della scena e alle
 caratteristiche dell'hardware. \\
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=\textwidth]{figures/fps_by_hardware_scenes_0_1_2.png}
-   \caption{Confronto FPS tra OpenGL e Vulkan per le scene 0, 1 e 2 su diverse configurazioni hardware.}
-   \label{fig:fps-by-hw-1}
-\end{figure}
-\begin{figure}[htbp]
-   \centering
-   \includegraphics[width=\textwidth]{figures/fps_by_hardware_scenes_3_4.png}
-   \caption{Confronto FPS tra OpenGL e Vulkan per le scene 3 e 4 su diverse configurazioni hardware.}
-   \label{fig:fps-by-hw-2}
+   \includegraphics[width=\textwidth]{figures/fps_by_hardware.png}
+   \caption{Confronto FPS tra OpenGL e Vulkan su diverse configurazioni hardware.}
+   \label{fig:fps-by-hw}
 \end{figure}
 La Figura~\ref{fig:heatmap-pc-fps} riassume il numero medio di frame per secondo (FPS) ottenuto da ciascuna
 configurazione hardware su tutte le scene e per entrambe le API grafiche. \\
@@ -894,22 +887,16 @@ più marcato di determinate combinazioni CPU-GPU e driver.
 Inoltre, in tutte le scene si è riscontrata una riduzione dell'utilizzo della memoria video (VRAM) con Vulkan, segno di
 una gestione più efficiente delle risorse grafiche e dell'allocazione esplicita della memoria rispetto all'approccio
 automatizzato di OpenGL. \\
-Le Figure~\ref{fig:gain-by-hw-1} e~\ref{fig:gain-by-hw-2} illustrano il guadagno percentuale
+Le Figure~\ref{fig:gain-by-hw} illustrano il guadagno percentuale
 ottenuto con Vulkan rispetto a OpenGL per ciascuna combinazione di scena e hardware. I valori
 positivi indicano un miglioramento prestazionale, mentre valori negativi evidenziano situazioni
 in cui OpenGL risulta più performante. L'analisi mostra come il beneficio di Vulkan sia più
 marcato nelle scene CPU-bound e su hardware con maggiore parallelismo. \\
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width=\textwidth]{figures/gain_by_hardware_scenes_0_1_2.png}
-   \caption{Guadagno percentuale di Vulkan rispetto a OpenGL per le scene 0, 1 e 2.}
-   \label{fig:gain-by-hw-1}
-\end{figure}
-\begin{figure}[htbp]
-   \centering
-   \includegraphics[width=\textwidth]{figures/gain_by_hardware_scenes_3_4.png}
-   \caption{Guadagno percentuale di Vulkan rispetto a OpenGL per le scene 3 e 4.}
-   \label{fig:gain-by-hw-2}
+   \includegraphics[width=\textwidth]{figures/gain_by_hardware.png}
+   \caption{Guadagno percentuale di Vulkan rispetto a OpenGL.}
+   \label{fig:gain-by-hw}
 \end{figure}
 La Figura~\ref{fig:heatmap-pc-improvements} mostra i miglioramenti percentuali ottenuti, suddivisi per configurazione
 hardware e scena, fornendo una visione comparativa del guadagno effettivo per API. \\
@@ -954,14 +941,7 @@ più chiaramente nei casi in cui l'applicazione è vincolata dalle prestazioni d
 Nel complesso, Vulkan si dimostra un'API più scalabile, prevedibile e capace di sfruttare in modo più efficiente
 l'hardware moderno, specialmente in presenza di architetture multicore e scene complesse. OpenGL, pur mantenendo buone
 prestazioni in contesti moderati, tende a saturare rapidamente le risorse CPU a causa del vincolo al thread principale
-e della maggiore astrazione offerta dal driver. Qui vengono riportati i risultati ottenuti su tutte le scene da tutte le
-configurazioni hardware (Fig.\ref{fig:cross-pc-results}). \\
-\begin{figure}[htbp]
-   \centering
-   \includegraphics[width=\textwidth]{figures/cross_pc_results.png}
-   \caption{FPS ottenuti da tutti gli hardware su tutte le scene.}
-   \label{fig:cross-pc-results}
-\end{figure}
+e della maggiore astrazione offerta dal driver. \\
 Per una valutazione più dettagliata della stabilità delle prestazioni, sono stati confrontati i valori di FPS relativi
 ai casi migliore e peggiore per entrambe le API. Come evidenziato in Figura~\ref{fig:percentile-comparisons}, Vulkan
 mostra una stabilità comparabile a quella di OpenGL nella maggior parte degli scenari. Tuttavia, la scena 3 presenta
