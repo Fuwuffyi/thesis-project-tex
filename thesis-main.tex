@@ -5,6 +5,7 @@
 \usepackage{notes}
 \usepackage{shortcuts}
 \usepackage{xcolor}
+\usepackage{subcaption}
 % \usepackage{acronym}
 
 % Definition of acronyms
@@ -812,8 +813,10 @@ forza, limiti e comportamento al variare del carico di lavoro.
 \section{Configurazione Sperimentale}
 Per la valutazione sono stati considerati scenari multipli, rappresentativi di differenti carichi di lavoro grafico.
 Ognuno di essi è caratterizzato da un numero diverso di luci dinamiche e sistemi di particelle, mantenendo costanti
-la scena, i materiali PBR e le geometrie. Esempio di una scena (Fig.\ref{fig:window-screenshot}). Le scene sono caricate
-dinamicamente secondo le configurazioni riportate nella Tabella~\ref{tab:table-scenes}.
+la scena, i materiali PBR e le geometrie. Le scene sono caricate dinamicamente secondo le configurazioni riportate
+nella Tabella~\ref{tab:table-scenes}. \\
+Per completezza visiva, nella Figura~\ref{fig:scene-samples} sono mostrati alcuni screenshot rappresentativi
+dei cinque tipi di scena considerati nei test. \\
 \begin{table}[h!]
 \centering
 \begin{tabular}{c|c|c|l}
@@ -828,10 +831,31 @@ dinamicamente secondo le configurazioni riportate nella Tabella~\ref{tab:table-s
 \label{tab:table-scenes}
 \end{table}
 \begin{figure}[htbp]
-   \centering
-   \includegraphics[width=.95\linewidth]{figures/window_screenshot.png}
-   \caption{Render vulkan della scena 2 con UI di debug.}
-   \label{fig:window-screenshot}
+    \centering
+    % Riga 1
+    \begin{subfigure}[b]{0.32\linewidth}
+        \includegraphics[width=\linewidth]{figures/screenshot_s0.png}
+        \caption{Scena 0}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\linewidth}
+        \includegraphics[width=\linewidth]{figures/screenshot_s1.png}
+        \caption{Scena 1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\linewidth}
+        \includegraphics[width=\linewidth]{figures/screenshot_s2.png}
+        \caption{Scena 2}
+    \end{subfigure}
+    % Riga 2
+    \begin{subfigure}[b]{0.32\linewidth}
+        \includegraphics[width=\linewidth]{figures/screenshot_s3.png}
+        \caption{Scena 3}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\linewidth}
+        \includegraphics[width=\linewidth]{figures/screenshot_s4.png}
+        \caption{Scena 4}
+    \end{subfigure}
+    \caption{Esempi di rendering per le cinque scene considerate nei test.}
+    \label{fig:scene-samples}
 \end{figure}
 Le misurazioni raccolte riguardano tempo medio per frame, varianza del frame time, tempo richiesto per ciascuna
 render pass, overhead e utilizzo della CPU. Sono stati impiegati strumenti integrati nel motore ({\ttfamily GLTimer} e
