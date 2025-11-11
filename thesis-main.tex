@@ -236,7 +236,7 @@ Il secondo termine descrive la riflessione speculare dovuta alla micro-geometria
     dell'orientazione dei microfacets. Controlla la concentrazione del riflesso speculare.
     \item $F(\omega_o,\mathbf{h})$ è il termine di \emph{Fresnel}, che determina la quantità di luce riflessa in funzione
     dell'angolo tra osservatore e microfacet. Governa la crescita del riflesso a incidenti radenti.
-    \item $G(\omega_i,\omega_o,\mathbf{n})$ è il termine di \emph{geometrical attenuation}, che modella l'auto-occlusione:
+    \item $G(\omega_i,\omega_o,\mathbf{n})$ è il termine di \emph{geometrical attenuation}, che modella \linebreak l'auto-occlusione:
     microfacets possono bloccare la luce incidente o riflessa.
 \end{itemize}
 Il vettore metà $\mathbf{h} = \frac{\omega_i+\omega_o}{\|\omega_i+\omega_o\|}$ rappresenta la direzione intermedia
@@ -469,7 +469,7 @@ confronto controllato delle prestazioni tra le due API.
 Il motore di rendering è strutturato secondo un approccio modulare che separa nettamente la gestione della scena dalla
 logica di rendering e dalla gestione delle risorse. \\
 La scena è organizzata tramite un {\ttfamily Scene Manager}, che contiene nodi ({\ttfamily Node}) e componenti specifici come
-{\ttfamily TransformComponent}, {\ttfamily LightComponent} e {\ttfamily ParticleSystemComponent}. Ogni nodo può avere figli,
+{\ttfamily TransformComponent}, {\ttfamily LightComponent} e {\ttfamily ParticleSystem-\\Component}. Ogni nodo può avere figli,
 permettendo di costruire gerarchie complesse e di propagare trasformazioni e proprietà luminose lungo la scena. \\
 Il modulo di rendering interagisce con i backend grafici attraverso l'interfaccia astratta {\ttfamily IRenderer}, che
 definisce i metodi fondamentali per inizializzare le pipeline, eseguire il rendering dei frame e liberare le risorse. Le
@@ -735,7 +735,7 @@ rapida e il debug visuale. La traversata ricorsiva ottimizzata della gerarchia a
 la rappresentazione visuale. \\
 \begin{figure}[htbp]
    \centering
-   \fbox{\includegraphics[width=0.7\linewidth]{figures/scene_inspector.png}}
+   \fbox{\includegraphics[width=0.85\linewidth]{figures/scene_inspector.png}}
    \caption{Scene inspector con vista gerarchica dei nodi e pannello di ispezione dei componenti.}
    \label{fig:scene-inspector}
 \end{figure}
