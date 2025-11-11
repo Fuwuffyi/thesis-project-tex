@@ -83,7 +83,6 @@ efficienza, prevedibilità delle prestazioni e best practice per lo sviluppo di 
 % Main content
 \mainmatter
 
-% TODO: Add captions to listings
 %----------------------------------------------------------------------------------------
 \chapterWithoutNumber{Introduzione}
 \label{chap:introduzione}
@@ -329,7 +328,8 @@ legato alla sincronizzazione delle risorse, alla gestione della memoria e alla c
 al driver. Questo approccio riduce la complessità dello sviluppo, consentendo di ottenere rapidamente risultati visivi,
 ma limita il controllo del programmatore sulle prestazioni, soprattutto in scenari con molte luci e geometrie complesse.
 OpenGL opera principalmente in modalità single-thread, affidando al driver l'organizzazione dei comandi su GPU, il che può
-generare overhead significativi in applicazioni moderne e multithreaded. \\
+generare overhead significativi in applicazioni moderne e multithreaded. Le specifiche complete di OpenGL
+4.6~\cite{khronos_opengl_spec} definiscono in dettaglio il comportamento dell'API e le estensioni supportate. \\
 Vulkan, al contrario, offre un modello di programmazione a basso livello, dove il programmatore ha il controllo diretto
 sulla memoria, sui comandi e sulla sincronizzazione. La pipeline Vulkan richiede la definizione esplicita di tutti i
 passaggi di rendering attraverso strutture come {\ttfamily Render Pass} e {\ttfamily Command Buffers}, e la gestione della 
@@ -598,7 +598,7 @@ di risorse e materiali, e i sistemi di rendering. La struttura principale del pr
 La selezione del backend avviene a runtime tramite opzioni di comando, senza alterare il flusso logico
 del motore~\ref{lst:renderer-factory}. Questo permette di eseguire test comparativi tra OpenGL e Vulkan utilizzando la stessa
 scena e gli stessi asset.
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:renderer-factory}]{listings/renderer_factory.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:renderer-factory},caption={Factory pattern per la creazione dinamica del renderer in base all'API selezionata.}]{listings/renderer_factory.cpp}
 
 \section{Componenti Principali}
 Il cuore del motore è costituito dai seguenti moduli:
@@ -615,7 +615,7 @@ Il cuore del motore è costituito dai seguenti moduli:
 \section{Gestione della Scena e dei Componenti}
 La scena è rappresentata come un grafo di nodi ({\ttfamily Node}) che possono contenere componenti
 come {\ttfamily TransformComponent}, {\ttfamily LightComponent} e {\ttfamily ParticleSystemComponent} (Listino ~\ref{lst:scene-management}).
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-management}]{listings/scene_management.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-management},caption={Struttura della classe Node per la gestione gerarchica della scena.}]{listings/scene_management.cpp}
 Ogni nodo mantiene riferimenti ai figli e ai genitori, permettendo la propagazione automatica delle
 trasformazioni lungo la gerarchia. Questo approccio consente di gestire complesse relazioni
 di parenthood e trasformazioni locali/globali in modo trasparente.
@@ -628,13 +628,13 @@ particelle, integrando la simulazione in modo multithreaded quando il backend lo
 L'approccio a componenti rende semplice l'estensione della scena con nuovi comportamenti senza
 alterare la gerarchia principale e separa chiaramente la logica di aggiornamento dallo stadio
 di rendering (Listino ~\ref{lst:scene-update}).
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-update}]{listings/scene_update.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:scene-update},caption={Logica di aggiornamento della scena con propagazione delle trasformazioni e update dei componenti.}]{listings/scene_update.cpp}
 
 \section{Gestione delle risorse}
 La gestione delle risorse è centralizzata nel modulo {\ttfamily ResourceManager}, che si occupa di
 caricare, creare e memorizzare mesh, texture e shader. Ogni risorsa è identificata tramite
 {\ttfamily ResourceHandle} con UID univoci, garantendo riferimenti consistenti senza duplicazioni (Listino ~\ref{lst:resource-management}).
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:resource-management}]{listings/resource_management.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:resource-management},caption={Registrazione e gestione centralizzata delle risorse tramite ResourceHandle con UID univoci.}]{listings/resource_management.cpp}
 Le factory astratte ({\ttfamily IResourceFactory}) permettono di istanziare risorse specifiche
 per OpenGL o Vulkan. Questo design consente al motore di utilizzare risorse condivise in modo
 trasparente tra i backend, mentre le differenze di binding e gestione della memoria GPU
@@ -676,13 +676,13 @@ delle sue componenti. Se la componente \( z \) è negativa, le coordinate vengon
 sul superiore, garantendo continuità. Le coordinate risultanti sono poi scalate da \([-1,1]\) a \([0,1]\) per la
 memorizzazione in texture a 8 bit per canale. Questo metodo permette di memorizzare normali con buona precisione
 usando solo due canali (RG), liberando spazio per altri parametri PBR nello stesso G-buffer (Listino ~\ref{lst:geometry-pass-snippet}). \\
-\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet}]{listings/geometry_snippet.glsl}
+\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:geometry-pass-snippet},caption={Shader GLSL del geometry pass con oct-encoding delle normali e packing ottimizzato dei parametri PBR.}]{listings/geometry_snippet.glsl}
 Nel \emph{lighting pass}, i dati del G-buffer vengono combinati con le luci della scena
 per calcolare l'illuminazione finale. Il motore supporta luci puntuali, spot e direzionali,
 calcolando il contributo speculare e diffuso in base ai parametri PBR. L'approccio deferred
 garantisce efficienza anche con numerose sorgenti luminose, evitando ricalcoli geometrici
 ridondanti (Listino ~\ref{lst:lighting-pass-snippet}).
-\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:lighting-pass-snippet}]{listings/lighting_snippet.glsl}
+\lstinputlisting[float,floatplacement=htbp,language=GLSL,label={lst:lighting-pass-snippet},caption={Shader GLSL del lighting pass con implementazione del modello Cook-Torrance PBR.}]{listings/lighting_snippet.glsl}
 Il motore implementa un sistema di materiali PBR basato sul modello Cook-Torrance. Ogni materiale è descritto
 tramite {\ttfamily MaterialTemplate} e {\ttfamily MaterialInstance}, con parametri fisicamente plausibili come
 roughness, metalness e albedo. Le informazioni vengono passate agli shader tramite uniform buffer (OpenGL) o
@@ -723,7 +723,7 @@ gizmos e ImGui). \\
 L’implementazione si basa su un sistema di accumulo statistico che conserva valori medi, minimi e massimi nel tempo,
 consentendo analisi più accurate delle prestazioni. Il codice è ottimizzato per ridurre l’overhead della GUI stessa,
 grazie all’uso di {\ttfamily std::ranges} e operazioni a costo costante dove possibile (Listino~\ref{lst:performance-gui-snippet}). \\
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:performance-gui-snippet}, caption={Implementazione del performance overlay con statistiche in tempo reale.}]{listings/performance_gui_snippet.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:performance-gui-snippet},caption={Implementazione del performance overlay con statistiche in tempo reale.}]{listings/performance_gui_snippet.cpp}
 Un altro elemento chiave dell’interfaccia è il {\ttfamily Scene Inspector}, che offre una vista gerarchica completa di tutti i nodi
 della scena e consente la selezione, l’ispezione e la modifica dei componenti in tempo reale (Fig.~\ref{fig:scene-inspector}).
 L’interfaccia è organizzata in due pannelli principali: la \textit{Hierarchy View}, che mostra l’albero dei nodi con
@@ -752,7 +752,7 @@ aggiornamento immediato del rendering grazie al refresh degli uniform buffer (Li
    \caption{Material editor con browser, properties panel e texture slot editor.}
    \label{fig:material-editor}
 \end{figure}
-\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:material-editor-snippet}, caption={Sistema di drag-and-drop per texture nel material editor.}]{listings/material_editor_snippet.cpp}
+\lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:material-editor-snippet},caption={Sistema di drag-and-drop per texture nel material editor.}]{listings/material_editor_snippet.cpp}
 Per la gestione delle risorse grafiche, il {\ttfamily Texture Browser} offre una galleria visuale di tutte le texture
 caricate, disposte in una griglia adattiva (Fig.~\ref{fig:texture-browser}). Ogni elemento mostra un’anteprima ad alta
 risoluzione, il nome completo del file e le dimensioni in pixel, oltre al supporto per il drag-and-drop verso gli slot
@@ -766,6 +766,9 @@ in {\ttfamily ImTextureID} compatibili con il sistema di rendering immediato di 
 \end{figure}
 
 \section{Differenze di Implementazione tra OpenGL e Vulkan}
+L'approccio low-level di Vulkan, descritto nelle specifiche ufficiali~\cite{khronos_vulkan_spec} e approfondito nei
+tutorial della community~\cite{vulkan_tutorial,vkguide}, richiede una comprensione più profonda dell'architettura GPU
+rispetto all'astrazione offerta da OpenGL~\cite{khronos_opengl_spec}. \\
 OpenGL si affida al driver per la gestione della sincronizzazione e dell'invio dei comandi,
 mantenendo la pipeline single-thread e riducendo la complessità di implementazione. Vulkan
 richiede invece la gestione esplicita di buffer, command pool, descriptor set e sincronizzazione
@@ -789,7 +792,7 @@ di catturare errori a livello di build anziché a runtime e migliorando la stabi
 del sistema. Questa pipeline di compilazione permette inoltre un migliore controllo sull'ottimizzazione
 e sull'interfacciamento con descriptor set e layout della pipeline. \\
 Un esempio della compilazione in SPIR-V eseguita dal file CMake viene mostrato nel listino~\ref{lst:spv-compilation}.
-\lstinputlisting[float,floatplacement=htbp,label={lst:spv-compilation}]{listings/spv_compilation.cmake}
+\lstinputlisting[float,floatplacement=htbp,label={lst:spv-compilation},caption={Script CMake per la compilazione automatica degli shader GLSL in formato SPIR-V per Vulkan.}]{listings/spv_compilation.cmake}
 
 %----------------------------------------------------------------------------------------
 \chapter{Valutazione delle Prestazioni}
