@@ -37,7 +37,7 @@ plt.rcParams.update({
 })
 
 # ==============================
-# Data Collection (UNCHANGED)
+# Data Collection
 # ==============================
 print("=== Loading Data ===")
 frame_rows = []
@@ -84,7 +84,7 @@ systems = pd.concat(system_rows, ignore_index=True) if system_rows else pd.DataF
 print(f"Loaded {len(frames)} frame records from {len(frames['PC'].unique()) if not frames.empty else 0} PCs")
 
 # ==============================
-# Summary Statistics (UNCHANGED)
+# Summary Statistics
 # ==============================
 print("\n=== Generating Summary Statistics ===")
 summary_data = []
@@ -136,7 +136,7 @@ summary = pd.DataFrame(summary_data)
 print(f"Summary generated: {len(summary)} configurations")
 
 # ==============================
-# System Info (UNCHANGED)
+# System Info
 # ==============================
 print("\n=== System Configurations ===")
 pc_gpu_map = {}
@@ -151,7 +151,7 @@ if not systems.empty:
         print(f"  GPU: {gpu}")
 
 # ==============================
-# Utility Functions (UNCHANGED)
+# Utility Functions
 # ==============================
 def save_plot(path, dpi=300):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -878,193 +878,106 @@ if not frames.empty and "FrameTime(ms)" in frames.columns:
         save_plot(f"{IMG_ROOT}/14_stability_improvement_heatmap.png")
 
 # ==============================
-# NEW PLOT 15: FPS by Hardware for Scenes 0,1,2
+# PLOT 15-16: FPS by Hardware for Scenes 0–4
 # ==============================
 if "Average FPS" in summary.columns and not summary.empty:
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-    scenes_group_1 = [0, 1, 2]
-    
-    for idx, scene in enumerate(scenes_group_1):
+    scenes_all = [0, 1, 2, 3, 4]
+    fig, axes = plt.subplots(3, 2, figsize=(12, 18))
+    axes = axes.flatten()
+
+    for idx, scene in enumerate(scenes_all):
+        if idx >= len(axes):
+            break
         ax = axes[idx]
         scene_data = summary[summary["Scene"] == scene]
-        
         pcs = sorted(scene_data["PC"].unique())
         x = np.arange(len(pcs))
         width = 0.35
-        
-        opengl_vals = []
-        vulkan_vals = []
-        
+
+        opengl_vals, vulkan_vals = [], []
         for pc in pcs:
             opengl = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "opengl")]["Average FPS"]
             vulkan = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "vulkan")]["Average FPS"]
-            
             opengl_vals.append(opengl.values[0] if len(opengl) > 0 else 0)
             vulkan_vals.append(vulkan.values[0] if len(vulkan) > 0 else 0)
-        
+
         bars1 = ax.bar(x - width/2, opengl_vals, width, label='OpenGL', alpha=0.8, color='#3498db')
         bars2 = ax.bar(x + width/2, vulkan_vals, width, label='Vulkan', alpha=0.8, color='#e74c3c')
-        
+
         for bars in [bars1, bars2]:
             for bar in bars:
                 height = bar.get_height()
                 if height > 0:
-                    ax.text(bar.get_x() + bar.get_width()/2., height, 
-                           f'{height:.0f}', ha='center', va='bottom', fontsize=10)
-        
-        ax.set_xlabel('Configurazione Hardware', fontsize=12, fontweight='bold')
-        ax.set_ylabel('FPS Medio', fontsize=12, fontweight='bold')
-        ax.set_title(f'Scena {scene}', fontsize=14, fontweight='bold')
+                    ax.text(bar.get_x() + bar.get_width()/2., height,
+                            f'{height:.0f}', ha='center', va='bottom', fontsize=9)
+
+        ax.set_title(f'Scena {scene}', fontsize=13, fontweight='bold')
+        ax.set_xlabel('Configurazione Hardware', fontsize=11, fontweight='bold')
+        ax.set_ylabel('FPS Medio', fontsize=11, fontweight='bold')
         ax.set_xticks(x)
-        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=10)
-        ax.legend(fontsize=10)
+        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=11)
         ax.grid(axis='y', alpha=0.3)
-    
-    plt.suptitle('Confronto FPS per Hardware: Scene 0, 1, 2', 
-                 fontsize=16, fontweight='bold', y=1.02)
-    
-    save_plot(f"{IMG_ROOT}/15_fps_by_hardware_scenes_0_1_2.png")
+
+        if idx == 0:
+            ax.legend(fontsize=9)
+
+    # Hide any unused subplots
+    for j in range(len(scenes_all), len(axes)):
+        axes[j].axis('off')
+
+    plt.suptitle('Confronto FPS per Hardware: Scene 0–4', fontsize=16, fontweight='bold', y=1.02)
+    save_plot(f"{IMG_ROOT}/15_16_fps_by_hardware_scenes_0_4.png")
 
 # ==============================
-# NEW PLOT 16: FPS by Hardware for Scenes 3,4
+# PLOT 17-18: Performance Gain by Hardware for Scenes 0–4
 # ==============================
 if "Average FPS" in summary.columns and not summary.empty:
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    scenes_group_2 = [3, 4]
-    
-    for idx, scene in enumerate(scenes_group_2):
-        ax = axes[idx]
-        scene_data = summary[summary["Scene"] == scene]
-        
-        pcs = sorted(scene_data["PC"].unique())
-        x = np.arange(len(pcs))
-        width = 0.35
-        
-        opengl_vals = []
-        vulkan_vals = []
-        
-        for pc in pcs:
-            opengl = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "opengl")]["Average FPS"]
-            vulkan = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "vulkan")]["Average FPS"]
-            
-            opengl_vals.append(opengl.values[0] if len(opengl) > 0 else 0)
-            vulkan_vals.append(vulkan.values[0] if len(vulkan) > 0 else 0)
-        
-        bars1 = ax.bar(x - width/2, opengl_vals, width, label='OpenGL', alpha=0.8, color='#3498db')
-        bars2 = ax.bar(x + width/2, vulkan_vals, width, label='Vulkan', alpha=0.8, color='#e74c3c')
-        
-        for bars in [bars1, bars2]:
-            for bar in bars:
-                height = bar.get_height()
-                if height > 0:
-                    ax.text(bar.get_x() + bar.get_width()/2., height, 
-                           f'{height:.0f}', ha='center', va='bottom', fontsize=10)
-        
-        ax.set_xlabel('Configurazione Hardware', fontsize=12, fontweight='bold')
-        ax.set_ylabel('FPS Medio', fontsize=12, fontweight='bold')
-        ax.set_title(f'Scena {scene}', fontsize=14, fontweight='bold')
-        ax.set_xticks(x)
-        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=10)
-        ax.legend(fontsize=10)
-        ax.grid(axis='y', alpha=0.3)
-    
-    plt.suptitle('Confronto FPS per Hardware: Scene 3, 4', 
-                 fontsize=16, fontweight='bold', y=1.02)
-    
-    save_plot(f"{IMG_ROOT}/16_fps_by_hardware_scenes_3_4.png")
+    scenes_all = [0, 1, 2, 3, 4]
+    fig, axes = plt.subplots(3, 2, figsize=(12, 18))
+    axes = axes.flatten()
 
-# ==============================
-# NEW PLOT 17: Performance Gain by Hardware for Scenes 0,1,2
-# ==============================
-if "Average FPS" in summary.columns and not summary.empty:
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-    scenes_group_1 = [0, 1, 2]
-    
-    for idx, scene in enumerate(scenes_group_1):
+    for idx, scene in enumerate(scenes_all):
+        if idx >= len(axes):
+            break
         ax = axes[idx]
         scene_data = summary[summary["Scene"] == scene]
-        
         pcs = sorted(scene_data["PC"].unique())
         gains = []
-        
+
         for pc in pcs:
             opengl = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "opengl")]["Average FPS"]
             vulkan = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "vulkan")]["Average FPS"]
-            
             if len(opengl) > 0 and len(vulkan) > 0:
                 gain = ((vulkan.values[0] - opengl.values[0]) / opengl.values[0]) * 100
             else:
                 gain = 0
             gains.append(gain)
-        
-        colors = ['#27ae60' if x > 0 else '#e74c3c' for x in gains]
+
+        colors = ['#27ae60' if g > 0 else '#e74c3c' for g in gains]
         bars = ax.bar(range(len(pcs)), gains, color=colors, alpha=0.8, edgecolor='black', linewidth=1.5)
-        
+
         for i, (bar, val) in enumerate(zip(bars, gains)):
-            ax.text(i, val + (2 if val > 0 else -2), f'{val:+.1f}%', 
-                   ha='center', va='bottom' if val > 0 else 'top', 
-                   fontsize=10, fontweight='bold')
-        
+            ax.text(i, val + (2 if val > 0 else -2), f'{val:+.1f}%',
+                    ha='center', va='bottom' if val > 0 else 'top',
+                    fontsize=9, fontweight='bold')
+
         ax.axhline(y=0, color='black', linestyle='-', linewidth=1)
-        ax.set_xlabel('Configurazione Hardware', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Guadagno (%)', fontsize=12, fontweight='bold')
-        ax.set_title(f'Scena {scene}', fontsize=14, fontweight='bold')
+        ax.set_title(f'Scena {scene}', fontsize=13, fontweight='bold')
+        ax.set_xlabel('Configurazione Hardware', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Guadagno (%)', fontsize=11, fontweight='bold')
         ax.set_xticks(range(len(pcs)))
-        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=10)
+        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=11)
         ax.grid(axis='y', alpha=0.3)
-    
-    plt.suptitle('Guadagno Percentuale Vulkan vs OpenGL: Scene 0, 1, 2', 
+
+    for j in range(len(scenes_all), len(axes)):
+        axes[j].axis('off')
+
+    plt.suptitle('Guadagno Percentuale Vulkan vs OpenGL: Scene 0–4',
                  fontsize=16, fontweight='bold', y=1.02)
-    
-    save_plot(f"{IMG_ROOT}/17_gain_by_hardware_scenes_0_1_2.png")
+    save_plot(f"{IMG_ROOT}/17_18_gain_by_hardware_scenes_0_4.png")
 
 # ==============================
-# NEW PLOT 18: Performance Gain by Hardware for Scenes 3,4
-# ==============================
-if "Average FPS" in summary.columns and not summary.empty:
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    scenes_group_2 = [3, 4]
-    
-    for idx, scene in enumerate(scenes_group_2):
-        ax = axes[idx]
-        scene_data = summary[summary["Scene"] == scene]
-        
-        pcs = sorted(scene_data["PC"].unique())
-        gains = []
-        
-        for pc in pcs:
-            opengl = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "opengl")]["Average FPS"]
-            vulkan = scene_data[(scene_data["PC"] == pc) & (scene_data["API"] == "vulkan")]["Average FPS"]
-            
-            if len(opengl) > 0 and len(vulkan) > 0:
-                gain = ((vulkan.values[0] - opengl.values[0]) / opengl.values[0]) * 100
-            else:
-                gain = 0
-            gains.append(gain)
-        
-        colors = ['#27ae60' if x > 0 else '#e74c3c' for x in gains]
-        bars = ax.bar(range(len(pcs)), gains, color=colors, alpha=0.8, edgecolor='black', linewidth=1.5)
-        
-        for i, (bar, val) in enumerate(zip(bars, gains)):
-            ax.text(i, val + (2 if val > 0 else -2), f'{val:+.1f}%', 
-                   ha='center', va='bottom' if val > 0 else 'top', 
-                   fontsize=10, fontweight='bold')
-        
-        ax.axhline(y=0, color='black', linestyle='-', linewidth=1)
-        ax.set_xlabel('Configurazione Hardware', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Guadagno (%)', fontsize=12, fontweight='bold')
-        ax.set_title(f'Scena {scene}', fontsize=14, fontweight='bold')
-        ax.set_xticks(range(len(pcs)))
-        ax.set_xticklabels(pcs, rotation=45, ha='right', fontsize=10)
-        ax.grid(axis='y', alpha=0.3)
-    
-    plt.suptitle('Guadagno Percentuale Vulkan vs OpenGL: Scene 3, 4', 
-                 fontsize=16, fontweight='bold', y=1.02)
-    
-    save_plot(f"{IMG_ROOT}/18_gain_by_hardware_scenes_3_4.png")
-
-# ==============================
-# FINAL SUMMARY (UNCHANGED)
+# FINAL SUMMARY
 # ==============================
 print("\n" + "="*60)
 print("=== ANALISI COMPLETATA ===")
