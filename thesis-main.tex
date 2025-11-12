@@ -670,10 +670,10 @@ e descriptor set in Vulkan, rispettando le specifiche di ciascun backend.
 Durante il \emph{geometry pass}, gli shader scrivono nei G-buffer le informazioni PBR:
 albedo, normal encode, roughness, metallic e ambient occlusion. Per ottimizzare la memoria,
 le normali sono codificate con oct-encoding nei canali RG, roughness e metallic condividono
-canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. L’oct-encoding consente di comprimere una normale
-tridimensionale in due componenti, riducendo l’occupazione di memoria nel G-buffer. Nel codice,
+canali non utilizzati e l'AO è inserita nell'alpha dell'albedo. L'oct-encoding consente di comprimere una normale
+tridimensionale in due componenti, riducendo l'occupazione di memoria nel G-buffer. Nel codice,
 la normale \( n \) viene prima proiettata sul piano unitario dividendo ciascun asse per la somma dei valori assoluti
-delle sue componenti. Se la componente \( z \) è negativa, le coordinate vengono riflesse per mappare l’emisfero inferiore
+delle sue componenti. Se la componente \( z \) è negativa, le coordinate vengono riflesse per mappare l'emisfero inferiore
 sul superiore, garantendo continuità. Le coordinate risultanti sono poi scalate da \([-1,1]\) a \([0,1]\) per la
 memorizzazione in texture a 8 bit per canale. Questo metodo permette di memorizzare normali con buona precisione
 usando solo due canali (RG), liberando spazio per altri parametri PBR nello stesso G-buffer (Listino ~\ref{lst:geometry-pass-snippet}). \\
@@ -705,12 +705,12 @@ alla struttura principale della scena.
 
 \section{Interfaccia di Debug e Monitoraggio}
 Il motore integra un sistema completo di interfaccia grafica basato su ImGui~\cite{imgui}, che fornisce strumenti di
-debug, monitoraggio delle prestazioni e un editor visuale per la scena e i materiali. L’interfaccia è progettata per
-essere non invasiva durante il rendering e consente l’accesso in tempo reale a tutti i parametri critici del motore. \\
+debug, monitoraggio delle prestazioni e un editor visuale per la scena e i materiali. L'interfaccia è progettata per
+essere non invasiva durante il rendering e consente l'accesso in tempo reale a tutti i parametri critici del motore. \\
 Il modulo {\ttfamily PerformanceGUI} implementa un overlay sempre visibile che mostra le principali metriche di
 performance (Fig.~\ref{fig:performance-overlay}). Attraverso questo pannello è possibile monitorare il frame rate
 corrente e medio, oltre al tempo di frame in millisecondi, con valori minimo, massimo e medio. Vengono inoltre mostrati
-l’utilizzo della CPU e della GPU sia in percentuale sia in tempo assoluto, l’occupazione della memoria video e di
+l'utilizzo della CPU e della GPU sia in percentuale sia in tempo assoluto, l'occupazione della memoria video e di
 sistema rappresentata con barre di progresso colorate, il conteggio delle risorse caricate e la memoria utilizzata
 dal {\ttfamily ResourceManager}. Un grafico temporale degli ultimi 1024 frame time consente di individuare spike o
 instabilità, mentre un breakdown dettagliato mostra i tempi di ciascuna render pass (geometry, lighting, particles,
@@ -721,16 +721,16 @@ gizmos e ImGui). \\
    \caption{Performance overlay che mostra metriche in tempo reale e grafico dei frame time.}
    \label{fig:performance-overlay}
 \end{figure}
-L’implementazione si basa su un sistema di accumulo statistico che conserva valori medi, minimi e massimi nel tempo,
-consentendo analisi più accurate delle prestazioni. Il codice è ottimizzato per ridurre l’overhead della GUI stessa,
-grazie all’uso di {\ttfamily std::ranges} e operazioni a costo costante dove possibile (Listino~\ref{lst:performance-gui-snippet}). \\
+L'implementazione si basa su un sistema di accumulo statistico che conserva valori medi, minimi e massimi nel tempo,
+consentendo analisi più accurate delle prestazioni. Il codice è ottimizzato per ridurre l'overhead della GUI stessa,
+grazie all'uso di {\ttfamily std::ranges} e operazioni a costo costante dove possibile (Listino~\ref{lst:performance-gui-snippet}). \\
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:performance-gui-snippet},caption={Implementazione del performance overlay con statistiche in tempo reale.}]{listings/performance_gui_snippet.cpp}
-Un altro elemento chiave dell’interfaccia è il {\ttfamily Scene Inspector}, che offre una vista gerarchica completa di tutti i nodi
-della scena e consente la selezione, l’ispezione e la modifica dei componenti in tempo reale (Fig.~\ref{fig:scene-inspector}).
-L’interfaccia è organizzata in due pannelli principali: la \textit{Hierarchy View}, che mostra l’albero dei nodi con
-indicatori di stato e funzioni di espansione o collasso, e l’\textit{Inspector Panel}, che presenta i dettagli del nodo
-selezionato e permette di modificare i componenti associati, come Transform, Light, Renderer o ParticleSystem. L’inspector
-consente anche l’aggiunta dinamica di nuovi nodi e componenti tramite menu contestuali, semplificando la prototipazione
+Un altro elemento chiave dell'interfaccia è il {\ttfamily Scene Inspector}, che offre una vista gerarchica completa di tutti i nodi
+della scena e consente la selezione, l'ispezione e la modifica dei componenti in tempo reale (Fig.~\ref{fig:scene-inspector}).
+L'interfaccia è organizzata in due pannelli principali: la \textit{Hierarchy View}, che mostra l'albero dei nodi con
+indicatori di stato e funzioni di espansione o collasso, e l'\textit{Inspector Panel}, che presenta i dettagli del nodo
+selezionato e permette di modificare i componenti associati, come Transform, Light, Renderer o ParticleSystem. L'inspector
+consente anche l'aggiunta dinamica di nuovi nodi e componenti tramite menu contestuali, semplificando la prototipazione
 rapida e il debug visuale. La traversata ricorsiva ottimizzata della gerarchia assicura coerenza tra la vista logica e
 la rappresentazione visuale. \\
 \begin{figure}[htbp]
@@ -739,7 +739,7 @@ la rappresentazione visuale. \\
    \caption{Scene inspector con vista gerarchica dei nodi e pannello di ispezione dei componenti.}
    \label{fig:scene-inspector}
 \end{figure}
-Il {\ttfamily MaterialEditor} fornisce invece un’interfaccia completa per la gestione e la modifica dei materiali
+Il {\ttfamily MaterialEditor} fornisce invece un'interfaccia completa per la gestione e la modifica dei materiali
 PBR (Fig.~\ref{fig:material-editor}). È composto da tre finestre principali: il \textit{Material Browser}, che elenca
 tutti i materiali disponibili e supporta la creazione e la selezione tramite drag-and-drop; il pannello
 \textit{Material Properties}, che consente di modificare i parametri del materiale selezionato come roughness,
@@ -755,9 +755,9 @@ aggiornamento immediato del rendering grazie al refresh degli uniform buffer (Li
 \end{figure}
 \lstinputlisting[float,floatplacement=htbp,language=C++,label={lst:material-editor-snippet},caption={Sistema di drag-and-drop per texture nel material editor.}]{listings/material_editor_snippet.cpp}
 Per la gestione delle risorse grafiche, il {\ttfamily Texture Browser} offre una galleria visuale di tutte le texture
-caricate, disposte in una griglia adattiva (Fig.~\ref{fig:texture-browser}). Ogni elemento mostra un’anteprima ad alta
+caricate, disposte in una griglia adattiva (Fig.~\ref{fig:texture-browser}). Ogni elemento mostra un'anteprima ad alta
 risoluzione, il nome completo del file e le dimensioni in pixel, oltre al supporto per il drag-and-drop verso gli slot
-dei materiali. L’implementazione astrae le differenze tra i backend OpenGL e Vulkan, convertendo gli identificativi GPU
+dei materiali. L'implementazione astrae le differenze tra i backend OpenGL e Vulkan, convertendo gli identificativi GPU
 in {\ttfamily ImTextureID} compatibili con il sistema di rendering immediato di ImGui. \\
 \begin{figure}[htbp]
    \centering
