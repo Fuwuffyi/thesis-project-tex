@@ -882,12 +882,23 @@ if not frames.empty and "FrameTime(ms)" in frames.columns:
 # ==============================
 if "Average FPS" in summary.columns and not summary.empty:
     scenes_all = [0, 1, 2, 3, 4]
-    fig, axes = plt.subplots(3, 2, figsize=(12, 18))
-    axes = axes.flatten()
+    fig = plt.figure(figsize=(14, 18))
+    gs = fig.add_gridspec(3, 4)
+    axes = []
+    # Scenes 0–3: top two rows, 2 cols each
+    positions = [
+        gs[0, 0:2],  # Scene 0
+        gs[0, 2:4],  # Scene 1
+        gs[1, 0:2],  # Scene 2
+        gs[1, 2:4],  # Scene 3
+        gs[2, 1:3],  # Scene 4 (centered)
+    ]
+    for pos in positions:
+        axes.append(fig.add_subplot(pos))
+    # 5th scene centered in bottom row
+    axes.append(fig.add_subplot(gs[1:3, :]))
 
     for idx, scene in enumerate(scenes_all):
-        if idx >= len(axes):
-            break
         ax = axes[idx]
         scene_data = summary[summary["Scene"] == scene]
         pcs = sorted(scene_data["PC"].unique())
@@ -933,12 +944,23 @@ if "Average FPS" in summary.columns and not summary.empty:
 # ==============================
 if "Average FPS" in summary.columns and not summary.empty:
     scenes_all = [0, 1, 2, 3, 4]
-    fig, axes = plt.subplots(3, 2, figsize=(12, 18))
-    axes = axes.flatten()
+    fig = plt.figure(figsize=(14, 18))
+    gs = fig.add_gridspec(3, 4)
+    axes = []
+    # Scenes 0–3: top two rows, 2 cols each
+    positions = [
+        gs[0, 0:2],  # Scene 0
+        gs[0, 2:4],  # Scene 1
+        gs[1, 0:2],  # Scene 2
+        gs[1, 2:4],  # Scene 3
+        gs[2, 1:3],  # Scene 4 (centered)
+    ]
+    for pos in positions:
+        axes.append(fig.add_subplot(pos))
+    # 5th scene centered in bottom row
+    axes.append(fig.add_subplot(gs[1:3, :]))
 
     for idx, scene in enumerate(scenes_all):
-        if idx >= len(axes):
-            break
         ax = axes[idx]
         scene_data = summary[summary["Scene"] == scene]
         pcs = sorted(scene_data["PC"].unique())
